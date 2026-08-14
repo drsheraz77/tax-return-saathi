@@ -9,10 +9,8 @@ import viteConfig from "../../vite.config";
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
     middlewareMode: true,
-    // The managed preview is exposed through an HTTP proxy that does not
-    // forward Vite's development WebSocket. Disable HMR to prevent a false
-    // connection error; production output is unaffected.
-    hmr: false,
+    // Bind HMR to the same HTTP server that the managed preview proxy exposes.
+    hmr: { server },
     allowedHosts: true as const,
   };
 
@@ -21,6 +19,27 @@ export async function setupVite(app: Express, server: Server) {
     configFile: false,
     server: serverOptions,
     appType: "custom",
+  });
+
+  // Keep the source PWA worker unchanged for production. In development, add
+  // a changing comment and disable HTTP caching so an older worker cannot keep
+  // serving a stale transformed index.html after the server is updated.
+  app.get("/sw.js", async (_req, res, next) => {
+    try {
+      const worker = await fs.promises.readFile(
+        path.resolve(import.meta.dirname, "../..", "client", "public", "sw.js"),
+        "utf-8"
+      );
+      res
+        .status(200)
+        .set({
+          "Content-Type": "application/javascript; charset=utf-8",
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+        })
+        .end(`${worker}\n// Development preview revision: ${nanoid()}\n`);
+    } catch (error) {
+      next(error);
+    }
   });
 
   app.use(vite.middlewares);
@@ -41,13 +60,7 @@ export async function setupVite(app: Express, server: Server) {
         `src="/src/main.jsx"`,
         `src="/src/main.jsx?v=${nanoid()}"`
       );
-      // The preview proxy does not forward Vite WebSockets. Strip the dev
-      // client injected by transformIndexHtml so the browser never attempts
-      // an HMR connection while continuing to serve the application normally.
-      const page = (await vite.transformIndexHtml(url, template)).replace(
-        /\s*<script type="module" src="\/@vite\/client"><\/script>/,
-        ""
-      );
+      const page = await vite.transformIndexHtml(url, template);
       res.status(200).set({ "Content-Type": "text/html" }).end(page);
     } catch (e) {
       vite.ssrFixStacktrace(e as Error);

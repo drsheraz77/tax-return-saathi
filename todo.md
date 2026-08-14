@@ -9,10 +9,14 @@
 - [x] Configure the `ANTHROPIC_API_KEY` secret only through protected project settings.
 - [x] Build and visually verify the imported app, root-served PWA assets, and API route behavior.
 - [x] Review the checklist, create a release checkpoint, and provide custom-domain publishing steps.
-- [ ] Identify and provide the exact DNS records required to connect taxinformation.org with HTTPS.
+- [x] Identify and provide the exact DNS records required to connect taxinformation.org with HTTPS.
+- [ ] Obtain the platform-generated DNS record for the apex taxinformation.org hostname from the project Domains panel.
+- [ ] Verify that taxinformation.org itself resolves to the application over HTTPS or document its configured redirect to https://www.taxinformation.org.
 - [x] Evaluate whether the project’s built-in AI service can replace the Anthropic proxy while preserving the existing browser request contract.
 - [x] Migrate `/api/claude` to the built-in server-side AI service without changing App.jsx, tax logic, or bilingual content.
 - [x] Test the selected AI path and confirm all credentials remain server-side.
 - [x] Scan client and built output after the migration to verify that no server-side managed AI credentials or authorization values are exposed.
 - [x] Diagnose and resolve the Vite development-preview WebSocket connection failure.
 - [x] Verify the preview loads without Vite WebSocket errors and retain passing tests.
+- [x] Restore the Vite client and React preamble while configuring preview-safe HMR WebSocket routing.
+- [x] Verify the reported preview URL has neither Vite WebSocket nor React preamble errors.

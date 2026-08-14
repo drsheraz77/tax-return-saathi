@@ -12,6 +12,16 @@ Open **Settings** and then **Domains** in the project management panel. Add `tax
 
 After the DNS record is visible publicly, return to the domain panel and complete verification. Assign the verified domain to the project if the panel prompts for it. HTTPS certificates are then issued and managed by the hosting platform; wait until the domain status shows that HTTPS is active before directing visitors to the custom domain. If you want both `taxinformation.org` and `www.taxinformation.org`, add and verify each hostname and configure the preferred redirect in the domain panel.
 
+### Verified current DNS configuration
+
+The active hostname is `www.taxinformation.org`; it is serving the application successfully over HTTPS. Its registrar record is:
+
+| Type | Host / Name | Target / Value | TTL |
+| --- | --- | --- | --- |
+| CNAME | `www` | `cname.manus.space` | Auto or 3600 seconds |
+
+The apex hostname `taxinformation.org` currently resolves to the registrar’s parking service, not to the application. Configure a permanent registrar redirect from `taxinformation.org` to `https://www.taxinformation.org`, or add the apex hostname separately in the project’s **Domains** panel and use the platform-provided apex record. Do not point the apex record to `cname.manus.space` unless the domain panel explicitly instructs you to do so.
+
 ## Deployment verification
 
 | Check | Expected result |
