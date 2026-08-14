@@ -12,6 +12,13 @@
 - [x] Identify and provide the exact DNS records required to connect taxinformation.org with HTTPS.
 - [ ] Obtain the platform-generated DNS record for the apex taxinformation.org hostname from the project Domains panel.
 - [ ] Verify that taxinformation.org itself resolves to the application over HTTPS or document its configured redirect to https://www.taxinformation.org.
+- [x] Document the requested permanent registrar redirect from taxinformation.org to https://www.taxinformation.org.
+- [x] Explain the apex redirect purpose, registrar settings, and post-change verification to the user.
+- [ ] Clarify the registrar URL-forwarding warning and preserve the live www CNAME record.
+- [ ] Identify a supported apex-domain redirect alternative because the registrar URL-forwarding form accepts only subdomains.
+- [x] Add a homepage meta keywords tag containing 3 to 8 focused tax-assistance keywords.
+- [x] Set document.title to a homepage title containing 30 to 60 characters.
+- [x] Verify the rendered homepage metadata and all strict SEO limits.
 - [x] Evaluate whether the project’s built-in AI service can replace the Anthropic proxy while preserving the existing browser request contract.
 - [x] Migrate `/api/claude` to the built-in server-side AI service without changing App.jsx, tax logic, or bilingual content.
 - [x] Test the selected AI path and confirm all credentials remain server-side.

@@ -22,6 +22,20 @@ The active hostname is `www.taxinformation.org`; it is serving the application s
 
 The apex hostname `taxinformation.org` currently resolves to the registrar’s parking service, not to the application. Configure a permanent registrar redirect from `taxinformation.org` to `https://www.taxinformation.org`, or add the apex hostname separately in the project’s **Domains** panel and use the platform-provided apex record. Do not point the apex record to `cname.manus.space` unless the domain panel explicitly instructs you to do so.
 
+### Requested apex redirect
+
+Set this as a **registrar URL forwarding rule** rather than an additional Manus DNS record:
+
+| Registrar setting | Value |
+| --- | --- |
+| Source domain / host | `taxinformation.org` or `@` |
+| Destination URL | `https://www.taxinformation.org` |
+| Redirect type | Permanent (`301`) |
+| Path forwarding | Preserve path and query string, if the registrar offers the option |
+| HTTPS forwarding | Enable the registrar’s HTTPS/SSL redirect option, if shown |
+
+Remove or disable any conflicting parking or forwarding rule for the apex. Keep the existing `www` CNAME record unchanged. Once saved, test `https://taxinformation.org` in a private browser window; it should redirect to `https://www.taxinformation.org` and display the live app.
+
 ## Deployment verification
 
 | Check | Expected result |
