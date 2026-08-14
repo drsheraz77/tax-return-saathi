@@ -14,3 +14,5 @@
 - [x] Migrate `/api/claude` to the built-in server-side AI service without changing App.jsx, tax logic, or bilingual content.
 - [x] Test the selected AI path and confirm all credentials remain server-side.
 - [x] Scan client and built output after the migration to verify that no server-side managed AI credentials or authorization values are exposed.
+- [x] Diagnose and resolve the Vite development-preview WebSocket connection failure.
+- [x] Verify the preview loads without Vite WebSocket errors and retain passing tests.
