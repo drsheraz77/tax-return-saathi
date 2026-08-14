@@ -8,4 +8,9 @@
 - [x] Add a focused Vitest suite covering proxy validation, request forwarding, and upstream error pass-through behavior.
 - [x] Configure the `ANTHROPIC_API_KEY` secret only through protected project settings.
 - [x] Build and visually verify the imported app, root-served PWA assets, and API route behavior.
-- [ ] Review the checklist, create a release checkpoint, and provide custom-domain publishing steps.
+- [x] Review the checklist, create a release checkpoint, and provide custom-domain publishing steps.
+- [ ] Identify and provide the exact DNS records required to connect taxinformation.org with HTTPS.
+- [x] Evaluate whether the project’s built-in AI service can replace the Anthropic proxy while preserving the existing browser request contract.
+- [x] Migrate `/api/claude` to the built-in server-side AI service without changing App.jsx, tax logic, or bilingual content.
+- [x] Test the selected AI path and confirm all credentials remain server-side.
+- [x] Scan client and built output after the migration to verify that no server-side managed AI credentials or authorization values are exposed.

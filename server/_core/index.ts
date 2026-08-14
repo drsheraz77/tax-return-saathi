@@ -3,7 +3,7 @@ import express from "express";
 import { createServer } from "http";
 import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
-import claudeHandler from "../../api/claude.js";
+import { manusLlmProxy } from "../manusLlmProxy";
 import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
@@ -37,8 +37,8 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   registerStorageProxy(app);
   registerOAuthRoutes(app);
-  // Keep the Anthropic credential server-side: the browser only calls this same-origin proxy.
-  app.all("/api/claude", claudeHandler);
+  // Retain the uploaded browser route while the server uses the managed AI proxy.
+  app.all("/api/claude", manusLlmProxy);
   // tRPC API
   app.use(
     "/api/trpc",

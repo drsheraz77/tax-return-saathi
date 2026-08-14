@@ -1,0 +1,112 @@
+import type { Request, Response } from "express";
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+vi.mock("./_core/llm", () => ({ invokeLLM: vi.fn() }));
+
+import { invokeLLM } from "./_core/llm";
+import { BUILT_IN_MODEL, manusLlmProxy } from "./manusLlmProxy";
+
+type RecordedResponse = { statusCode?: number; body?: unknown };
+
+function createResponseRecorder() {
+  const recorded: RecordedResponse = {};
+  const response = {
+    status: vi.fn((statusCode: number) => {
+      recorded.statusCode = statusCode;
+      return response;
+    }),
+    json: vi.fn((body: unknown) => {
+      recorded.body = body;
+      return recorded;
+    }),
+  };
+  return { recorded, response: response as unknown as Response };
+}
+
+const mockedInvokeLLM = vi.mocked(invokeLLM);
+
+afterEach(() => {
+  vi.clearAllMocks();
+});
+
+describe("built-in AI adapter", () => {
+  it("rejects requests without messages before calling the model", async () => {
+    const { recorded, response } = createResponseRecorder();
+
+    await manusLlmProxy({ method: "POST", body: {} } as Request, response);
+
+    expect(recorded).toEqual({ statusCode: 400, body: { error: "Missing messages" } });
+    expect(mockedInvokeLLM).not.toHaveBeenCalled();
+  });
+
+  it("converts text, image, and PDF blocks while keeping the browser response contract", async () => {
+    mockedInvokeLLM.mockResolvedValue({
+      id: "chatcmpl_test",
+      created: 1,
+      model: BUILT_IN_MODEL,
+      choices: [{ index: 0, message: { role: "assistant", content: "Reviewed." }, finish_reason: "stop" }],
+      usage: { prompt_tokens: 12, completion_tokens: 4, total_tokens: 16 },
+    });
+    const { recorded, response } = createResponseRecorder();
+
+    await manusLlmProxy(
+      {
+        method: "POST",
+        body: {
+          model: "claude-sonnet-4-6",
+          max_tokens: 9000,
+          system: "Be concise.",
+          messages: [{
+            role: "user",
+            content: [
+              { type: "image", source: { type: "base64", media_type: "image/png", data: "image-data" } },
+              { type: "document", source: { type: "base64", media_type: "application/pdf", data: "pdf-data" } },
+              { type: "text", text: "Review these." },
+            ],
+          }],
+        },
+      } as Request,
+      response
+    );
+
+    expect(mockedInvokeLLM).toHaveBeenCalledWith({
+      model: BUILT_IN_MODEL,
+      max_tokens: 2000,
+      messages: [
+        { role: "system", content: "Be concise." },
+        {
+          role: "user",
+          content: [
+            { type: "image_url", image_url: { url: "data:image/png;base64,image-data" } },
+            { type: "file_url", file_url: { url: "data:application/pdf;base64,pdf-data", mime_type: "application/pdf" } },
+            { type: "text", text: "Review these." },
+          ],
+        },
+      ],
+    });
+    expect(recorded).toEqual({
+      statusCode: 200,
+      body: {
+        id: "chatcmpl_test",
+        type: "message",
+        role: "assistant",
+        model: BUILT_IN_MODEL,
+        content: [{ type: "text", text: "Reviewed." }],
+        stop_reason: "stop",
+        usage: { input_tokens: 12, output_tokens: 4 },
+      },
+    });
+  });
+
+  it("returns a safe error if the managed AI service fails", async () => {
+    mockedInvokeLLM.mockRejectedValue(new Error("upstream unavailable"));
+    const { recorded, response } = createResponseRecorder();
+
+    await manusLlmProxy(
+      { method: "POST", body: { messages: [{ role: "user", content: "Hello" }] } } as Request,
+      response
+    );
+
+    expect(recorded).toEqual({ statusCode: 500, body: { error: "Upstream request failed" } });
+  });
+});
