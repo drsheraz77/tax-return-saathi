@@ -9,8 +9,9 @@ import viteConfig from "../../vite.config";
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
     middlewareMode: true,
-    // Bind HMR to the same HTTP server that the managed preview proxy exposes.
-    hmr: { server },
+    // The managed preview proxy does not expose Vite's direct WebSocket port.
+    // Keep the React transform preamble, but disable HMR transport in preview.
+    hmr: false,
     allowedHosts: true as const,
   };
 
@@ -60,7 +61,19 @@ export async function setupVite(app: Express, server: Server) {
         `src="/src/main.jsx"`,
         `src="/src/main.jsx?v=${nanoid()}"`
       );
-      const page = await vite.transformIndexHtml(url, template);
+      const transformedPage = await vite.transformIndexHtml(url, template);
+      const reactPreamble = `<script type="module">
+        import RefreshRuntime from "/@react-refresh";
+        RefreshRuntime.injectIntoGlobalHook(window);
+        window.$RefreshReg$ = () => {};
+        window.$RefreshSig$ = () => (type) => type;
+        window.__vite_plugin_react_preamble_installed__ = true;
+      </script>`;
+      // Vite still injects its HMR client in middleware mode. Remove only that
+      // module and add the React preamble required by transformed JSX modules.
+      const page = transformedPage
+        .replace(/<script\b[^>]*\bsrc="\/@vite\/client"[^>]*><\/script>\s*/i, "")
+        .replace("</head>", `${reactPreamble}\n</head>`);
       res.status(200).set({ "Content-Type": "text/html" }).end(page);
     } catch (e) {
       vite.ssrFixStacktrace(e as Error);

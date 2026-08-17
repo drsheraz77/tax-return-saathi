@@ -27,3 +27,12 @@
 - [x] Verify the preview loads without Vite WebSocket errors and retain passing tests.
 - [x] Restore the Vite client and React preamble while configuring preview-safe HMR WebSocket routing.
 - [x] Verify the reported preview URL has neither Vite WebSocket nor React preamble errors.
+- [x] Eliminate the recurring Vite WebSocket failure from the managed preview URL.
+- [x] Verify the refreshed preview has no Vite WebSocket errors and the production build remains valid.
+- [x] Confirm visitor analytics availability and explain how to access site statistics.
+- [x] Explain the verified management-dashboard path for viewing the site’s visitor analytics.
+- [x] Verify which visitor metrics are available before describing the analytics view.
+- [x] Inspect an authoritative analytics dashboard or documentation source to confirm the management-dashboard navigation path.
+- [x] Verify the visitor metric labels exposed for this project from an authoritative dashboard or documentation source.
+- [x] Confirm the exact Management UI navigation path for accessing the project analytics dashboard.
+- [x] Correct the user-facing analytics instructions if the verified navigation differs from the current guidance.
