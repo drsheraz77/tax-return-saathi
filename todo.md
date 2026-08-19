@@ -10,12 +10,12 @@
 - [x] Build and visually verify the imported app, root-served PWA assets, and API route behavior.
 - [x] Review the checklist, create a release checkpoint, and provide custom-domain publishing steps.
 - [x] Identify and provide the exact DNS records required to connect taxinformation.org with HTTPS.
-- [ ] Obtain the platform-generated DNS record for the apex taxinformation.org hostname from the project Domains panel.
-- [ ] Verify that taxinformation.org itself resolves to the application over HTTPS or document its configured redirect to https://www.taxinformation.org.
+- [x] Determine that a platform-generated apex DNS record is not needed because taxinformation.org is intentionally parked.
+- [x] Document that taxinformation.org remains intentionally parked and is neither directed to the application nor redirected to www.
 - [x] Document the requested permanent registrar redirect from taxinformation.org to https://www.taxinformation.org.
 - [x] Explain the apex redirect purpose, registrar settings, and post-change verification to the user.
-- [ ] Clarify the registrar URL-forwarding warning and preserve the live www CNAME record.
-- [ ] Identify a supported apex-domain redirect alternative because the registrar URL-forwarding form accepts only subdomains.
+- [x] Clarify the registrar URL-forwarding warning and preserve the live www CNAME record.
+- [x] Identify Cloudflare as a supported apex-domain redirect alternative should a redirect be needed later.
 - [x] Add a homepage meta keywords tag containing 3 to 8 focused tax-assistance keywords.
 - [x] Set document.title to a homepage title containing 30 to 60 characters.
 - [x] Verify the rendered homepage metadata and all strict SEO limits.
@@ -29,6 +29,9 @@
 - [x] Verify the reported preview URL has neither Vite WebSocket nor React preamble errors.
 - [x] Eliminate the recurring Vite WebSocket failure from the managed preview URL.
 - [x] Verify the refreshed preview has no Vite WebSocket errors and the production build remains valid.
+- [x] Preserve the existing www CNAME by declining the registrar option to replace all DNS records with URL Redirect.
+- [x] Select and document keeping the apex domain parked rather than enabling a redirect service.
+- [x] Provide exact Spaceship DNS and URL Redirect instructions that preserve the live www CNAME.
 - [x] Confirm visitor analytics availability and explain how to access site statistics.
 - [x] Explain the verified management-dashboard path for viewing the site’s visitor analytics.
 - [x] Verify which visitor metrics are available before describing the analytics view.
@@ -36,3 +39,8 @@
 - [x] Verify the visitor metric labels exposed for this project from an authoritative dashboard or documentation source.
 - [x] Confirm the exact Management UI navigation path for accessing the project analytics dashboard.
 - [x] Correct the user-facing analytics instructions if the verified navigation differs from the current guidance.
+- [x] Confirm through public DNS that www.taxinformation.org remains a CNAME to cname.manus.space after the registrar cleanup.
+- [x] Confirm that no URL Redirect replaced the live www application record before finalizing the registrar cleanup.
+- [x] Recheck the live www site after recording the final apex-parking decision.
+- [x] Update the user-facing deployment handoff to state that taxinformation.org is intentionally parked and www.taxinformation.org is the live hostname.
+- [x] Record the current parked apex HTTP/HTTPS behavior alongside the live www status.
