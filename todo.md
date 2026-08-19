@@ -44,3 +44,6 @@
 - [x] Recheck the live www site after recording the final apex-parking decision.
 - [x] Update the user-facing deployment handoff to state that taxinformation.org is intentionally parked and www.taxinformation.org is the live hostname.
 - [x] Record the current parked apex HTTP/HTTPS behavior alongside the live www status.
+- [x] Diagnose and eliminate the renewed Vite WebSocket connection error in the managed development preview.
+- [x] Open a fresh managed-preview browser session and verify no Vite WebSocket or React preamble errors are emitted.
+- [x] Record direct managed-preview verification evidence for the renewed Vite WebSocket regression.

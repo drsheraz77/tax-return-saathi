@@ -61,7 +61,11 @@ export async function setupVite(app: Express, server: Server) {
         `src="/src/main.jsx"`,
         `src="/src/main.jsx?v=${nanoid()}"`
       );
-      const transformedPage = await vite.transformIndexHtml(url, template);
+      // Do not call Vite's HTML transformer in the managed preview. In
+      // middleware mode it injects /@vite/client even with HMR disabled, and
+      // that client tries to open a WebSocket that the preview proxy cannot
+      // forward. JSX modules are still transformed by Vite middleware below.
+      const transformedPage = template;
       const reactPreamble = `<script type="module">
         import RefreshRuntime from "/@react-refresh";
         RefreshRuntime.injectIntoGlobalHook(window);
@@ -69,12 +73,31 @@ export async function setupVite(app: Express, server: Server) {
         window.$RefreshSig$ = () => (type) => type;
         window.__vite_plugin_react_preamble_installed__ = true;
       </script>`;
-      // Vite still injects its HMR client in middleware mode. Remove only that
-      // module and add the React preamble required by transformed JSX modules.
+      const previewCacheCleanup = `<script>
+        // This managed preview has no WebSocket tunnel to Vite and must not keep
+        // an older service worker or cached HTML that may still load its client.
+        if ("serviceWorker" in navigator) {
+          window.addEventListener("load", () => {
+            navigator.serviceWorker.getRegistrations().then((registrations) =>
+              Promise.all(registrations.map((registration) => registration.unregister()))
+            ).then(() => caches.keys()).then((keys) =>
+              Promise.all(keys.map((key) => caches.delete(key)))
+            ).catch(() => {});
+          });
+        }
+      </script>`;
+      // Retain defensive cleanup for an HTML template that might be updated
+      // later, then add the React transform preamble required by JSX modules.
       const page = transformedPage
-        .replace(/<script\b[^>]*\bsrc="\/@vite\/client"[^>]*><\/script>\s*/i, "")
-        .replace("</head>", `${reactPreamble}\n</head>`);
-      res.status(200).set({ "Content-Type": "text/html" }).end(page);
+        .replace(/<script\b(?=[^>]*\bsrc=["'][^"']*\/@vite\/client[^"']*["'])[^>]*>\s*<\/script>\s*/gi, "")
+        .replace(/<script\b[^>]*>\s*import\s*["']\/@vite\/client[^"']*["'];?\s*<\/script>\s*/gi, "")
+        .replace("</head>", `${reactPreamble}\n${previewCacheCleanup}\n</head>`);
+      res.status(200).set({
+        "Content-Type": "text/html",
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        "Pragma": "no-cache",
+        "Expires": "0",
+      }).end(page);
     } catch (e) {
       vite.ssrFixStacktrace(e as Error);
       next(e);
