@@ -47,3 +47,6 @@
 - [x] Diagnose and eliminate the renewed Vite WebSocket connection error in the managed development preview.
 - [x] Open a fresh managed-preview browser session and verify no Vite WebSocket or React preamble errors are emitted.
 - [x] Record direct managed-preview verification evidence for the renewed Vite WebSocket regression.
+- [x] Research current Tax Year 2026 Pakistan income-tax return updates from official FBR communications, reputable news reporting, and public social-media notices.
+- [x] Add only verified, clearly sourced Tax Year 2026 filing guidance in a new compact bilingual update panel while preserving the existing App.jsx tax algorithm, authored bilingual strings, and pre-existing visual design.
+- [x] Verify the updated content, build, and tests before publishing the information refresh.
