@@ -54,3 +54,5 @@
 - [x] Add a source-linked dated FBR notice archive that preserves the existing tax assistant and clearly identifies official announcements.
 - [x] Verify the archive’s content, interactions, tests, and production build before publishing.
 - [x] Produce a detailed implementation-ready technical specification for a privacy-conscious personalised filing checklist feature.
+- [x] Build an interactive local-only frontend prototype for the personalised filing checklist’s adaptive question flow.
+- [x] Verify adaptive branching, results, reset behaviour, responsive presentation, tests, and production build before publishing the prototype.
