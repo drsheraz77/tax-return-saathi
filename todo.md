@@ -53,3 +53,4 @@
 - [x] Research and verify dated FBR tax-return announcements suitable for an in-app archive.
 - [x] Add a source-linked dated FBR notice archive that preserves the existing tax assistant and clearly identifies official announcements.
 - [x] Verify the archive’s content, interactions, tests, and production build before publishing.
+- [x] Produce a detailed implementation-ready technical specification for a privacy-conscious personalised filing checklist feature.
