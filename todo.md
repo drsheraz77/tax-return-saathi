@@ -56,3 +56,9 @@
 - [x] Produce a detailed implementation-ready technical specification for a privacy-conscious personalised filing checklist feature.
 - [x] Build an interactive local-only frontend prototype for the personalised filing checklist’s adaptive question flow.
 - [x] Verify adaptive branching, results, reset behaviour, responsive presentation, tests, and production build before publishing the prototype.
+- [x] Add explicit opt-in localStorage saving for the personalised filing-checklist draft, with clear local-device privacy wording.
+- [x] Add resume and one-click saved-draft removal controls without sending checklist answers to the server.
+- [x] Verify saving, refreshing, resuming, clearing, tests, and the production build before publishing the local draft feature.
+- [x] Refresh the page after saving a checklist draft, then verify the browser-local draft can be resumed and deleted without a server request.
+- [x] Inspect the local draft implementation to confirm save, resume, and deletion use only browser-local state with no fetch, XHR, tRPC, or server call.
+- [x] Add or verify unit coverage that draft restore and removal rely solely on local serialization helpers.

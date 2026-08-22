@@ -92,6 +92,74 @@ export const CHECKLIST_PROTOTYPE_QUESTIONS = [
   },
 ];
 
+export const PROTOTYPE_DRAFT_STORAGE_KEY = "tax-return-saathi:filing-checklist-draft:v1";
+export const PROTOTYPE_DRAFT_VERSION = 1;
+
+const VALID_ANSWER_VALUES = Object.fromEntries(
+  CHECKLIST_PROTOTYPE_QUESTIONS.map((question) => [question.id, new Set(question.options.map(([value]) => value))]),
+);
+const VALID_ITEM_STATUSES = new Set(["Have it", "Need to find", "Not sure"]);
+
+function sanitiseAnswers(candidate) {
+  if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) return {};
+  return Object.fromEntries(Object.entries(candidate).flatMap(([questionId, value]) => {
+    const allowed = VALID_ANSWER_VALUES[questionId];
+    if (!allowed) return [];
+    if (questionId === "incomeCategories") {
+      if (!Array.isArray(value)) return [];
+      const values = [...new Set(value.filter((item) => typeof item === "string" && allowed.has(item)))];
+      return values.length ? [[questionId, values]] : [];
+    }
+    return typeof value === "string" && allowed.has(value) ? [[questionId, value]] : [];
+  }));
+}
+
+function sanitiseItemStatus(candidate, answers) {
+  if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) return {};
+  const permittedIds = new Set(getPrototypeChecklist(answers).map((item) => item.id));
+  return Object.fromEntries(Object.entries(candidate).filter(([itemId, status]) => permittedIds.has(itemId) && VALID_ITEM_STATUSES.has(status)));
+}
+
+export function createPrototypeDraft({ answers, itemStatus, step, showResults }, savedAt = Date.now()) {
+  const safeAnswers = sanitiseAnswers(answers);
+  return {
+    version: PROTOTYPE_DRAFT_VERSION,
+    savedAt: Number.isFinite(savedAt) ? savedAt : Date.now(),
+    answers: safeAnswers,
+    itemStatus: sanitiseItemStatus(itemStatus, safeAnswers),
+    step: Number.isInteger(step) && step >= 0 ? step : 0,
+    showResults: Boolean(showResults),
+  };
+}
+
+export function serialisePrototypeDraft(draft, savedAt) {
+  return JSON.stringify(createPrototypeDraft(draft, savedAt));
+}
+
+export function parsePrototypeDraft(serialised) {
+  try {
+    const candidate = JSON.parse(serialised);
+    if (!candidate || candidate.version !== PROTOTYPE_DRAFT_VERSION || !Number.isFinite(candidate.savedAt)) return null;
+    return createPrototypeDraft(candidate, candidate.savedAt);
+  } catch {
+    return null;
+  }
+}
+
+export function loadPrototypeDraft(storage) {
+  return parsePrototypeDraft(storage?.getItem(PROTOTYPE_DRAFT_STORAGE_KEY));
+}
+
+export function savePrototypeDraft(storage, draft, savedAt) {
+  const serialised = serialisePrototypeDraft(draft, savedAt);
+  storage?.setItem(PROTOTYPE_DRAFT_STORAGE_KEY, serialised);
+  return parsePrototypeDraft(serialised);
+}
+
+export function removePrototypeDraft(storage) {
+  storage?.removeItem(PROTOTYPE_DRAFT_STORAGE_KEY);
+}
+
 export function getPrototypeQuestions(answers) {
   return CHECKLIST_PROTOTYPE_QUESTIONS.filter((question) => !question.when || question.when(answers));
 }

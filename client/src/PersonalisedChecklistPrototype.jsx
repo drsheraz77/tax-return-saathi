@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { getPrototypeChecklist, getPrototypeQuestions } from "./personalisedChecklistPrototype.js";
+import { getPrototypeChecklist, getPrototypeQuestions, loadPrototypeDraft, removePrototypeDraft, savePrototypeDraft } from "./personalisedChecklistPrototype.js";
 
 const sectionOrder = ["Before IRIS", "Income records", "Tax deducted and records", "Special situations", "Before you submit"];
 
@@ -15,6 +15,8 @@ export default function PersonalisedChecklistPrototype() {
   const [answers, setAnswers] = useState({});
   const [showResults, setShowResults] = useState(false);
   const [itemStatus, setItemStatus] = useState({});
+  const [savedDraft, setSavedDraft] = useState(null);
+  const [draftNotice, setDraftNotice] = useState("");
 
   const questions = useMemo(() => getPrototypeQuestions(answers), [answers]);
   const activeQuestion = questions[step];
@@ -22,6 +24,16 @@ export default function PersonalisedChecklistPrototype() {
   const isAnswered = activeQuestion?.kind === "multiple"
     ? (answers[activeQuestion.id] || []).length > 0
     : Boolean(answers[activeQuestion?.id]);
+  const hasProgress = Object.keys(answers).length > 0 || Object.keys(itemStatus).length > 0;
+
+  const readSavedDraft = () => {
+    if (typeof window === "undefined") return null;
+    try {
+      return loadPrototypeDraft(window.localStorage);
+    } catch {
+      return null;
+    }
+  };
 
   const reset = () => {
     setStep(0);
@@ -53,6 +65,53 @@ export default function PersonalisedChecklistPrototype() {
     reset();
   };
 
+  const saveDraft = () => {
+    if (typeof window === "undefined") return;
+    try {
+      const parsed = savePrototypeDraft(window.localStorage, { answers, itemStatus, step, showResults });
+      setSavedDraft(parsed);
+      setDraftNotice("Saved on this browser only. You can resume or delete it at any time.");
+    } catch {
+      setDraftNotice("This browser could not save the draft. Your answers remain only in this open panel.");
+    }
+  };
+
+  const resumeSavedDraft = () => {
+    const draft = savedDraft || readSavedDraft();
+    if (!draft) {
+      setDraftNotice("No saved draft was found on this browser.");
+      return;
+    }
+    const restoredQuestions = getPrototypeQuestions(draft.answers);
+    setAnswers(draft.answers);
+    setItemStatus(draft.itemStatus);
+    setStep(Math.min(draft.step, Math.max(restoredQuestions.length - 1, 0)));
+    setShowResults(draft.showResults);
+    setDraftNotice("Saved draft resumed. Nothing has been sent to the server.");
+  };
+
+  const deleteSavedDraft = () => {
+    if (typeof window === "undefined") return;
+    try {
+      removePrototypeDraft(window.localStorage);
+      setSavedDraft(null);
+      setDraftNotice("Saved draft removed from this browser.");
+    } catch {
+      setDraftNotice("This browser could not remove the saved draft. Please clear site data in your browser settings.");
+    }
+  };
+
+  const openPrototype = () => {
+    if (isOpen) {
+      close();
+      return;
+    }
+    const draft = readSavedDraft();
+    setSavedDraft(draft);
+    setDraftNotice(draft ? "A saved draft is available on this browser." : "");
+    setIsOpen(true);
+  };
+
   return (
     <aside className="filing-prototype" aria-label="Personalised filing checklist prototype">
       <style>{`
@@ -69,6 +128,12 @@ export default function PersonalisedChecklistPrototype() {
         .filing-prototype__close:hover, .filing-prototype__close:focus-visible { background: rgba(255,255,255,.15); outline: 2px solid #ecd46e; outline-offset: 2px; }
         .filing-prototype__body { padding: 17px 18px 18px; }
         .filing-prototype__privacy { margin: 0 0 15px; border-left: 3px solid #caa518; padding: 9px 0 9px 11px; background: #faf5df; color: #4c503c; font-size: 12px; line-height: 1.45; }
+        .filing-prototype__draft { margin: 0 0 15px; border: 1px solid #d9c066; border-radius: 10px; padding: 10px; background: #fff9df; color: #3d4f42; font-size: 12px; line-height: 1.4; }
+        .filing-prototype__draft p { margin: 0; }
+        .filing-prototype__draft-actions { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; }
+        .filing-prototype__draft button { border: 1px solid #74641d; border-radius: 8px; background: #fffdf7; color: #173b31; cursor: pointer; padding: 7px 9px; font: 700 12px/1.15 inherit; }
+        .filing-prototype__draft button:hover, .filing-prototype__draft button:focus-visible { background: #f4e8b2; outline: 3px solid rgba(202, 165, 24, .28); outline-offset: 2px; }
+        .filing-prototype__draft button:disabled { cursor: not-allowed; opacity: .48; }
         .filing-prototype__progress { display: flex; gap: 5px; margin: 0 0 16px; }
         .filing-prototype__progress-dot { flex: 1; height: 5px; border-radius: 99px; background: #ded7b9; }
         .filing-prototype__progress-dot--active { background: #caa518; }
@@ -107,12 +172,21 @@ export default function PersonalisedChecklistPrototype() {
         <section className="filing-prototype__panel" aria-live="polite">
           <header className="filing-prototype__header">
             <div>
-              <p className="filing-prototype__eyebrow">Local-only prototype · no answers saved</p>
+              <p className="filing-prototype__eyebrow">Local-only prototype · browser save is optional</p>
               <h2 className="filing-prototype__title">Personalised filing checklist <span className="filing-prototype__urdu" lang="ur" dir="rtl">ذاتی فائلنگ چیک لسٹ</span></h2>
             </div>
             <button className="filing-prototype__close" type="button" onClick={close} aria-label="Close filing checklist prototype">×</button>
           </header>
           <div className="filing-prototype__body">
+            <section className="filing-prototype__draft" aria-label="Optional local draft save">
+              <p><strong>Optional browser save:</strong> if you choose Save, only these high-level checklist choices and progress marks are kept in this browser’s local storage. Nothing is sent to our server. Avoid saving on a shared device.</p>
+              {draftNotice && <p role="status" style={{ marginTop: 7 }}><strong>{draftNotice}</strong></p>}
+              <div className="filing-prototype__draft-actions">
+                <button type="button" onClick={saveDraft} disabled={!hasProgress}>Save this draft on this device</button>
+                {savedDraft && <button type="button" onClick={resumeSavedDraft}>Resume saved draft</button>}
+                {savedDraft && <button type="button" onClick={deleteSavedDraft}>Delete saved draft</button>}
+              </div>
+            </section>
             {!showResults ? (
               <>
                 <p className="filing-prototype__privacy"><strong>Prototype boundary:</strong> answer only high-level categories. This preview does not ask for tax amounts, CNIC, NTN, bank details, documents, or passwords. It gives preparation prompts, not tax advice or a filing decision.</p>
@@ -162,7 +236,7 @@ export default function PersonalisedChecklistPrototype() {
                     </section>
                   );
                 })}
-                <p className="filing-prototype__disclaimer">This prototype does not save answers or determine what you must report. Verify current dates and requirements through official FBR sources before filing.</p>
+                <p className="filing-prototype__disclaimer">The prototype does not send answers anywhere. Saving is optional and stores only the listed high-level choices and progress marks in this browser. It does not determine what you must report. Verify current dates and requirements through official FBR sources before filing.</p>
                 <div className="filing-prototype__actions"><button className="filing-prototype__button filing-prototype__button--secondary" type="button" onClick={() => { setShowResults(false); setStep(Math.max(questions.length - 1, 0)); }}>Edit answers</button><button className="filing-prototype__button" type="button" onClick={reset}>Start over</button></div>
               </>
             )}
@@ -170,7 +244,7 @@ export default function PersonalisedChecklistPrototype() {
         </section>
       )}
 
-      <button className="filing-prototype__launch" type="button" onClick={() => setIsOpen((open) => !open)} aria-expanded={isOpen}>
+      <button className="filing-prototype__launch" type="button" onClick={openPrototype} aria-expanded={isOpen}>
         <span className="filing-prototype__spark" aria-hidden="true">✓</span>
         Try filing checklist prototype
       </button>

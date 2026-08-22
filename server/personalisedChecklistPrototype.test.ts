@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getPrototypeChecklist, getPrototypeQuestions } from "../client/src/personalisedChecklistPrototype.js";
+import { getPrototypeChecklist, getPrototypeQuestions, loadPrototypeDraft, parsePrototypeDraft, PROTOTYPE_DRAFT_STORAGE_KEY, removePrototypeDraft, savePrototypeDraft, serialisePrototypeDraft } from "../client/src/personalisedChecklistPrototype.js";
 
 describe("personalised filing checklist prototype", () => {
   it("adds conditional business and property questions only for selected categories", () => {
@@ -30,5 +30,60 @@ describe("personalised filing checklist prototype", () => {
     });
     expect(items.find((item) => item.id === "foreign")?.type).toBe("seek_advice");
     expect(items.find((item) => item.id === "uncertainty")?.type).toBe("seek_advice");
+  });
+
+  it("serialises only allowed high-level answers and valid checklist progress marks", () => {
+    const serialised = serialisePrototypeDraft({
+      answers: { filingExperience: "first_time", incomeCategories: ["business", "invalid"], cnic: "12345-0000000-0" },
+      itemStatus: { business: "Have it", iris: "completed", invented: "Need to find" },
+      step: 2,
+      showResults: false,
+    }, 123456789);
+    const draft = parsePrototypeDraft(serialised);
+    expect(draft).toMatchObject({
+      version: 1,
+      savedAt: 123456789,
+      answers: { filingExperience: "first_time", incomeCategories: ["business"] },
+      itemStatus: { business: "Have it" },
+      step: 2,
+      showResults: false,
+    });
+    expect(serialised).not.toContain("cnic");
+    expect(serialised).not.toContain("invalid");
+  });
+
+  it("rejects malformed or incompatible saved drafts", () => {
+    expect(parsePrototypeDraft("not json")).toBeNull();
+    expect(parsePrototypeDraft(JSON.stringify({ version: 99, savedAt: 123456789 }))).toBeNull();
+  });
+
+  it("saves, restores, and removes drafts solely through a supplied browser storage adapter", () => {
+    const values = new Map();
+    const calls: Array<[string, string]> = [];
+    const storage = {
+      getItem: (key: string) => {
+        calls.push(["getItem", key]);
+        return values.get(key) ?? null;
+      },
+      setItem: (key: string, value: string) => {
+        calls.push(["setItem", key]);
+        values.set(key, value);
+      },
+      removeItem: (key: string) => {
+        calls.push(["removeItem", key]);
+        values.delete(key);
+      },
+    };
+
+    savePrototypeDraft(storage, { answers: { filingExperience: "first_time" }, itemStatus: {}, step: 0, showResults: false }, 123456789);
+    expect(loadPrototypeDraft(storage)?.answers.filingExperience).toBe("first_time");
+    removePrototypeDraft(storage);
+    expect(loadPrototypeDraft(storage)).toBeNull();
+    expect(calls).toEqual([
+      ["setItem", PROTOTYPE_DRAFT_STORAGE_KEY],
+      ["getItem", PROTOTYPE_DRAFT_STORAGE_KEY],
+      ["removeItem", PROTOTYPE_DRAFT_STORAGE_KEY],
+      ["getItem", PROTOTYPE_DRAFT_STORAGE_KEY],
+    ]);
   });
 });
