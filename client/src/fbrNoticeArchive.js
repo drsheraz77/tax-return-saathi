@@ -1,0 +1,32 @@
+export const FBR_NOTICE_ARCHIVE = [
+  {
+    id: "ty-2026-filing-opens",
+    publishedOn: "24 July 2026",
+    dateIso: "2026-07-24",
+    scope: "Current Tax Year 2026",
+    title: "Tax Year 2026 return filing announced",
+    summary: "FBR’s official public announcement said online return filing would open on 27 July 2026 and asked taxpayers to file accurately and honestly.",
+    sourceLabel: "Official FBR public announcement",
+    sourceUrl: "https://www.facebook.com/Fbrspokesperson/posts/income-tax-return-filing-for-tax-year-2026-will-open-from-monday-27-july-2026-al/1476295791203360/",
+  },
+  {
+    id: "ty-2025-deadline-october-31",
+    publishedOn: "15 October 2025",
+    dateIso: "2025-10-15",
+    scope: "Historical Tax Year 2025",
+    title: "Tax Year 2025 deadline extended to 31 October",
+    summary: "FBR extended the Tax Year 2025 income-tax return deadline to 31 October 2025 under section 214A. This did not set a Tax Year 2026 deadline.",
+    sourceLabel: "FBR press release",
+    sourceUrl: "https://www.fbr.gov.pk/pr/deadline-for-filing-of-income-tax-returns-ext/174338",
+  },
+  {
+    id: "ty-2025-deadline-october-15",
+    publishedOn: "30 September 2025",
+    dateIso: "2025-09-30",
+    scope: "Historical Tax Year 2025 · superseded",
+    title: "Tax Year 2025 deadline extended to 15 October",
+    summary: "FBR extended the Tax Year 2025 income-tax return deadline to 15 October 2025 under section 214A. The later 15 October 2025 notice superseded this date.",
+    sourceLabel: "FBR press release",
+    sourceUrl: "https://www.fbr.gov.pk/pr/deadline-for-filing-of-income-tax-returns-ext/174325",
+  },
+];
