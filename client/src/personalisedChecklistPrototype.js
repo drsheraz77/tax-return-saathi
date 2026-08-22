@@ -160,6 +160,21 @@ export function removePrototypeDraft(storage) {
   storage?.removeItem(PROTOTYPE_DRAFT_STORAGE_KEY);
 }
 
+export function formatPrototypeDraftSavedAt(savedAt, locale, timeZone) {
+  const date = new Date(savedAt);
+  if (!Number.isFinite(date.getTime())) return null;
+  return new Intl.DateTimeFormat(locale, {
+    dateStyle: "medium",
+    timeStyle: "medium",
+    ...(timeZone ? { timeZone } : {}),
+  }).format(date);
+}
+
+export function getPrototypeDraftSavedAtIso(savedAt) {
+  const date = new Date(savedAt);
+  return Number.isFinite(date.getTime()) ? date.toISOString() : null;
+}
+
 export function getPrototypeQuestions(answers) {
   return CHECKLIST_PROTOTYPE_QUESTIONS.filter((question) => !question.when || question.when(answers));
 }

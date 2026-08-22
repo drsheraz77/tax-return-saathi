@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getPrototypeChecklist, getPrototypeQuestions, loadPrototypeDraft, parsePrototypeDraft, PROTOTYPE_DRAFT_STORAGE_KEY, removePrototypeDraft, savePrototypeDraft, serialisePrototypeDraft } from "../client/src/personalisedChecklistPrototype.js";
+import { formatPrototypeDraftSavedAt, getPrototypeChecklist, getPrototypeDraftSavedAtIso, getPrototypeQuestions, loadPrototypeDraft, parsePrototypeDraft, PROTOTYPE_DRAFT_STORAGE_KEY, removePrototypeDraft, savePrototypeDraft, serialisePrototypeDraft } from "../client/src/personalisedChecklistPrototype.js";
 
 describe("personalised filing checklist prototype", () => {
   it("adds conditional business and property questions only for selected categories", () => {
@@ -55,6 +55,13 @@ describe("personalised filing checklist prototype", () => {
   it("rejects malformed or incompatible saved drafts", () => {
     expect(parsePrototypeDraft("not json")).toBeNull();
     expect(parsePrototypeDraft(JSON.stringify({ version: 99, savedAt: 123456789 }))).toBeNull();
+  });
+
+  it("formats the saved time from the stored browser-local timestamp", () => {
+    expect(formatPrototypeDraftSavedAt(0, "en-GB", "UTC")).toBe("1 Jan 1970, 00:00:00");
+    expect(getPrototypeDraftSavedAtIso(0)).toBe("1970-01-01T00:00:00.000Z");
+    expect(formatPrototypeDraftSavedAt("not a date")).toBeNull();
+    expect(getPrototypeDraftSavedAtIso("not a date")).toBeNull();
   });
 
   it("saves, restores, and removes drafts solely through a supplied browser storage adapter", () => {

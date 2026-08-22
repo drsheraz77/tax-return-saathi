@@ -29,3 +29,11 @@ Selecting **Delete saved draft** after the refresh displayed **“Saved draft re
 ## Code-level transport check
 
 The production component now delegates all draft operations to `loadPrototypeDraft`, `savePrototypeDraft`, and `removePrototypeDraft`. Those helpers accept only a browser-storage adapter and call only `getItem`, `setItem`, and `removeItem` for the versioned local-storage key. The new unit test supplies an adapter with precisely those three methods, confirms save → restore → removal operations, and records the expected call sequence. It passes without any transport client, network mock, fetch, XHR, tRPC, or server dependency. The full suite passes **13/13 tests**, and the production build completes successfully.
+
+## Last-saved timestamp verification
+
+In a fresh managed-preview session, selecting a high-level filing-history answer and pressing **Save this draft on this device** displayed **“Last saved on this browser: Aug 22, 2026, 11:05:12 AM (your device’s local time)”**. The saved-draft resume and deletion controls appeared beside the timestamp. The display exposes only the browser-generated save time and does not reveal checklist answers or transmit them to a server.
+
+After refreshing the same managed-preview URL and reopening the checklist, the identical timestamp remained visible beside **“A saved draft is available on this browser.”** This confirms that the display is restored from the opted-in browser-local draft rather than being generated anew on page load.
+
+Selecting **Delete saved draft** after this refresh removed the last-saved timestamp, the resume control, and the deletion control, leaving only the explicit local save action and **“Saved draft removed from this browser.”** This confirms that draft removal clears both the browser-local saved state and its associated saved-time display.

@@ -62,3 +62,6 @@
 - [x] Refresh the page after saving a checklist draft, then verify the browser-local draft can be resumed and deleted without a server request.
 - [x] Inspect the local draft implementation to confirm save, resume, and deletion use only browser-local state with no fetch, XHR, tRPC, or server call.
 - [x] Add or verify unit coverage that draft restore and removal rely solely on local serialization helpers.
+- [x] Show a clear browser-local last-saved timestamp for an opted-in personalised checklist draft.
+- [x] Verify timestamp creation, refresh restoration, deletion, tests, and production build before publishing the enhancement.
+- [x] Verify that deleting an opted-in browser-local draft removes its last-saved timestamp and saved-draft controls.

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { getPrototypeChecklist, getPrototypeQuestions, loadPrototypeDraft, removePrototypeDraft, savePrototypeDraft } from "./personalisedChecklistPrototype.js";
+import { formatPrototypeDraftSavedAt, getPrototypeChecklist, getPrototypeDraftSavedAtIso, getPrototypeQuestions, loadPrototypeDraft, removePrototypeDraft, savePrototypeDraft } from "./personalisedChecklistPrototype.js";
 
 const sectionOrder = ["Before IRIS", "Income records", "Tax deducted and records", "Special situations", "Before you submit"];
 
@@ -25,6 +25,8 @@ export default function PersonalisedChecklistPrototype() {
     ? (answers[activeQuestion.id] || []).length > 0
     : Boolean(answers[activeQuestion?.id]);
   const hasProgress = Object.keys(answers).length > 0 || Object.keys(itemStatus).length > 0;
+  const savedAtLabel = savedDraft ? formatPrototypeDraftSavedAt(savedDraft.savedAt) : null;
+  const savedAtIso = savedDraft ? getPrototypeDraftSavedAtIso(savedDraft.savedAt) : null;
 
   const readSavedDraft = () => {
     if (typeof window === "undefined") return null;
@@ -130,6 +132,7 @@ export default function PersonalisedChecklistPrototype() {
         .filing-prototype__privacy { margin: 0 0 15px; border-left: 3px solid #caa518; padding: 9px 0 9px 11px; background: #faf5df; color: #4c503c; font-size: 12px; line-height: 1.45; }
         .filing-prototype__draft { margin: 0 0 15px; border: 1px solid #d9c066; border-radius: 10px; padding: 10px; background: #fff9df; color: #3d4f42; font-size: 12px; line-height: 1.4; }
         .filing-prototype__draft p { margin: 0; }
+        .filing-prototype__saved-at { margin-top: 7px !important; color: #5d542e; }
         .filing-prototype__draft-actions { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; }
         .filing-prototype__draft button { border: 1px solid #74641d; border-radius: 8px; background: #fffdf7; color: #173b31; cursor: pointer; padding: 7px 9px; font: 700 12px/1.15 inherit; }
         .filing-prototype__draft button:hover, .filing-prototype__draft button:focus-visible { background: #f4e8b2; outline: 3px solid rgba(202, 165, 24, .28); outline-offset: 2px; }
@@ -180,6 +183,7 @@ export default function PersonalisedChecklistPrototype() {
           <div className="filing-prototype__body">
             <section className="filing-prototype__draft" aria-label="Optional local draft save">
               <p><strong>Optional browser save:</strong> if you choose Save, only these high-level checklist choices and progress marks are kept in this browser’s local storage. Nothing is sent to our server. Avoid saving on a shared device.</p>
+              {savedAtLabel && savedAtIso && <p className="filing-prototype__saved-at"><strong>Last saved on this browser:</strong> <time dateTime={savedAtIso}>{savedAtLabel}</time> <span>(your device’s local time)</span></p>}
               {draftNotice && <p role="status" style={{ marginTop: 7 }}><strong>{draftNotice}</strong></p>}
               <div className="filing-prototype__draft-actions">
                 <button type="button" onClick={saveDraft} disabled={!hasProgress}>Save this draft on this device</button>
