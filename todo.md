@@ -65,3 +65,7 @@
 - [x] Show a clear browser-local last-saved timestamp for an opted-in personalised checklist draft.
 - [x] Verify timestamp creation, refresh restoration, deletion, tests, and production build before publishing the enhancement.
 - [x] Verify that deleting an opted-in browser-local draft removes its last-saved timestamp and saved-draft controls.
+- [x] Research and verify official Pakistan company-registration and income-tax-return preparation resources.
+- [x] Add a bilingual official-resource hub with educational registration and return-preparation guidance, clearly separating official links from general preparation support.
+- [x] Verify resource links, accessibility, responsive UI, tests, and the production build before publishing.
+- [x] Refine the mobile resource-hub entry control so it does not overlap existing fixed checklist and Tax Year controls.

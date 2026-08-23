@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
+import OfficialResourceHub from "./OfficialResourceHub.jsx";
 import PersonalisedChecklistPrototype from "./PersonalisedChecklistPrototype.jsx";
 import TaxYear2026Update from "./TaxYear2026Update.jsx";
 
@@ -11,5 +12,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <App />
     <PersonalisedChecklistPrototype />
     <TaxYear2026Update />
+    <OfficialResourceHub />
   </React.StrictMode>
 );
