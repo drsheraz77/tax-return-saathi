@@ -86,3 +86,11 @@
 - [x] Verify the freelancer tools, responsive presentation, print behaviour, adaptive branching, tests, and production build before publishing.
 - [x] Exercise the freelancer path in the managed preview and record freelancer-specific preparation prompts without a tax-treatment determination.
 - [x] Run and record the final test suite and production build after the freelancer printable checklist, foreign-client FAQ, and adaptive-path changes.
+- [x] Review the supplied promotional content and define a short bilingual Tax Return Saathi video brief.
+- [x] Produce and visually review a promotional video that preserves the app’s educational, preparation-only positioning.
+- [x] Deliver the final promotional-video file to the user.
+- [x] Play back and visually verify the final promotional video for caption readability, safe educational wording, and absence of misleading tax-treatment claims.
+- [x] Deliver the verified final promotional-video file to the user.
+- [x] Review the repaired promotional video end-to-end, including its solution and feature segments, for readable safe messaging.
+- [x] Deliver the fully reviewed promotional-video file to the user.
+- [x] Send the fully reviewed promotional video file to the user as an attachment.
