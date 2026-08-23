@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { IRIS_FAQ, OFFICIAL_RESOURCE_HUB, PRE_FILING_CHECKLIST, searchIrisFaq } from "./officialResourceHub.js";
+import { FREELANCER_FAQ, FREELANCER_PRE_FILING_CHECKLIST, IRIS_FAQ, OFFICIAL_RESOURCE_HUB, PRE_FILING_CHECKLIST, searchFreelancerFaq, searchIrisFaq } from "./officialResourceHub.js";
 
 const linkProps = { target: "_blank", rel: "noreferrer" };
 
@@ -7,9 +7,12 @@ export default function OfficialResourceHub() {
   const [isOpen, setIsOpen] = useState(false);
   const [expandedSection, setExpandedSection] = useState("filing");
   const [faqQuery, setFaqQuery] = useState("");
+  const [freelancerFaqQuery, setFreelancerFaqQuery] = useState("");
   const [showChecklist, setShowChecklist] = useState(false);
+  const [showFreelancerChecklist, setShowFreelancerChecklist] = useState(false);
   const [checkedItems, setCheckedItems] = useState({});
   const matchingFaq = useMemo(() => searchIrisFaq(faqQuery), [faqQuery]);
+  const matchingFreelancerFaq = useMemo(() => searchFreelancerFaq(freelancerFaqQuery), [freelancerFaqQuery]);
 
   function toggleChecklistItem(itemId) {
     setCheckedItems((current) => ({ ...current, [itemId]: !current[itemId] }));
@@ -121,6 +124,50 @@ export default function OfficialResourceHub() {
                     </li>
                   ))}
                 </ul>
+              )}
+            </section>
+
+            <section className="official-resource-hub__tools" aria-labelledby="freelancer-faq-title">
+              <h3 id="freelancer-faq-title" className="official-resource-hub__tool-title">Freelancer foreign-client & records help<br /><span lang="ur" dir="rtl">فری لانسر بیرونِ ملک کلائنٹ اور ریکارڈ مدد</span></h3>
+              <p className="official-resource-hub__tool-copy">Search preparation guidance for foreign-client payments and record keeping. This tool does not determine tax treatment.</p>
+              <label className="sr-only" htmlFor="freelancer-faq-search">Search freelancer foreign-client and record-keeping questions</label>
+              <input id="freelancer-faq-search" className="official-resource-hub__search" value={freelancerFaqQuery} onChange={(event) => setFreelancerFaqQuery(event.target.value)} placeholder="Search: foreign client, invoice, bank, records…" type="search" />
+              {matchingFreelancerFaq.length === 0 ? <p className="official-resource-hub__no-results">No matching topic. Use the official FBR filing-help link below or search with fewer words.</p> : (
+                <ul className="official-resource-hub__faq-list" aria-label="Freelancer foreign-client and record-keeping answers">
+                  {matchingFreelancerFaq.map((item) => (
+                    <li className="official-resource-hub__faq-item" key={item.id}>
+                      <span className="official-resource-hub__faq-question">{item.question}</span>
+                      <span className="official-resource-hub__faq-urdu" lang="ur" dir="rtl">{item.questionUrdu}</span>
+                      <p className="official-resource-hub__faq-answer">{item.answer}</p>
+                      <p className="official-resource-hub__faq-answer" lang="ur" dir="rtl">{item.answerUrdu}</p>
+                      <a className="official-resource-hub__link" href={item.url} {...linkProps}>{item.sourceLabel} ↗</a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+
+            <section className="official-resource-hub__tools" aria-labelledby="freelancer-prefiling-title">
+              <h3 id="freelancer-prefiling-title" className="official-resource-hub__tool-title">Printable freelancer pre-filing checklist<br /><span lang="ur" dir="rtl">قابلِ پرنٹ فری لانسر پری فائلنگ چیک لسٹ</span></h3>
+              <p className="official-resource-hub__tool-copy">A local preparation aid for freelance work and client-payment records. It does not save answers, submit a return, or ask for amounts, CNICs, or documents.</p>
+              <button className="official-resource-hub__print-toggle" type="button" onClick={() => setShowFreelancerChecklist((visible) => !visible)} aria-expanded={showFreelancerChecklist} aria-controls="freelancer-prefiling-print-sheet">{showFreelancerChecklist ? "Hide freelancer checklist" : "Open freelancer printable checklist"}</button>
+              {showFreelancerChecklist && (
+                <section id="freelancer-prefiling-print-sheet" className="official-resource-hub__print-sheet official-resource-hub__print-sheet--visible" aria-label="Printable freelancer pre-filing document checklist">
+                  <h2>Tax Return Saathi — Freelancer pre-filing checklist</h2>
+                  <p className="official-resource-hub__print-meta">Educational preparation aid · Check items that apply to you · Confirm current requirements on FBR IRIS before filing.</p>
+                  <p className="official-resource-hub__print-meta" lang="ur" dir="rtl">تعلیمی تیاری معاونت · متعلقہ اشیا پر نشان لگائیں · فائلنگ سے پہلے ایف بی آر آئرس پر موجودہ شرائط کی تصدیق کریں۔</p>
+                  <ul className="official-resource-hub__print-list">
+                    {FREELANCER_PRE_FILING_CHECKLIST.map((item) => (
+                      <li key={item.id}>
+                        <label className="official-resource-hub__check-label">
+                          <input type="checkbox" checked={Boolean(checkedItems[item.id])} onChange={() => toggleChecklistItem(item.id)} />
+                          <span>{item.label}<br /><span lang="ur" dir="rtl">{item.labelUrdu}</span></span>
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                  <button className="official-resource-hub__print-action" type="button" onClick={() => window.print()}>Print freelancer checklist</button>
+                </section>
               )}
             </section>
 

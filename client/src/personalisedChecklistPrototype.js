@@ -22,6 +22,7 @@ export const CHECKLIST_PROTOTYPE_QUESTIONS = [
       ["business", "Business or shop"],
       ["property", "Property rent or sale"],
       ["bank_profit", "Bank profit, investments, or dividends"],
+      ["freelancer", "Freelance work or independent client services"],
       ["other", "Other income or I am unsure"],
     ],
   },
@@ -46,6 +47,20 @@ export const CHECKLIST_PROTOTYPE_QUESTIONS = [
     urdu: "کیا آپ کے جائیداد سے متعلق ریکارڈ جائزے کے لیے تیار ہیں؟",
     hint: "This question appears only if you selected property rent or sale.",
     when: (answers) => answers.incomeCategories?.includes("property"),
+    options: [
+      ["ready", "Yes, they are ready"],
+      ["partly", "Partly ready"],
+      ["not_ready", "Not ready yet"],
+      ["not_sure", "I am not sure"],
+    ],
+  },
+  {
+    id: "freelancerRecords",
+    kind: "single",
+    title: "Are your freelance work and client-payment records ready to review?",
+    urdu: "کیا آپ کے فری لانس کام اور کلائنٹ ادائیگی کے ریکارڈ جائزے کے لیے تیار ہیں؟",
+    hint: "This preparation-only question appears only if you selected freelance work or independent client services.",
+    when: (answers) => answers.incomeCategories?.includes("freelancer"),
     options: [
       ["ready", "Yes, they are ready"],
       ["partly", "Partly ready"],
@@ -205,6 +220,12 @@ export function getPrototypeChecklist(answers) {
     items.push(item("property", "Income records", "Gather property-related records", "Prepare the relevant property-rent or sale records and supporting documents for review."));
     if (["partly", "not_ready", "not_sure"].includes(answers.propertyRecords)) {
       items.push(item("property-ready", "Income records", "Finish your property-record review", "Identify any missing property-related records before filing.", "review"));
+    }
+  }
+  if (categories.includes("freelancer")) {
+    items.push(item("freelancer", "Income records", "Organise freelance work and client-payment records", "Prepare a review set of client invoices, agreements or work evidence, relevant platform statements, and payment records. This checklist does not determine tax treatment."));
+    if (["partly", "not_ready", "not_sure"].includes(answers.freelancerRecords)) {
+      items.push(item("freelancer-ready", "Income records", "Finish your freelance-record review", "Identify missing client-work or payment records before you rely on the checklist output.", "review"));
     }
   }
   if (categories.includes("bank_profit")) {

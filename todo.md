@@ -79,3 +79,10 @@
 - [x] Add a separate bilingual freelancer section to the official resource hub with clearly sourced educational guidance and official links.
 - [x] Verify freelancer resources, responsive presentation, tests, and production build before publishing.
 - [x] Run and record the final freelancer-resource test suite and production build after the dedicated section changes.
+- [x] Research and verify authoritative resources for freelancer foreign-client payments, record keeping, and income-tax return preparation.
+- [x] Add a freelancer-specific printable pre-filing document checklist with no required personal data or server storage.
+- [x] Add a searchable educational FAQ for freelancer foreign-client payments and record keeping, with official support links where appropriate.
+- [x] Add an optional freelancer path to the adaptive filing checklist that provides preparation-only prompts without determining tax treatment.
+- [x] Verify the freelancer tools, responsive presentation, print behaviour, adaptive branching, tests, and production build before publishing.
+- [x] Exercise the freelancer path in the managed preview and record freelancer-specific preparation prompts without a tax-treatment determination.
+- [x] Run and record the final test suite and production build after the freelancer printable checklist, foreign-client FAQ, and adaptive-path changes.

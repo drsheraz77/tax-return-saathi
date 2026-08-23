@@ -22,6 +22,7 @@
 | Freelancer return preparation | [FBR: File Income Tax Return][5] | FBR directs first-time filers to register before accessing IRIS and provides the official filing-help topics used in the freelancer preparation card. |
 | PSEB freelancer membership | [PSEB / Tech Destination industry facilitation][11] | The official PSEB information page includes a freelancer category, its listed documents, and its current portal route. It is presented as an optional PSEB service, not as a replacement for FBR registration or a return. |
 | PSEB freelancer portal | [PSEB / Tech Destination member registration][12] | Official PSEB-hosted registration screen offering the freelancer registration pathway and its listed support contact. |
+| Freelancer record-keeping and foreign-client preparation | [FBR: File Income Tax Return][5] [FBR IRIS][6] [FBR: Record Keeping for Income Tax Return][10] | FBR’s filing-help index points users to record-keeping and privacy topics, while IRIS advises users to save work periodically. The freelancer FAQ and printable checklist therefore use neutral preparation prompts—such as retaining contract, invoice, payment, bank, platform, expense, and filed-return evidence—and explicitly avoid deciding the tax treatment of foreign-client income. |
 
 The displayed wording avoids promising an outcome or asserting that any linked process applies to every business. Users are told to confirm current requirements, fees, deadlines, and eligibility on the official portal before acting.
 

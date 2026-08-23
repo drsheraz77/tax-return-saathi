@@ -220,6 +220,49 @@ export const PRE_FILING_CHECKLIST = [
   { id: "records-copy", label: "Keep a copy of the submitted return and supporting records in line with current FBR record-keeping guidance.", labelUrdu: "موجودہ ایف بی آر ریکارڈ رکھنے کی رہنمائی کے مطابق جمع شدہ ریٹرن اور معاون ریکارڈ کی نقل محفوظ رکھیں۔" },
 ];
 
+export const FREELANCER_FAQ = [
+  {
+    id: "foreign-client-records",
+    question: "What records should I organise for payments from foreign clients?",
+    questionUrdu: "بیرونِ ملک کلائنٹس کی ادائیگیوں کے لیے مجھے کون سے ریکارڈ ترتیب دینے چاہییں؟",
+    answer: "For preparation, keep a review set of client invoices, agreements or work evidence, platform statements where relevant, and bank payment records. This guidance does not determine tax treatment; confirm current FBR guidance before filing.",
+    answerUrdu: "تیاری کے لیے کلائنٹ انوائسز، معاہدے یا کام کے ثبوت، جہاں متعلق ہو پلیٹ فارم اسٹیٹمنٹس، اور بینک ادائیگی کے ریکارڈ کا جائزہ سیٹ رکھیں۔ یہ رہنمائی ٹیکس ٹریٹمنٹ طے نہیں کرتی؛ فائلنگ سے پہلے موجودہ ایف بی آر رہنمائی کی تصدیق کریں۔",
+    url: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71159",
+    sourceLabel: "Open FBR filing help",
+    keywords: ["foreign", "client", "invoice", "payment", "bank", "record", "overseas"],
+  },
+  {
+    id: "foreign-client-treatment",
+    question: "Do payments from foreign clients automatically determine my tax treatment?",
+    questionUrdu: "کیا بیرونِ ملک کلائنٹس کی ادائیگیاں خود بخود میری ٹیکس ٹریٹمنٹ طے کرتی ہیں؟",
+    answer: "No conclusion is provided by this resource hub. Keep the relevant evidence, review current official guidance, and seek qualified advice where your facts need interpretation.",
+    answerUrdu: "یہ ریسورس ہب کوئی نتیجہ فراہم نہیں کرتا۔ متعلقہ ثبوت محفوظ رکھیں، موجودہ سرکاری رہنمائی دیکھیں، اور جہاں آپ کے حقائق کی تشریح درکار ہو اہل مشورہ لیں۔",
+    url: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71159",
+    sourceLabel: "Open FBR filing help",
+    keywords: ["foreign", "client", "treatment", "income", "advice"],
+  },
+  {
+    id: "freelancer-record-keeping",
+    question: "What should I keep after preparing or submitting a return?",
+    questionUrdu: "ریٹرن تیار یا جمع کرنے کے بعد مجھے کیا محفوظ رکھنا چاہیے؟",
+    answer: "Keep a copy of the submitted return and the supporting records you relied on, in line with current FBR record-keeping guidance. Do not share passwords, CNICs, account numbers, or documents with this site.",
+    answerUrdu: "جمع شدہ ریٹرن اور ان معاون ریکارڈ کی نقل محفوظ رکھیں جن پر آپ نے انحصار کیا، موجودہ ایف بی آر ریکارڈ رکھنے کی رہنمائی کے مطابق۔ اس سائٹ کے ساتھ پاس ورڈ، سی این آئی سی، اکاؤنٹ نمبرز یا دستاویزات شیئر نہ کریں۔",
+    url: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71159",
+    sourceLabel: "Open FBR filing help",
+    keywords: ["keep", "records", "submitted", "return", "freelancer", "evidence"],
+  },
+];
+
+export const FREELANCER_PRE_FILING_CHECKLIST = [
+  { id: "freelancer-iris", label: "Confirm that you can access official IRIS or the official account-recovery route.", labelUrdu: "تصدیق کریں کہ آپ سرکاری آئرس یا سرکاری اکاؤنٹ ریکوری راستے تک رسائی رکھتے ہیں۔" },
+  { id: "freelancer-profile", label: "Review your registration and contact details before you begin; do not enter information you cannot support.", labelUrdu: "شروع کرنے سے پہلے اپنی رجسٹریشن اور رابطے کی معلومات دیکھیں؛ ایسی معلومات درج نہ کریں جن کا ثبوت نہ ہو۔" },
+  { id: "freelancer-work", label: "Organise client invoices, agreements or work evidence, and any relevant platform statements.", labelUrdu: "کلائنٹ انوائسز، معاہدے یا کام کے ثبوت، اور متعلقہ پلیٹ فارم اسٹیٹمنٹس ترتیب دیں۔" },
+  { id: "freelancer-payments", label: "Keep bank payment records or other payment evidence that helps you review client receipts.", labelUrdu: "بینک ادائیگی کے ریکارڈ یا دوسرے ادائیگی ثبوت محفوظ رکھیں جو کلائنٹ وصولیوں کے جائزے میں مدد دیں۔" },
+  { id: "freelancer-withholding", label: "Gather any available tax-deduction or withholding records; confirm their relevance through official guidance.", labelUrdu: "دستیاب ٹیکس کٹوتی یا ودہولڈنگ ریکارڈ جمع کریں؛ سرکاری رہنمائی سے ان کی مطابقت کی تصدیق کریں۔" },
+  { id: "freelancer-copy", label: "Keep a copy of the submitted return and the supporting records you relied on.", labelUrdu: "جمع شدہ ریٹرن اور ان معاون ریکارڈ کی نقل محفوظ رکھیں جن پر آپ نے انحصار کیا۔" },
+  { id: "freelancer-guidance", label: "Keep FBR filing help available to confirm current IRIS steps, requirements, and record-keeping guidance.", labelUrdu: "موجودہ آئرس مراحل، شرائط اور ریکارڈ رکھنے کی رہنمائی کی تصدیق کے لیے ایف بی آر فائلنگ مدد دستیاب رکھیں۔" },
+];
+
 const OFFICIAL_HOSTS = new Set([
   "www.secp.gov.pk",
   "eservices.secp.gov.pk",
@@ -233,6 +276,10 @@ export function searchIrisFaq(query, faq = IRIS_FAQ) {
   const normalized = String(query || "").trim().toLocaleLowerCase();
   if (!normalized) return faq;
   return faq.filter((item) => [item.question, item.questionUrdu, item.answer, item.answerUrdu, ...item.keywords].join(" ").toLocaleLowerCase().includes(normalized));
+}
+
+export function searchFreelancerFaq(query, faq = FREELANCER_FAQ) {
+  return searchIrisFaq(query, faq);
 }
 
 export function validateOfficialResourceHub(hub = OFFICIAL_RESOURCE_HUB) {
@@ -257,12 +304,14 @@ export function validateOfficialResourceHub(hub = OFFICIAL_RESOURCE_HUB) {
   );
 }
 
-export function validateResourceTools(faq = IRIS_FAQ, checklist = PRE_FILING_CHECKLIST) {
-  return faq.every((item) => {
+export function validateResourceTools(faq = IRIS_FAQ, checklist = PRE_FILING_CHECKLIST, freelancerFaq = FREELANCER_FAQ, freelancerChecklist = FREELANCER_PRE_FILING_CHECKLIST) {
+  const isValidFaq = (items) => items.every((item) => {
     try {
       return item.id && item.question && item.questionUrdu && item.answer && item.answerUrdu && item.keywords.length > 0 && OFFICIAL_HOSTS.has(new URL(item.url).hostname);
     } catch {
       return false;
     }
-  }) && checklist.every((item) => item.id && item.label && item.labelUrdu);
+  });
+  const isValidChecklist = (items) => items.every((item) => item.id && item.label && item.labelUrdu);
+  return isValidFaq(faq) && isValidChecklist(checklist) && isValidFaq(freelancerFaq) && isValidChecklist(freelancerChecklist);
 }

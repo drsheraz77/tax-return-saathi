@@ -1,8 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
   IRIS_FAQ,
+  FREELANCER_FAQ,
+  FREELANCER_PRE_FILING_CHECKLIST,
   OFFICIAL_RESOURCE_HUB,
   PRE_FILING_CHECKLIST,
+  searchFreelancerFaq,
   searchIrisFaq,
   validateOfficialResourceHub,
   validateResourceTools,
@@ -33,11 +36,15 @@ describe("official resource hub", () => {
     expect(validateOfficialResourceHub(alteredHub)).toBe(false);
   });
 
-  it("provides searchable official IRIS help and a bilingual printable preparation checklist", () => {
+  it("provides searchable official IRIS and freelancer help plus bilingual printable preparation checklists", () => {
     expect(validateResourceTools()).toBe(true);
     expect(searchIrisFaq("password").map((item) => item.id)).toContain("password-reset");
     expect(searchIrisFaq("mobile").map((item) => item.id)).toContain("account-recovery");
     expect(searchIrisFaq("")).toHaveLength(IRIS_FAQ.length);
     expect(PRE_FILING_CHECKLIST).toHaveLength(7);
+    expect(searchFreelancerFaq("foreign client").map((item) => item.id)).toContain("foreign-client-records");
+    expect(searchFreelancerFaq("record").map((item) => item.id)).toContain("freelancer-record-keeping");
+    expect(FREELANCER_FAQ).toHaveLength(3);
+    expect(FREELANCER_PRE_FILING_CHECKLIST).toHaveLength(7);
   });
 });
