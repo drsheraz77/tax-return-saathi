@@ -69,3 +69,9 @@
 - [x] Add a bilingual official-resource hub with educational registration and return-preparation guidance, clearly separating official links from general preparation support.
 - [x] Verify resource links, accessibility, responsive UI, tests, and the production build before publishing.
 - [x] Refine the mobile resource-hub entry control so it does not overlap existing fixed checklist and Tax Year controls.
+- [x] Research and verify official sole-proprietor and AOP registration resources plus authoritative IRIS support references.
+- [x] Add bilingual sole-proprietor and AOP registration resources to the official resource hub.
+- [x] Add a searchable educational FAQ for common IRIS login and return-filing issues, linking users to official support where appropriate.
+- [x] Add a printable local pre-filing document checklist with no required personal data or server storage.
+- [x] Verify resource content, FAQ search, print output, responsive UI, tests, and production build before publishing.
+- [x] Run and record the final expanded resource-hub test suite and production build after all registration, FAQ, and printable-checklist changes.

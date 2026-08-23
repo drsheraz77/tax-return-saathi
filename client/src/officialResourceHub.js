@@ -38,6 +38,42 @@ export const OFFICIAL_RESOURCE_HUB = {
       ],
     },
     {
+      id: "business-forms",
+      title: "Sole proprietor & AOP registration",
+      titleUrdu: "واحد مالک اور اے او پی رجسٹریشن",
+      introduction: "Choose the official route that matches your legal form. Confirm current requirements directly with FBR before submitting information.",
+      introductionUrdu: "اپنی قانونی ساخت کے مطابق سرکاری راستہ منتخب کریں۔ معلومات جمع کرانے سے پہلے موجودہ شرائط براہِ راست ایف بی آر سے تصدیق کریں۔",
+      resources: [
+        {
+          id: "fbr-individual-sole-proprietor",
+          title: "Individual / sole-proprietor registration",
+          titleUrdu: "انفرادی / واحد مالک رجسٹریشن",
+          description: "FBR states that online registration is available for individuals; review the listed identity, contact, bank, and business-premises requirements before beginning.",
+          descriptionUrdu: "ایف بی آر کے مطابق آن لائن رجسٹریشن افراد کے لیے دستیاب ہے؛ شروع کرنے سے پہلے شناخت، رابطہ، بینک اور کاروباری جگہ کی درج شرائط دیکھیں۔",
+          url: "https://www.fbr.gov.pk/categ/register-income-tax/51147/30846/%2071150",
+          sourceLabel: "Open FBR individual registration guidance",
+        },
+        {
+          id: "fbr-aop-registration",
+          title: "AOP / partnership tax registration",
+          titleUrdu: "اے او پی / پارٹنرشپ ٹیکس رجسٹریشن",
+          description: "FBR lists a Tax House Facilitation Counter route for AOPs and specifies the partnership, authorization, member, bank, contact, and premises documents to review.",
+          descriptionUrdu: "ایف بی آر اے او پیز کے لیے ٹیکس ہاؤس فیسلیٹیشن کاؤنٹر کا راستہ اور پارٹنرشپ، اجازت، اراکین، بینک، رابطہ اور جگہ کے دستاویزات درج کرتا ہے۔",
+          url: "https://www.fbr.gov.pk/categ/register-income-tax/51147/30846/%2071150",
+          sourceLabel: "Open FBR AOP registration guidance",
+        },
+        {
+          id: "fbr-registration-basics",
+          title: "FBR registration basics",
+          titleUrdu: "ایف بی آر رجسٹریشن بنیادی معلومات",
+          description: "Review FBR’s explanation of e-enrolment, registration numbers, and access to the IRIS income-tax system.",
+          descriptionUrdu: "ای انرولمنٹ، رجسٹریشن نمبرز اور آئرس انکم ٹیکس نظام تک رسائی کی ایف بی آر وضاحت دیکھیں۔",
+          url: "https://www.fbr.gov.pk/categ/register-income-tax/51147/30846/71148",
+          sourceLabel: "Open FBR registration basics",
+        },
+      ],
+    },
+    {
       id: "filing",
       title: "Income-tax return preparation",
       titleUrdu: "انکم ٹیکس ریٹرن کی تیاری",
@@ -76,12 +112,81 @@ export const OFFICIAL_RESOURCE_HUB = {
   ],
 };
 
+export const IRIS_FAQ = [
+  {
+    id: "password-reset",
+    question: "I cannot remember my IRIS password. What can I do?",
+    questionUrdu: "مجھے آئرس پاس ورڈ یاد نہیں۔ میں کیا کروں؟",
+    answer: "Use the official “Forgot Password” option on the IRIS login screen. FBR says the reset process sends codes to the registered email address and mobile number.",
+    answerUrdu: "آئرس لاگ اِن اسکرین پر سرکاری “Forgot Password” اختیار استعمال کریں۔ ایف بی آر کے مطابق ری سیٹ عمل رجسٹرڈ ای میل اور موبائل نمبر پر کوڈز بھیجتا ہے۔",
+    url: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71159",
+    sourceLabel: "Open FBR password help",
+    keywords: ["password", "forgot", "reset", "login", "code"],
+  },
+  {
+    id: "account-recovery",
+    question: "I no longer have my registered mobile number or email. How do I recover IRIS access?",
+    questionUrdu: "میرے پاس رجسٹرڈ موبائل نمبر یا ای میل نہیں رہا۔ آئرس رسائی کیسے بحال کروں؟",
+    answer: "Use FBR IRIS Account Recovery rather than repeatedly attempting login. The official recovery page distinguishes password reset from account recovery where registered contact access is unavailable.",
+    answerUrdu: "بار بار لاگ اِن کوشش کرنے کے بجائے ایف بی آر آئرس اکاؤنٹ ریکوری استعمال کریں۔ سرکاری صفحہ پاس ورڈ ری سیٹ اور رجسٹرڈ رابطے تک رسائی نہ ہونے کی صورت میں اکاؤنٹ ریکوری کو الگ کرتا ہے۔",
+    url: "https://iris.fbr.gov.pk/recovery-selection",
+    sourceLabel: "Open FBR IRIS account recovery",
+    keywords: ["recovery", "mobile", "email", "phone", "access", "contact"],
+  },
+  {
+    id: "first-time-access",
+    question: "I am new to tax filing. Where do I start?",
+    questionUrdu: "میں ٹیکس فائلنگ میں نیا ہوں۔ کہاں سے شروع کروں؟",
+    answer: "Review FBR’s registration basics and requirements first. The official page explains e-enrolment and the credentials used to access IRIS; this tool does not create an account for you.",
+    answerUrdu: "پہلے ایف بی آر کی رجسٹریشن بنیادی معلومات اور شرائط دیکھیں۔ سرکاری صفحہ ای انرولمنٹ اور آئرس تک رسائی کے لیے اسناد کی وضاحت کرتا ہے؛ یہ ٹول آپ کے لیے اکاؤنٹ نہیں بناتا۔",
+    url: "https://www.fbr.gov.pk/categ/register-income-tax/51147/30846/71148",
+    sourceLabel: "Open FBR registration basics",
+    keywords: ["first", "new", "register", "ntn", "enrolment", "start"],
+  },
+  {
+    id: "filing-help",
+    question: "I am unsure how to complete or submit a return in IRIS. Where can I get official help?",
+    questionUrdu: "مجھے آئرس میں ریٹرن مکمل یا جمع کرنے کا طریقہ واضح نہیں۔ سرکاری مدد کہاں ملے گی؟",
+    answer: "Use FBR’s filing-help index for the official topics on logging in, completing, revising, late filing, record keeping, and privacy. Confirm the current portal steps before submitting.",
+    answerUrdu: "لاگ اِن، مکمل کرنے، ترمیم، دیر سے فائلنگ، ریکارڈ رکھنے اور رازداری کے سرکاری موضوعات کے لیے ایف بی آر کا فائلنگ مدد انڈیکس استعمال کریں۔ جمع کرنے سے پہلے موجودہ پورٹل مراحل کی تصدیق کریں۔",
+    url: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71159",
+    sourceLabel: "Open FBR filing-help index",
+    keywords: ["submit", "complete", "file", "return", "revise", "late"],
+  },
+  {
+    id: "tutorials",
+    question: "Where can I find official return-filing tutorials?",
+    questionUrdu: "سرکاری ریٹرن فائلنگ ٹیوٹوریلز کہاں ملیں گے؟",
+    answer: "Use FBR’s income-tax-return video-tutorial page. Treat a tutorial as preparation support and verify the current IRIS screen and filing requirements before acting.",
+    answerUrdu: "ایف بی آر کا انکم ٹیکس ریٹرن ویڈیو ٹیوٹوریل صفحہ استعمال کریں۔ ٹیوٹوریل کو تیاری معاونت سمجھیں اور عمل سے پہلے موجودہ آئرس اسکرین اور فائلنگ شرائط کی تصدیق کریں۔",
+    url: "https://www.fbr.gov.pk/video-tutorials-income-tax-return-filing/132186",
+    sourceLabel: "Open FBR video tutorials",
+    keywords: ["tutorial", "video", "guide", "learn", "help"],
+  },
+];
+
+export const PRE_FILING_CHECKLIST = [
+  { id: "iris-access", label: "Confirm that you can access your official IRIS account or the official recovery route.", labelUrdu: "تصدیق کریں کہ آپ اپنے سرکاری آئرس اکاؤنٹ یا سرکاری ریکوری راستے تک رسائی رکھتے ہیں۔" },
+  { id: "registration-details", label: "Review your registration, contact, and bank-account details for accuracy before starting.", labelUrdu: "شروع کرنے سے پہلے اپنی رجسٹریشن، رابطہ اور بینک اکاؤنٹ کی معلومات کی درستگی دیکھیں۔" },
+  { id: "income-records", label: "Gather income and withholding records that apply to your situation; do not enter figures until you can support them.", labelUrdu: "اپنی صورتِ حال سے متعلق آمدن اور ودہولڈنگ ریکارڈ جمع کریں؛ ثبوت کے بغیر اعداد درج نہ کریں۔" },
+  { id: "business-records", label: "If you have a business, assemble relevant business-premises, bank, and supporting records.", labelUrdu: "اگر آپ کا کاروبار ہے تو متعلقہ کاروباری جگہ، بینک اور معاون ریکارڈ جمع کریں۔" },
+  { id: "assets-liabilities", label: "Review the information you may need for the applicable return and wealth-statement workflow.", labelUrdu: "قابلِ اطلاق ریٹرن اور ویلتھ اسٹیٹمنٹ ورک فلو کے لیے درکار معلومات کا جائزہ لیں۔" },
+  { id: "official-guidance", label: "Keep the official FBR filing-help page open so you can confirm current portal guidance.", labelUrdu: "سرکاری ایف بی آر فائلنگ مدد صفحہ کھلا رکھیں تاکہ موجودہ پورٹل رہنمائی کی تصدیق کر سکیں۔" },
+  { id: "records-copy", label: "Keep a copy of the submitted return and supporting records in line with current FBR record-keeping guidance.", labelUrdu: "موجودہ ایف بی آر ریکارڈ رکھنے کی رہنمائی کے مطابق جمع شدہ ریٹرن اور معاون ریکارڈ کی نقل محفوظ رکھیں۔" },
+];
+
 const OFFICIAL_HOSTS = new Set([
   "www.secp.gov.pk",
   "eservices.secp.gov.pk",
   "www.fbr.gov.pk",
   "iris.fbr.gov.pk",
 ]);
+
+export function searchIrisFaq(query, faq = IRIS_FAQ) {
+  const normalized = String(query || "").trim().toLocaleLowerCase();
+  if (!normalized) return faq;
+  return faq.filter((item) => [item.question, item.questionUrdu, item.answer, item.answerUrdu, ...item.keywords].join(" ").toLocaleLowerCase().includes(normalized));
+}
 
 export function validateOfficialResourceHub(hub = OFFICIAL_RESOURCE_HUB) {
   return hub.sections.every((section) =>
@@ -103,4 +208,14 @@ export function validateOfficialResourceHub(hub = OFFICIAL_RESOURCE_HUB) {
       }
     }),
   );
+}
+
+export function validateResourceTools(faq = IRIS_FAQ, checklist = PRE_FILING_CHECKLIST) {
+  return faq.every((item) => {
+    try {
+      return item.id && item.question && item.questionUrdu && item.answer && item.answerUrdu && item.keywords.length > 0 && OFFICIAL_HOSTS.has(new URL(item.url).hostname);
+    } catch {
+      return false;
+    }
+  }) && checklist.every((item) => item.id && item.label && item.labelUrdu);
 }

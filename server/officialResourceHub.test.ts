@@ -1,16 +1,31 @@
 import { describe, expect, it } from "vitest";
-import { OFFICIAL_RESOURCE_HUB, validateOfficialResourceHub } from "../client/src/officialResourceHub.js";
+import {
+  IRIS_FAQ,
+  OFFICIAL_RESOURCE_HUB,
+  PRE_FILING_CHECKLIST,
+  searchIrisFaq,
+  validateOfficialResourceHub,
+  validateResourceTools,
+} from "../client/src/officialResourceHub.js";
 
 describe("official resource hub", () => {
   it("contains complete bilingual resources on official SECP and FBR hosts", () => {
     expect(validateOfficialResourceHub()).toBe(true);
-    expect(OFFICIAL_RESOURCE_HUB.sections.map((section) => section.id)).toEqual(["company", "filing"]);
-    expect(OFFICIAL_RESOURCE_HUB.sections.flatMap((section) => section.resources)).toHaveLength(6);
+    expect(OFFICIAL_RESOURCE_HUB.sections.map((section) => section.id)).toEqual(["company", "business-forms", "filing"]);
+    expect(OFFICIAL_RESOURCE_HUB.sections.flatMap((section) => section.resources)).toHaveLength(9);
   });
 
   it("rejects a resource that does not use an approved official source host", () => {
     const alteredHub = structuredClone(OFFICIAL_RESOURCE_HUB);
     alteredHub.sections[0].resources[0].url = "https://example.com/not-official";
     expect(validateOfficialResourceHub(alteredHub)).toBe(false);
+  });
+
+  it("provides searchable official IRIS help and a bilingual printable preparation checklist", () => {
+    expect(validateResourceTools()).toBe(true);
+    expect(searchIrisFaq("password").map((item) => item.id)).toContain("password-reset");
+    expect(searchIrisFaq("mobile").map((item) => item.id)).toContain("account-recovery");
+    expect(searchIrisFaq("")).toHaveLength(IRIS_FAQ.length);
+    expect(PRE_FILING_CHECKLIST).toHaveLength(7);
   });
 });
