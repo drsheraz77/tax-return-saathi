@@ -75,3 +75,7 @@
 - [x] Add a printable local pre-filing document checklist with no required personal data or server storage.
 - [x] Verify resource content, FAQ search, print output, responsive UI, tests, and production build before publishing.
 - [x] Run and record the final expanded resource-hub test suite and production build after all registration, FAQ, and printable-checklist changes.
+- [x] Research and verify official Pakistan resources relevant to freelancers’ tax registration, IRIS access, and return preparation.
+- [x] Add a separate bilingual freelancer section to the official resource hub with clearly sourced educational guidance and official links.
+- [x] Verify freelancer resources, responsive presentation, tests, and production build before publishing.
+- [x] Run and record the final freelancer-resource test suite and production build after the dedicated section changes.

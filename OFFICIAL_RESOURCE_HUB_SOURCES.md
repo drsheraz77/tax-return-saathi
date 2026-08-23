@@ -18,6 +18,10 @@
 | IRIS account recovery | [FBR IRIS Account Recovery][8] | The official IRIS recovery page distinguishes a password reset from account recovery where registered contact access is unavailable. |
 | Filing tutorials | [FBR income-tax-return video tutorials][9] | Official FBR tutorial page is offered as preparation support, not a substitute for current portal requirements. |
 | Printable pre-filing checklist | [FBR filing help][5] [FBR record-keeping guidance][10] | The printable checklist is a general local preparation aid; its wording directs users to confirm applicable information and retain records in line with official FBR guidance. |
+| Freelancer income-tax registration | [FBR: Registration process][7] | FBR makes the online registration route available to individuals and sets out the contact, bank, and—where relevant—business-premises information to review before registering. The app does not characterize a freelancer’s income or tax position. |
+| Freelancer return preparation | [FBR: File Income Tax Return][5] | FBR directs first-time filers to register before accessing IRIS and provides the official filing-help topics used in the freelancer preparation card. |
+| PSEB freelancer membership | [PSEB / Tech Destination industry facilitation][11] | The official PSEB information page includes a freelancer category, its listed documents, and its current portal route. It is presented as an optional PSEB service, not as a replacement for FBR registration or a return. |
+| PSEB freelancer portal | [PSEB / Tech Destination member registration][12] | Official PSEB-hosted registration screen offering the freelancer registration pathway and its listed support contact. |
 
 The displayed wording avoids promising an outcome or asserting that any linked process applies to every business. Users are told to confirm current requirements, fees, deadlines, and eligibility on the official portal before acting.
 
@@ -33,3 +37,5 @@ The displayed wording avoids promising an outcome or asserting that any linked p
 [8]: https://iris.fbr.gov.pk/recovery-selection "FBR IRIS — Account Recovery"
 [9]: https://www.fbr.gov.pk/video-tutorials-income-tax-return-filing/132186 "FBR — Income Tax Return Filing Video Tutorials"
 [10]: https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/%2071163 "FBR — Record Keeping for Income Tax Return"
+[11]: https://techdestination.com/industry-facilitation/ "PSEB / Tech Destination — Industry Facilitation"
+[12]: https://portal.techdestination.com/auth/register "PSEB / Tech Destination — New Member Registration"

@@ -74,6 +74,51 @@ export const OFFICIAL_RESOURCE_HUB = {
       ],
     },
     {
+      id: "freelancers",
+      title: "Freelancer registration & return preparation",
+      titleUrdu: "فری لانسر رجسٹریشن اور ریٹرن تیاری",
+      introduction: "Use these official resources to prepare for registration and return filing as an individual freelancer. They do not determine your tax treatment, exemption, or eligibility.",
+      introductionUrdu: "ان سرکاری وسائل کو انفرادی فری لانسر کے طور پر رجسٹریشن اور ریٹرن فائلنگ کی تیاری کے لیے استعمال کریں۔ یہ آپ کی ٹیکس نوعیت، استثنا یا اہلیت کا تعین نہیں کرتے۔",
+      resources: [
+        {
+          id: "fbr-freelancer-individual-registration",
+          title: "FBR individual registration for freelancers",
+          titleUrdu: "فری لانسرز کے لیے ایف بی آر انفرادی رجسٹریشن",
+          description: "FBR provides an online registration route for individuals. Before starting, review the current identity, contact, bank, and—where relevant—business-premises information listed by FBR.",
+          descriptionUrdu: "ایف بی آر افراد کے لیے آن لائن رجسٹریشن کا راستہ فراہم کرتا ہے۔ شروع کرنے سے پہلے ایف بی آر کی موجودہ شناخت، رابطہ، بینک اور—جہاں متعلق ہو—کاروباری جگہ کی درج معلومات دیکھیں۔",
+          url: "https://www.fbr.gov.pk/categ/register-income-tax/51147/30846/%2071150",
+          sourceLabel: "Open FBR individual registration guidance",
+        },
+        {
+          id: "fbr-freelancer-return-help",
+          title: "FBR IRIS return-filing help",
+          titleUrdu: "ایف بی آر آئرس ریٹرن فائلنگ مدد",
+          description: "FBR’s filing-help page covers official registration, IRIS access, return-completion, record-keeping, and account-support routes. Confirm the current portal requirements before filing.",
+          descriptionUrdu: "ایف بی آر کا فائلنگ مدد صفحہ سرکاری رجسٹریشن، آئرس رسائی، ریٹرن مکمل کرنے، ریکارڈ رکھنے اور اکاؤنٹ مدد کے راستوں کا احاطہ کرتا ہے۔ فائلنگ سے پہلے موجودہ پورٹل شرائط کی تصدیق کریں۔",
+          url: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71159",
+          sourceLabel: "Open FBR filing help",
+        },
+        {
+          id: "pseb-freelancer-membership",
+          title: "PSEB freelancer membership information",
+          titleUrdu: "پی ایس ای بی فری لانسر ممبرشپ معلومات",
+          description: "PSEB’s Tech Destination page describes its freelancer category, listed documents, and portal route. This optional service does not replace FBR registration or an income-tax return.",
+          descriptionUrdu: "پی ایس ای بی کا ٹیک ڈیسٹینیشن صفحہ فری لانسر زمرہ، درج دستاویزات اور پورٹل راستہ بیان کرتا ہے۔ یہ اختیاری سروس ایف بی آر رجسٹریشن یا انکم ٹیکس ریٹرن کا متبادل نہیں ہے۔",
+          url: "https://techdestination.com/industry-facilitation/",
+          sourceLabel: "Open PSEB freelancer information",
+        },
+        {
+          id: "pseb-freelancer-registration-portal",
+          title: "PSEB freelancer registration portal",
+          titleUrdu: "پی ایس ای بی فری لانسر رجسٹریشن پورٹل",
+          description: "Use PSEB’s official member-registration portal to review the freelancer pathway and its current support information. Confirm the latest eligibility and fee details directly there.",
+          descriptionUrdu: "فری لانسر راستہ اور موجودہ معاونتی معلومات دیکھنے کے لیے پی ایس ای بی کا سرکاری ممبر رجسٹریشن پورٹل استعمال کریں۔ تازہ ترین اہلیت اور فیس کی تفصیلات وہیں سے تصدیق کریں۔",
+          url: "https://portal.techdestination.com/auth/register",
+          sourceLabel: "Open PSEB registration portal",
+        },
+      ],
+    },
+    {
       id: "filing",
       title: "Income-tax return preparation",
       titleUrdu: "انکم ٹیکس ریٹرن کی تیاری",
@@ -180,6 +225,8 @@ const OFFICIAL_HOSTS = new Set([
   "eservices.secp.gov.pk",
   "www.fbr.gov.pk",
   "iris.fbr.gov.pk",
+  "techdestination.com",
+  "portal.techdestination.com",
 ]);
 
 export function searchIrisFaq(query, faq = IRIS_FAQ) {
