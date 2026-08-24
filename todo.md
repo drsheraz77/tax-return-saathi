@@ -111,4 +111,4 @@
 - [x] Record the mobile investment-record-path evidence, including privacy and non-recommendation boundaries.
 - [x] Re-read the recorded 375 × 812 mobile investment-record evidence to confirm the persisted bilingual, privacy, and non-tax-treatment details.
 - [x] Re-read the final investment-record verification log to confirm the persisted 21-test and production-build evidence.
-- [ ] Save a new checkpoint publishing the verified investment-to-filing preparation enhancement.
+- [x] Save a new checkpoint publishing the verified investment-to-filing preparation enhancement.
