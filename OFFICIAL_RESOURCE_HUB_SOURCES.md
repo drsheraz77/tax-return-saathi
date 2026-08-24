@@ -1,8 +1,8 @@
 # Official Resource Hub: Source Review
 
-**Reviewed:** 22 August 2026  
-**Scope:** Company registration, sole-proprietor and AOP tax-registration, IRIS troubleshooting, and income-tax-return preparation resources shown in Tax Return Saathi.  
-**Editorial boundary:** This hub links users to official services and describes preparation steps at a high level. It does not collect personal data, submit applications, decide a tax position, or replace regulated professional advice.
+**Reviewed:** 24 August 2026  
+**Scope:** Company registration, sole-proprietor and AOP tax-registration, IRIS troubleshooting, income-tax-return preparation, and neutral investments-education resources shown in Tax Return Saathi.  
+**Editorial boundary:** This hub links users to official services and describes preparation or learning steps at a high level. It does not collect personal data, submit applications, decide a tax position, recommend an investment, assess suitability, or replace regulated professional advice.
 
 | Topic | Resource selected for the app | Reason for inclusion |
 |---|---|---|
@@ -23,6 +23,10 @@
 | PSEB freelancer membership | [PSEB / Tech Destination industry facilitation][11] | The official PSEB information page includes a freelancer category, its listed documents, and its current portal route. It is presented as an optional PSEB service, not as a replacement for FBR registration or a return. |
 | PSEB freelancer portal | [PSEB / Tech Destination member registration][12] | Official PSEB-hosted registration screen offering the freelancer registration pathway and its listed support contact. |
 | Freelancer record-keeping and foreign-client preparation | [FBR: File Income Tax Return][5] [FBR IRIS][6] [FBR: Record Keeping for Income Tax Return][10] | FBR’s filing-help index points users to record-keeping and privacy topics, while IRIS advises users to save work periodically. The freelancer FAQ and printable checklist therefore use neutral preparation prompts—such as retaining contract, invoice, payment, bank, platform, expense, and filed-return evidence—and explicitly avoid deciding the tax treatment of foreign-client income. |
+| Fixed-term savings accounts and certificates | [National Savings Pakistan: Products][13] | Used as an official product-list reference only. The hub does not quote current rates, maturity terms, eligibility, or recommend a product. |
+| Stocks and investor learning | [Pakistan Stock Exchange: Financial Literacy Initiative][14] | Used for PSX public education on investment basics, stock-market learning, broker selection, and account security. The hub does not advise on a purchase or suitability. |
+| ETFs | [Pakistan Stock Exchange: Exchange Traded Funds][15] | Used for the neutral explanation that ETFs may provide equity or fixed-income exposure and aim to track a benchmark. The hub directs users to current fund documentation, fees, holdings, and risks. |
+| Government securities and bonds | [State Bank of Pakistan: InvestPak][16] | Used as an official public reference for Pakistan government securities and investor access. The hub does not quote yields or assess suitability. |
 
 The displayed wording avoids promising an outcome or asserting that any linked process applies to every business. Users are told to confirm current requirements, fees, deadlines, and eligibility on the official portal before acting.
 
@@ -40,3 +44,7 @@ The displayed wording avoids promising an outcome or asserting that any linked p
 [10]: https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/%2071163 "FBR — Record Keeping for Income Tax Return"
 [11]: https://techdestination.com/industry-facilitation/ "PSEB / Tech Destination — Industry Facilitation"
 [12]: https://portal.techdestination.com/auth/register "PSEB / Tech Destination — New Member Registration"
+[13]: https://savings.gov.pk/products/ "National Savings Pakistan — Products"
+[14]: https://www.psx.com.pk/psx/resources-and-tools/investors/financial-literacy-initiative "Pakistan Stock Exchange — Financial Literacy Initiative"
+[15]: https://www.psx.com.pk/psx/product-and-services/products/exchange-traded-funds-etfs "Pakistan Stock Exchange — Exchange Traded Funds"
+[16]: https://investpak.sbp.org.pk/what_is_government_bond/pages "State Bank of Pakistan — InvestPak"

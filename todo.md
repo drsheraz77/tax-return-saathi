@@ -97,3 +97,9 @@
 - [x] Check public DNS and HTTPS behavior for taxinformation.org and www.taxinformation.org.
 - [x] Identify the safe registrar DNS or URL-forwarding correction for the apex domain without changing the working www record.
 - [x] Provide the verified apex-domain resolution steps and propagation checks to the user.
+- [x] Research authoritative Pakistan-facing educational sources for fixed-income accounts, stocks, ETFs, and bonds.
+- [x] Add a separate bilingual investments education section outside App.jsx, covering fixed-income accounts, stocks, ETFs, and bonds with neutral risk and suitability wording.
+- [x] Add source-backed unit coverage and verify the new investment section’s desktop and mobile interactions without investment recommendations.
+- [x] Run the final tests and production build, then publish the verified investments-section enhancement.
+- [x] Inspect the updated investment resource-hub test assertions and rerun the test suite to confirm official-link coverage.
+- [x] Perform and record an explicit 375 × 812 mobile interaction check for the investment resources control and accordion.

@@ -12,10 +12,10 @@ import {
 } from "../client/src/officialResourceHub.js";
 
 describe("official resource hub", () => {
-  it("contains complete bilingual resources on official SECP and FBR hosts", () => {
+  it("contains complete bilingual resources on approved official hosts", () => {
     expect(validateOfficialResourceHub()).toBe(true);
-    expect(OFFICIAL_RESOURCE_HUB.sections.map((section) => section.id)).toEqual(["company", "business-forms", "freelancers", "filing"]);
-    expect(OFFICIAL_RESOURCE_HUB.sections.flatMap((section) => section.resources)).toHaveLength(13);
+    expect(OFFICIAL_RESOURCE_HUB.sections.map((section) => section.id)).toEqual(["company", "business-forms", "freelancers", "investments", "filing"]);
+    expect(OFFICIAL_RESOURCE_HUB.sections.flatMap((section) => section.resources)).toHaveLength(17);
   });
 
   it("keeps freelancer guidance in a distinct official-source section", () => {
@@ -28,6 +28,19 @@ describe("official resource hub", () => {
       "pseb-freelancer-registration-portal",
     ]);
     expect(freelancerSection?.resources.every((resource) => resource.titleUrdu && resource.descriptionUrdu)).toBe(true);
+  });
+
+  it("keeps fixed-term accounts, stocks, ETFs, and bonds in a distinct neutral education section", () => {
+    const investmentsSection = OFFICIAL_RESOURCE_HUB.sections.find((section) => section.id === "investments");
+    expect(investmentsSection).toBeDefined();
+    expect(investmentsSection?.resources.map((resource) => resource.id)).toEqual([
+      "national-savings-fixed-term-products",
+      "psx-stock-market-learning",
+      "psx-etf-learning",
+      "sbp-government-bonds",
+    ]);
+    expect(investmentsSection?.introduction).toMatch(/does not recommend an investment/i);
+    expect(investmentsSection?.resources.every((resource) => resource.titleUrdu && resource.descriptionUrdu)).toBe(true);
   });
 
   it("rejects a resource that does not use an approved official source host", () => {

@@ -1,5 +1,5 @@
 export const OFFICIAL_RESOURCE_HUB = {
-  reviewedOn: "22 August 2026",
+  reviewedOn: "24 August 2026",
   sections: [
     {
       id: "company",
@@ -115,6 +115,51 @@ export const OFFICIAL_RESOURCE_HUB = {
           descriptionUrdu: "فری لانسر راستہ اور موجودہ معاونتی معلومات دیکھنے کے لیے پی ایس ای بی کا سرکاری ممبر رجسٹریشن پورٹل استعمال کریں۔ تازہ ترین اہلیت اور فیس کی تفصیلات وہیں سے تصدیق کریں۔",
           url: "https://portal.techdestination.com/auth/register",
           sourceLabel: "Open PSEB registration portal",
+        },
+      ],
+    },
+    {
+      id: "investments",
+      title: "Investment education: fixed-term accounts, stocks, ETFs & bonds",
+      titleUrdu: "سرمایہ کاری کی معلومات: مدت والے اکاؤنٹس، شیئرز، ای ٹی ایف اور بانڈز",
+      introduction: "Compare features, risks, access conditions, fees, and current official terms before acting. This educational section does not recommend an investment, predict returns, or assess personal suitability or tax treatment.",
+      introductionUrdu: "عمل کرنے سے پہلے خصوصیات، خطرات، رسائی کی شرائط، فیس اور موجودہ سرکاری شرائط کا موازنہ کریں۔ یہ تعلیمی حصہ کسی سرمایہ کاری کی سفارش، منافع کی پیش گوئی، ذاتی موزونیت یا ٹیکس ٹریٹمنٹ کا جائزہ نہیں دیتا۔",
+      resources: [
+        {
+          id: "national-savings-fixed-term-products",
+          title: "Fixed-term savings accounts & certificates",
+          titleUrdu: "مدت والے بچت اکاؤنٹس اور سرٹیفکیٹس",
+          description: "Use National Savings’ official product list to review available public savings accounts and certificates. Check current terms, eligibility, access rules, and rates directly with the provider; they can change.",
+          descriptionUrdu: "دستیاب سرکاری بچت اکاؤنٹس اور سرٹیفکیٹس دیکھنے کے لیے نیشنل سیونگز کی سرکاری مصنوعات کی فہرست استعمال کریں۔ موجودہ شرائط، اہلیت، رسائی کے قواعد اور ریٹس براہِ راست فراہم کنندہ سے دیکھیں؛ یہ بدل سکتے ہیں۔",
+          url: "https://savings.gov.pk/products/",
+          sourceLabel: "Open National Savings products",
+        },
+        {
+          id: "psx-stock-market-learning",
+          title: "Stocks: PSX financial-literacy resources",
+          titleUrdu: "شیئرز: پی ایس ایکس مالیاتی آگاہی وسائل",
+          description: "PSX’s financial-literacy initiative covers investment basics, stock-market learning, broker selection, account security, and investor considerations. Use official educational material before opening or operating an account.",
+          descriptionUrdu: "پی ایس ایکس کی مالیاتی آگاہی مہم سرمایہ کاری کی بنیادی باتوں، شیئر مارکیٹ سیکھنے، بروکر کے انتخاب، اکاؤنٹ سکیورٹی اور سرمایہ کار کے غور طلب امور کا احاطہ کرتی ہے۔ اکاؤنٹ کھولنے یا استعمال کرنے سے پہلے سرکاری تعلیمی مواد دیکھیں۔",
+          url: "https://www.psx.com.pk/psx/resources-and-tools/investors/financial-literacy-initiative",
+          sourceLabel: "Open PSX financial-literacy resources",
+        },
+        {
+          id: "psx-etf-learning",
+          title: "ETFs: Pakistan Stock Exchange overview",
+          titleUrdu: "ای ٹی ایف: پاکستان اسٹاک ایکسچینج کا تعارف",
+          description: "PSX explains that an exchange-traded fund may provide equity or fixed-income exposure and aims to track a specified benchmark index. Review the fund’s current documents, fees, holdings, and market risks before acting.",
+          descriptionUrdu: "پی ایس ایکس بتاتا ہے کہ ایکسچینج ٹریڈڈ فنڈ ایکویٹی یا فکسڈ انکم ایکسپوژر فراہم کر سکتا ہے اور مخصوص بینچ مارک انڈیکس کو ٹریک کرنے کا ہدف رکھتا ہے۔ عمل سے پہلے فنڈ کے موجودہ دستاویزات، فیس، ہولڈنگز اور مارکیٹ خطرات دیکھیں۔",
+          url: "https://www.psx.com.pk/psx/product-and-services/products/exchange-traded-funds-etfs",
+          sourceLabel: "Open PSX ETF overview",
+        },
+        {
+          id: "sbp-government-bonds",
+          title: "Bonds: SBP InvestPak government-securities information",
+          titleUrdu: "بانڈز: ایس بی پی انویسٹ پاک سرکاری سیکیورٹیز معلومات",
+          description: "Use State Bank of Pakistan’s InvestPak pages to understand Pakistan government securities and the current official investor pathway. Review the current terms, risks, access process, and any early-exit conditions directly there.",
+          descriptionUrdu: "پاکستانی سرکاری سیکیورٹیز اور موجودہ سرکاری سرمایہ کار راستہ سمجھنے کے لیے اسٹیٹ بینک آف پاکستان کے انویسٹ پاک صفحات استعمال کریں۔ موجودہ شرائط، خطرات، رسائی کا عمل اور قبل از وقت اخراج کی کسی بھی شرط کو براہِ راست وہیں دیکھیں۔",
+          url: "https://investpak.sbp.org.pk/what_is_government_bond/pages",
+          sourceLabel: "Open SBP InvestPak bond information",
         },
       ],
     },
@@ -270,6 +315,9 @@ const OFFICIAL_HOSTS = new Set([
   "iris.fbr.gov.pk",
   "techdestination.com",
   "portal.techdestination.com",
+  "savings.gov.pk",
+  "www.psx.com.pk",
+  "investpak.sbp.org.pk",
 ]);
 
 export function searchIrisFaq(query, faq = IRIS_FAQ) {

@@ -19,7 +19,7 @@ export default function OfficialResourceHub() {
   }
 
   return (
-    <aside className="official-resource-hub" aria-label="Official company registration and tax filing resources">
+    <aside className="official-resource-hub" aria-label="Official registration, tax filing, and investment education resources">
       <style>{`
         .official-resource-hub { position: fixed; z-index: 60; left: 16px; bottom: 78px; font-family: Georgia, 'Times New Roman', serif; }
         .official-resource-hub__toggle { display: flex; align-items: center; gap: 8px; border: 1px solid #b99116; border-radius: 999px; background: #fffdf2; color: #0B3D2E; box-shadow: 0 8px 24px rgba(11, 61, 46, .18); cursor: pointer; padding: 10px 14px; font: 700 14px/1.2 inherit; }
@@ -70,13 +70,15 @@ export default function OfficialResourceHub() {
           <header className="official-resource-hub__header">
             <div>
               <p className="official-resource-hub__eyebrow">Official-resource desk · reviewed {OFFICIAL_RESOURCE_HUB.reviewedOn}</p>
-              <h2 className="official-resource-hub__title">Registration & filing resources<br /><span lang="ur" dir="rtl">رجسٹریشن اور فائلنگ وسائل</span></h2>
+              <h2 className="official-resource-hub__title">Registration, filing & investment resources<br /><span lang="ur" dir="rtl">رجسٹریشن، فائلنگ اور سرمایہ کاری وسائل</span></h2>
             </div>
             <button className="official-resource-hub__close" type="button" onClick={() => setIsOpen(false)} aria-label="Close registration and filing resources">×</button>
           </header>
           <div className="official-resource-hub__body">
             <p className="official-resource-hub__boundary"><strong>Educational support only.</strong> This hub links to official services and helps you prepare; it does not register a business, submit a return, or determine your tax position.</p>
             <p className="official-resource-hub__boundary" lang="ur" dir="rtl"><strong>صرف تعلیمی معاونت۔</strong> یہ حصہ سرکاری سروسز کے لنکس اور تیاری میں مدد دیتا ہے؛ یہ کاروبار رجسٹر، ریٹرن جمع یا آپ کی ٹیکس پوزیشن طے نہیں کرتا۔</p>
+            <p className="official-resource-hub__boundary"><strong>Investment education only.</strong> The investments section does not recommend a product, estimate returns, or decide what is suitable for you.</p>
+            <p className="official-resource-hub__boundary" lang="ur" dir="rtl"><strong>صرف سرمایہ کاری کی معلومات۔</strong> سرمایہ کاری والا حصہ کسی پراڈکٹ کی سفارش، منافع کا اندازہ یا آپ کے لیے موزونیت کا فیصلہ نہیں کرتا۔</p>
             {OFFICIAL_RESOURCE_HUB.sections.map((section) => {
               const isExpanded = expandedSection === section.id;
               const panelId = `official-resource-${section.id}`;
@@ -201,7 +203,7 @@ export default function OfficialResourceHub() {
 
       <button className="official-resource-hub__toggle" type="button" onClick={() => setIsOpen((open) => !open)} aria-expanded={isOpen} aria-controls="official-resource-hub-panel">
         <span className="official-resource-hub__icon" aria-hidden="true">i</span>
-        Registration & filing resources · <span lang="ur" dir="rtl">وسائل</span>
+        Tax & investment resources · <span lang="ur" dir="rtl">ٹیکس اور سرمایہ کاری وسائل</span>
       </button>
     </aside>
   );
