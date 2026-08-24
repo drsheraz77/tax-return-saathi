@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { formatPrototypeDraftSavedAt, getPrototypeChecklist, getPrototypeDraftSavedAtIso, getPrototypeQuestions, loadPrototypeDraft, removePrototypeDraft, savePrototypeDraft } from "./personalisedChecklistPrototype.js";
 
-const sectionOrder = ["Before IRIS", "Income records", "Tax deducted and records", "Special situations", "Before you submit"];
+const sectionOrder = ["Before IRIS", "Income records", "Investment records", "Tax deducted and records", "Special situations", "Before you submit"];
 
 const typeLabel = {
   gather: "Gather",

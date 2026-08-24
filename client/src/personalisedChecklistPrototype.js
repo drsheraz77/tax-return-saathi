@@ -21,7 +21,8 @@ export const CHECKLIST_PROTOTYPE_QUESTIONS = [
       ["salary", "Salary or pension"],
       ["business", "Business or shop"],
       ["property", "Property rent or sale"],
-      ["bank_profit", "Bank profit, investments, or dividends"],
+      ["bank_profit", "Bank profit or dividends"],
+      ["investments", "Fixed-term accounts, stocks, ETFs, or bonds"],
       ["freelancer", "Freelance work or independent client services"],
       ["other", "Other income or I am unsure"],
     ],
@@ -61,6 +62,20 @@ export const CHECKLIST_PROTOTYPE_QUESTIONS = [
     urdu: "کیا آپ کے فری لانس کام اور کلائنٹ ادائیگی کے ریکارڈ جائزے کے لیے تیار ہیں؟",
     hint: "This preparation-only question appears only if you selected freelance work or independent client services.",
     when: (answers) => answers.incomeCategories?.includes("freelancer"),
+    options: [
+      ["ready", "Yes, they are ready"],
+      ["partly", "Partly ready"],
+      ["not_ready", "Not ready yet"],
+      ["not_sure", "I am not sure"],
+    ],
+  },
+  {
+    id: "investmentRecords",
+    kind: "single",
+    title: "Are your investment account and transaction records ready to review?",
+    urdu: "کیا آپ کے سرمایہ کاری اکاؤنٹ اور لین دین کے ریکارڈ جائزے کے لیے تیار ہیں؟",
+    hint: "This preparation-only question appears only if you selected fixed-term accounts, stocks, ETFs, or bonds.",
+    when: (answers) => answers.incomeCategories?.includes("investments"),
     options: [
       ["ready", "Yes, they are ready"],
       ["partly", "Partly ready"],
@@ -230,6 +245,12 @@ export function getPrototypeChecklist(answers) {
   }
   if (categories.includes("bank_profit")) {
     items.push(item("bank", "Income records", "Review bank profit, investment, or dividend records", "Gather the relevant statements or certificates and review any tax already deducted."));
+  }
+  if (categories.includes("investments")) {
+    items.push(item("investments", "Investment records", "Organise investment-account and transaction records", "Prepare review copies of account or custody statements, purchase or sale confirmations, income or payment records, and any related deduction certificates. Use the Tax & investment resources panel for neutral record-learning links. This checklist does not determine tax treatment."));
+    if (["partly", "not_ready", "not_sure"].includes(answers.investmentRecords)) {
+      items.push(item("investments-ready", "Investment records", "Finish your investment-record review", "Identify missing investment account or transaction records before you rely on the checklist output.", "review"));
+    }
   }
   if (answers.withholding === "yes" || answers.withholding === "not_sure") {
     items.push(item("withholding", "Tax deducted and records", "Reconcile tax deducted at source", "Review the records provided by the payer, employer, bank, or client before filing.", "review"));

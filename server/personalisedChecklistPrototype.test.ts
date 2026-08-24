@@ -2,11 +2,13 @@ import { describe, expect, it } from "vitest";
 import { formatPrototypeDraftSavedAt, getPrototypeChecklist, getPrototypeDraftSavedAtIso, getPrototypeQuestions, loadPrototypeDraft, parsePrototypeDraft, PROTOTYPE_DRAFT_STORAGE_KEY, removePrototypeDraft, savePrototypeDraft, serialisePrototypeDraft } from "../client/src/personalisedChecklistPrototype.js";
 
 describe("personalised filing checklist prototype", () => {
-  it("adds conditional business, property, and freelancer questions only for selected categories", () => {
+  it("adds conditional business, property, freelancer, and investment-record questions only for selected categories", () => {
     expect(getPrototypeQuestions({ incomeCategories: ["salary"] }).map((question) => question.id)).not.toContain("businessRecords");
     expect(getPrototypeQuestions({ incomeCategories: ["salary"] }).map((question) => question.id)).not.toContain("freelancerRecords");
+    expect(getPrototypeQuestions({ incomeCategories: ["salary"] }).map((question) => question.id)).not.toContain("investmentRecords");
     expect(getPrototypeQuestions({ incomeCategories: ["business", "property"] }).map((question) => question.id)).toEqual(expect.arrayContaining(["businessRecords", "propertyRecords"]));
     expect(getPrototypeQuestions({ incomeCategories: ["freelancer"] }).map((question) => question.id)).toContain("freelancerRecords");
+    expect(getPrototypeQuestions({ incomeCategories: ["investments"] }).map((question) => question.id)).toContain("investmentRecords");
   });
 
   it("builds a deterministic, category-based checklist without tax amounts or identity fields", () => {
@@ -33,6 +35,20 @@ describe("personalised filing checklist prototype", () => {
     });
     expect(items.map((item) => item.id)).toEqual(expect.arrayContaining(["freelancer", "freelancer-ready"]));
     expect(JSON.stringify(items)).not.toMatch(/CNIC|NTN|password|amount|account number|tax rate/i);
+  });
+
+  it("adds preparation-only investment record prompts without determining tax treatment", () => {
+    const items = getPrototypeChecklist({
+      filingExperience: "filed_before",
+      incomeCategories: ["investments"],
+      investmentRecords: "partly",
+      withholding: "no",
+      foreignConnection: "no",
+      recordsReadiness: "all_ready",
+    });
+    expect(items.map((item) => item.id)).toEqual(expect.arrayContaining(["investments", "investments-ready"]));
+    expect(items.find((item) => item.id === "investments")?.body).toMatch(/does not determine tax treatment/i);
+    expect(JSON.stringify(items)).not.toMatch(/CNIC|NTN|password|amount|account number|tax rate|exemption|eligibility/i);
   });
 
   it("adds a neutral escalation item when a foreign connection or uncertainty is selected", () => {

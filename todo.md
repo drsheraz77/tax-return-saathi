@@ -103,3 +103,12 @@
 - [x] Run the final tests and production build, then publish the verified investments-section enhancement.
 - [x] Inspect the updated investment resource-hub test assertions and rerun the test suite to confirm official-link coverage.
 - [x] Perform and record an explicit 375 × 812 mobile interaction check for the investment resources control and accordion.
+- [x] Define optional investment-record checklist prompts and official-reference boundaries without tax-treatment conclusions.
+- [x] Add the optional investment-record preparation path to the local adaptive filing checklist outside App.jsx.
+- [x] Add unit coverage and verify the investment-record path in desktop and mobile views without sensitive-data collection or financial recommendations.
+- [x] Run final tests and production build, then publish the verified investment-to-filing preparation enhancement.
+- [x] Verify the adaptive investment-record checklist path at 375 × 812 through its conditional question and preparation-only results.
+- [x] Record the mobile investment-record-path evidence, including privacy and non-recommendation boundaries.
+- [x] Re-read the recorded 375 × 812 mobile investment-record evidence to confirm the persisted bilingual, privacy, and non-tax-treatment details.
+- [x] Re-read the final investment-record verification log to confirm the persisted 21-test and production-build evidence.
+- [ ] Save a new checkpoint publishing the verified investment-to-filing preparation enhancement.
