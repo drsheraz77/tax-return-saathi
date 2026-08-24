@@ -94,3 +94,6 @@
 - [x] Review the repaired promotional video end-to-end, including its solution and feature segments, for readable safe messaging.
 - [x] Deliver the fully reviewed promotional-video file to the user.
 - [x] Send the fully reviewed promotional video file to the user as an attachment.
+- [x] Check public DNS and HTTPS behavior for taxinformation.org and www.taxinformation.org.
+- [x] Identify the safe registrar DNS or URL-forwarding correction for the apex domain without changing the working www record.
+- [x] Provide the verified apex-domain resolution steps and propagation checks to the user.
