@@ -146,3 +146,5 @@
 - [x] Reposition the homepage hero around an education-only pre-filing review of a completed income-tax return, without claiming to reproduce FBR’s validation or determine an outcome.
 - [x] Update the primary review journey and supporting headings so users can submit a completed return for AI-assisted discrepancy and completeness guidance while retaining existing education sections.
 - [x] Add focused coverage and verify the revised review-first journey, responsive layout, safety boundaries, tests, and production build before publication.
+- [x] Set Urdu as the default interface language on first visit while retaining the English switch.
+- [x] Add focused coverage and verify the Urdu-default initial render, English switch, tests, and production build before publication.

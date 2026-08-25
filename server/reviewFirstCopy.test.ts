@@ -5,6 +5,11 @@ import { describe, expect, it } from "vitest";
 const appSource = readFileSync(resolve(process.cwd(), "client/src/App.jsx"), "utf8");
 
 describe("review-first application copy", () => {
+  it("opens in Urdu while retaining the existing English language switch", () => {
+    expect(appSource).toContain('const [lang, setLang] = useState("ur")');
+    expect(appSource).toContain('onClick={() => setLang(lang === "en" ? "ur" : "en")}');
+  });
+
   it("opens the completed-return review as the starred first journey", () => {
     expect(appSource).toContain('const [tab, setTab] = useState("check")');
     expect(appSource).toContain('const isHero = k === "check"');

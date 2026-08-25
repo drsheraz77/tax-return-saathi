@@ -2760,7 +2760,7 @@ function Privacy({ lang, t, onBack }) {
 
 // ── App ──────────────────────────────────────────────────────
 export default function TaxReturnSaathi() {
-  const [lang, setLang] = useState("en");
+  const [lang, setLang] = useState("ur");
   const [tab, setTab] = useState("check");
   const [showPrivacy, setShowPrivacy] = useState(false);
   const t = T[lang];
