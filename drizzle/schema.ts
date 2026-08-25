@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -25,4 +25,29 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+/**
+ * One high-level checklist draft per signed-in user. It intentionally stores
+ * only the prototype's controlled answer values and progress marks, never tax
+ * amounts, account numbers, CNICs, NTN, passwords, or document uploads.
+ */
+export const checklistDrafts = mysqlTable("checklistDrafts", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  payload: text("payload").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => [uniqueIndex("checklistDrafts_userId_unique").on(table.userId)]);
+
+/**
+ * Voluntary product feedback. It is intentionally not associated with a user
+ * account and must not contain tax, identity, account, or credential details.
+ */
+export const feedbackSubmissions = mysqlTable("feedbackSubmissions", {
+  id: int("id").autoincrement().primaryKey(),
+  category: varchar("category", { length: 32 }).notNull(),
+  message: text("message").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ChecklistDraft = typeof checklistDrafts.$inferSelect;
+export type FeedbackSubmission = typeof feedbackSubmissions.$inferSelect;

@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { FREELANCER_FAQ, FREELANCER_PRE_FILING_CHECKLIST, IRIS_FAQ, OFFICIAL_RESOURCE_HUB, PRE_FILING_CHECKLIST, searchFreelancerFaq, searchIrisFaq } from "./officialResourceHub.js";
+import { trpc } from "./lib/trpc";
 
 const linkProps = { target: "_blank", rel: "noreferrer" };
 
@@ -11,8 +12,18 @@ export default function OfficialResourceHub() {
   const [showChecklist, setShowChecklist] = useState(false);
   const [showFreelancerChecklist, setShowFreelancerChecklist] = useState(false);
   const [checkedItems, setCheckedItems] = useState({});
+  const [feedbackCategory, setFeedbackCategory] = useState("general");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [feedbackNotice, setFeedbackNotice] = useState("");
   const matchingFaq = useMemo(() => searchIrisFaq(faqQuery), [faqQuery]);
   const matchingFreelancerFaq = useMemo(() => searchFreelancerFaq(freelancerFaqQuery), [freelancerFaqQuery]);
+  const feedbackMutation = trpc.feedback.submit.useMutation({
+    onSuccess: () => {
+      setFeedbackMessage("");
+      setFeedbackNotice("Thank you. Your feedback was saved without account or contact information.");
+    },
+    onError: (error) => setFeedbackNotice(error.message),
+  });
 
   function toggleChecklistItem(itemId) {
     setCheckedItems((current) => ({ ...current, [itemId]: !current[itemId] }));
@@ -61,6 +72,20 @@ export default function OfficialResourceHub() {
         .official-resource-hub__print-meta { margin: 0 0 10px; color: #625f4e; font-size: 11px; }
         .official-resource-hub__print-action { margin-top: 12px; }
         .official-resource-hub__footer { margin: 13px 0 0; color: #625f4e; font-size: 11px; }
+        .official-resource-hub__support { border-top: 1px solid #e5dbb3; margin-top: 14px; padding-top: 13px; }
+        .official-resource-hub__support-title { margin: 0 0 7px; color: #0B3D2E; font-size: 15px; }
+        .official-resource-hub__support-card { margin-top: 9px; border: 1px solid #e4d9a9; border-radius: 10px; background: #fffef9; padding: 10px; }
+        .official-resource-hub__support-card h4 { margin: 0 0 5px; color: #173b31; font-size: 13px; }
+        .official-resource-hub__support-card p { margin: 5px 0; color: #4d513c; font-size: 12px; }
+        .official-resource-hub__feedback-form { display: grid; gap: 8px; margin-top: 8px; }
+        .official-resource-hub__feedback-form label { color: #173b31; font-size: 12px; font-weight: 700; }
+        .official-resource-hub__feedback-form select, .official-resource-hub__feedback-form textarea { box-sizing: border-box; width: 100%; border: 1px solid #b7ab79; border-radius: 8px; background: #fffef9; color: #173b31; padding: 8px 9px; font: 13px/1.35 inherit; }
+        .official-resource-hub__feedback-form textarea { min-height: 86px; resize: vertical; }
+        .official-resource-hub__feedback-form select:focus-visible, .official-resource-hub__feedback-form textarea:focus-visible { outline: 3px solid rgba(202,165,24,.36); outline-offset: 2px; }
+        .official-resource-hub__feedback-form button { justify-self: start; border: 1px solid #0B3D2E; border-radius: 8px; background: #0B3D2E; color: #fffdf2; cursor: pointer; padding: 8px 10px; font: 700 12px/1.15 inherit; }
+        .official-resource-hub__feedback-form button:disabled { cursor: not-allowed; opacity: .5; }
+        .official-resource-hub__feedback-note { color: #625f4e !important; font-size: 11px !important; }
+        .official-resource-hub__feedback-status { color: #075c48 !important; font-weight: 700; }
         @media (max-width: 520px) { .official-resource-hub { left: 12px; bottom: 126px; } .official-resource-hub__panel { max-height: calc(100vh - 156px); } .official-resource-hub__toggle { font-size: 13px; } }
         @media print { body * { visibility: hidden !important; } .official-resource-hub__print-sheet, .official-resource-hub__print-sheet * { visibility: visible !important; } .official-resource-hub__print-sheet { display: block !important; position: fixed; inset: 0; width: auto; margin: 0; border: 0; border-radius: 0; padding: 20px; background: #fff; color: #000; } .official-resource-hub__print-action { display: none !important; } }
       `}</style>
@@ -108,6 +133,40 @@ export default function OfficialResourceHub() {
                 </section>
               );
             })}
+
+            <section className="official-resource-hub__support" aria-labelledby="support-title">
+              <h3 id="support-title" className="official-resource-hub__support-title">Feedback, privacy & contact<br /><span lang="ur" dir="rtl">رائے، رازداری اور رابطہ</span></h3>
+              <div className="official-resource-hub__support-card">
+                <h4>Privacy & data use <span lang="ur" dir="rtl">رازداری اور ڈیٹا کا استعمال</span></h4>
+                <p>Browser save stays in this browser. If you choose account save after signing in, we store only the checklist’s fixed high-level choices and progress marks so you can resume later. You can delete that account draft at any time.</p>
+                <p lang="ur" dir="rtl">براؤزر سیو اسی براؤزر میں رہتا ہے۔ اگر آپ سائن اِن کے بعد اکاؤنٹ سیو منتخب کریں تو صرف چیک لسٹ کے طے شدہ عمومی انتخاب اور پیش رفت محفوظ ہوتی ہے تاکہ آپ بعد میں دوبارہ کام کر سکیں۔ آپ اکاؤنٹ ڈرافٹ کسی بھی وقت حذف کر سکتے ہیں۔</p>
+                <p>We do not ask for or store tax amounts, CNIC, NTN, passwords, bank or account details, documents, or uploads in these draft tools. Feedback is voluntary, is not linked to an account, and is used only to review product feedback. Do not include sensitive information.</p>
+              </div>
+              <div className="official-resource-hub__support-card">
+                <h4>Share feedback <span lang="ur" dir="rtl">اپنی رائے دیں</span></h4>
+                <p>Tell us how the tool can be clearer or easier to use. This is not a channel for tax records, personal tax advice, or urgent filing help.</p>
+                <form className="official-resource-hub__feedback-form" onSubmit={(event) => { event.preventDefault(); setFeedbackNotice(""); feedbackMutation.mutate({ category: feedbackCategory, message: feedbackMessage }); }}>
+                  <label htmlFor="feedback-category">Topic</label>
+                  <select id="feedback-category" value={feedbackCategory} onChange={(event) => setFeedbackCategory(event.target.value)}>
+                    <option value="general">General feedback</option>
+                    <option value="usability">Ease of use</option>
+                    <option value="content">Educational content</option>
+                    <option value="technical">Technical issue</option>
+                  </select>
+                  <label htmlFor="feedback-message">Your feedback</label>
+                  <textarea id="feedback-message" value={feedbackMessage} onChange={(event) => setFeedbackMessage(event.target.value)} maxLength={1000} minLength={15} required placeholder="Do not include CNIC, NTN, passwords, bank details, or tax records." />
+                  <p className="official-resource-hub__feedback-note">No email or account details are requested. Messages containing sensitive details are rejected.</p>
+                  <button type="submit" disabled={feedbackMutation.isPending}>{feedbackMutation.isPending ? "Sending…" : "Send feedback"}</button>
+                  {feedbackNotice && <p role="status" className="official-resource-hub__feedback-status">{feedbackNotice}</p>}
+                </form>
+              </div>
+              <div className="official-resource-hub__support-card">
+                <h4>Contact & official help <span lang="ur" dir="rtl">رابطہ اور سرکاری مدد</span></h4>
+                <p>For this site, use the feedback form above; it does not provide individual tax advice or a reply channel. For official tax or IRIS help, contact the FBR Helpline: <strong>051 111 772 772</strong> (international: <strong>+92 51 111 772 772</strong>) or <a className="official-resource-hub__link" href="mailto:helpline@fbr.gov.pk">helpline@fbr.gov.pk</a>. FBR states Monday–Friday, 8:00 AM–11:30 PM.</p>
+                <p lang="ur" dir="rtl">اس ویب سائٹ کے لیے اوپر والا فیڈبیک فارم استعمال کریں؛ یہ انفرادی ٹیکس مشورہ یا جواب دینے کا ذریعہ نہیں ہے۔ سرکاری ٹیکس یا آئرس مدد کے لیے ایف بی آر ہیلپ لائن سے رابطہ کریں۔</p>
+                <a className="official-resource-hub__link" href="https://www.fbr.gov.pk/contact-us/142252/173964" {...linkProps}>Official FBR contact page ↗</a>
+              </div>
+            </section>
 
             <section className="official-resource-hub__tools" aria-labelledby="iris-faq-title">
               <h3 id="iris-faq-title" className="official-resource-hub__tool-title">IRIS help & troubleshooting<br /><span lang="ur" dir="rtl">آئرس مدد اور مسائل کا حل</span></h3>

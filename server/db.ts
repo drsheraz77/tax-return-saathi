@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { checklistDrafts, feedbackSubmissions, InsertUser, users } from "../drizzle/schema";
+import type { ChecklistDraftPayload, FeedbackInput } from "./draftValidation";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +90,30 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+export async function getChecklistDraftForUser(userId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(checklistDrafts).where(eq(checklistDrafts.userId, userId)).limit(1);
+  return result[0];
+}
+
+export async function saveChecklistDraftForUser(userId: number, payload: ChecklistDraftPayload) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable");
+  await db.insert(checklistDrafts).values({ userId, payload: JSON.stringify(payload) }).onDuplicateKeyUpdate({
+    set: { payload: JSON.stringify(payload), updatedAt: new Date() },
+  });
+  return getChecklistDraftForUser(userId);
+}
+
+export async function deleteChecklistDraftForUser(userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable");
+  await db.delete(checklistDrafts).where(eq(checklistDrafts.userId, userId));
+}
+
+export async function createFeedbackSubmission(input: FeedbackInput) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable");
+  await db.insert(feedbackSubmissions).values(input);
+}

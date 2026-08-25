@@ -112,3 +112,15 @@
 - [x] Re-read the recorded 375 × 812 mobile investment-record evidence to confirm the persisted bilingual, privacy, and non-tax-treatment details.
 - [x] Re-read the final investment-record verification log to confirm the persisted 21-test and production-build evidence.
 - [x] Save a new checkpoint publishing the verified investment-to-filing preparation enhancement.
+- [x] Define the authenticated draft scope, privacy boundaries, retention behaviour, and public contact/feedback approach without collecting tax documents or credentials.
+- [x] Add database tables and authenticated server operations for user-owned high-level checklist drafts, with access control and deletion support.
+- [x] Add an account and draft-resume interface outside App.jsx while retaining the existing explicit local-only draft option.
+- [x] Add a privacy and data-use section, a feedback form, and contact information with clear submission boundaries.
+- [x] Add unit coverage and verify authenticated draft controls, feedback/contact behaviour, privacy copy, desktop/mobile layout, and absence of sensitive-data fields.
+- [ ] Run final tests and production build, then publish the verified account, support, and privacy enhancement.
+- [x] Exercise the authenticated account-draft flow end-to-end: sign in, save a high-level draft, refresh or reopen, resume it, and delete it.
+- [x] Verify account-draft restoration with a visibly distinguishable later checklist step and saved answer before deleting the test draft.
+- [x] Attempt and record the explicit 375 × 812 interaction check for the checklist account controls and resource-hub feedback, privacy, and contact section; document the automation limitation without claiming successful mobile clicks.
+- [x] Re-run and record the full test suite and production build, and re-read the draft-validation assertions for ownership and sensitive-data boundaries.
+- [x] Record the unsuccessful independent mobile-interaction automation attempt and distinguish it from the completed desktop lifecycle and mobile layout evidence.
+- [x] Re-run final automated validation and review the persisted account-support verification evidence before publication.

@@ -1,4 +1,6 @@
 import { useMemo, useState } from "react";
+import { startLogin } from "./const";
+import { trpc } from "./lib/trpc";
 import { formatPrototypeDraftSavedAt, getPrototypeChecklist, getPrototypeDraftSavedAtIso, getPrototypeQuestions, loadPrototypeDraft, removePrototypeDraft, savePrototypeDraft } from "./personalisedChecklistPrototype.js";
 
 const sectionOrder = ["Before IRIS", "Income records", "Investment records", "Tax deducted and records", "Special situations", "Before you submit"];
@@ -17,6 +19,21 @@ export default function PersonalisedChecklistPrototype() {
   const [itemStatus, setItemStatus] = useState({});
   const [savedDraft, setSavedDraft] = useState(null);
   const [draftNotice, setDraftNotice] = useState("");
+  const { data: accountUser, isLoading: isAccountLoading } = trpc.auth.me.useQuery();
+  const accountDraftQuery = trpc.checklistDraft.get.useQuery(undefined, { enabled: Boolean(accountUser), retry: false });
+  const draftUtils = trpc.useUtils();
+  const accountSaveMutation = trpc.checklistDraft.save.useMutation({
+    onSuccess: () => {
+      draftUtils.checklistDraft.get.invalidate();
+      setDraftNotice("Account draft saved. Only your high-level choices and progress marks were stored.");
+    },
+  });
+  const accountDeleteMutation = trpc.checklistDraft.delete.useMutation({
+    onSuccess: () => {
+      draftUtils.checklistDraft.get.invalidate();
+      setDraftNotice("Account draft deleted.");
+    },
+  });
 
   const questions = useMemo(() => getPrototypeQuestions(answers), [answers]);
   const activeQuestion = questions[step];
@@ -101,6 +118,28 @@ export default function PersonalisedChecklistPrototype() {
     } catch {
       setDraftNotice("This browser could not remove the saved draft. Please clear site data in your browser settings.");
     }
+  };
+
+  const saveAccountDraft = () => {
+    if (!accountUser) {
+      startLogin();
+      return;
+    }
+    accountSaveMutation.mutate({ answers, itemStatus, step, showResults });
+  };
+
+  const resumeAccountDraft = () => {
+    const draft = accountDraftQuery.data;
+    if (!draft) {
+      setDraftNotice("No account draft is available yet.");
+      return;
+    }
+    const restoredQuestions = getPrototypeQuestions(draft.answers);
+    setAnswers(draft.answers);
+    setItemStatus(draft.itemStatus);
+    setStep(Math.min(draft.step, Math.max(restoredQuestions.length - 1, 0)));
+    setShowResults(draft.showResults);
+    setDraftNotice("Account draft resumed.");
   };
 
   const openPrototype = () => {
@@ -189,6 +228,16 @@ export default function PersonalisedChecklistPrototype() {
                 <button type="button" onClick={saveDraft} disabled={!hasProgress}>Save this draft on this device</button>
                 {savedDraft && <button type="button" onClick={resumeSavedDraft}>Resume saved draft</button>}
                 {savedDraft && <button type="button" onClick={deleteSavedDraft}>Delete saved draft</button>}
+              </div>
+            </section>
+            <section className="filing-prototype__draft" aria-label="Optional account draft save">
+              <p><strong>Optional account save:</strong> sign in to save the same high-level checklist choices and progress marks to your account so you can resume on another device. No amounts, CNIC, NTN, bank or account details, documents, or passwords are collected. Delete the account draft whenever you choose.</p>
+              {accountUser && accountDraftQuery.data?.savedAt && <p className="filing-prototype__saved-at"><strong>Last saved to your account:</strong> <time dateTime={accountDraftQuery.data.savedAt}>{formatPrototypeDraftSavedAt(accountDraftQuery.data.savedAt)}</time></p>}
+              <div className="filing-prototype__draft-actions">
+                {!accountUser && <button type="button" onClick={startLogin} disabled={isAccountLoading}>Sign in to save to your account</button>}
+                {accountUser && <button type="button" onClick={saveAccountDraft} disabled={!hasProgress || accountSaveMutation.isPending}>{accountSaveMutation.isPending ? "Saving account draft…" : "Save to my account"}</button>}
+                {accountUser && accountDraftQuery.data && <button type="button" onClick={resumeAccountDraft}>Resume account draft</button>}
+                {accountUser && accountDraftQuery.data && <button type="button" onClick={() => accountDeleteMutation.mutate()} disabled={accountDeleteMutation.isPending}>{accountDeleteMutation.isPending ? "Deleting account draft…" : "Delete account draft"}</button>}
               </div>
             </section>
             {!showResults ? (

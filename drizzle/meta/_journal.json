@@ -8,6 +8,13 @@
       "when": 1786631960714,
       "tag": "0000_far_nekra",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1787594143075,
+      "tag": "0001_last_rocket_raccoon",
+      "breakpoints": true
     }
   ]
 }
