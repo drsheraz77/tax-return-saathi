@@ -117,7 +117,7 @@
 - [x] Add an account and draft-resume interface outside App.jsx while retaining the existing explicit local-only draft option.
 - [x] Add a privacy and data-use section, a feedback form, and contact information with clear submission boundaries.
 - [x] Add unit coverage and verify authenticated draft controls, feedback/contact behaviour, privacy copy, desktop/mobile layout, and absence of sensitive-data fields.
-- [ ] Run final tests and production build, then publish the verified account, support, and privacy enhancement.
+- [x] Run final tests and production build, then publish the verified account, support, and privacy enhancement.
 - [x] Exercise the authenticated account-draft flow end-to-end: sign in, save a high-level draft, refresh or reopen, resume it, and delete it.
 - [x] Verify account-draft restoration with a visibly distinguishable later checklist step and saved answer before deleting the test draft.
 - [x] Attempt and record the explicit 375 × 812 interaction check for the checklist account controls and resource-hub feedback, privacy, and contact section; document the automation limitation without claiming successful mobile clicks.
