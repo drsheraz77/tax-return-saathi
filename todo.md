@@ -137,3 +137,9 @@
 - [x] Present a prioritised implementation recommendation and next-step decision to the user.
 - [x] Preserve the practical feedback assessment in the project documentation for traceability.
 - [x] Send the prioritised practical feedback assessment to the user, explicitly excluding the law-firm comment and identifying the recommended next phase.
+- [x] Define narrowly scoped notice-upload disclosure copy that accurately describes the managed AI pathway without unverified provider claims.
+- [x] Add the approved upload-adjacent disclosure in App.jsx without modifying tax rules, algorithm logic, or unrelated authored content.
+- [ ] Implement scheduled 30-day deletion of anonymous feedback with an auditable, idempotent server-side cleanup process.
+- [x] Update the privacy/data-use content to state the implemented 30-day feedback-retention period and deletion scope.
+- [ ] Add unit coverage and verify upload disclosure, feedback-retention cleanup, privacy copy, and the scheduled process configuration.
+- [ ] Run final tests and production build, then publish the verified disclosure and feedback-retention enhancement.

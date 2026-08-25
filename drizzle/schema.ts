@@ -49,5 +49,19 @@ export const feedbackSubmissions = mysqlTable("feedbackSubmissions", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
+/**
+ * Durable configuration for the project-level, platform-managed feedback
+ * retention Heartbeat. The callback resolves this row by task UID rather than
+ * trusting any request body value.
+ */
+export const feedbackRetentionSchedules = mysqlTable("feedbackRetentionSchedules", {
+  id: int("id").autoincrement().primaryKey(),
+  scheduleCronTaskUid: varchar("scheduleCronTaskUid", { length: 65 }).notNull(),
+  retentionDays: int("retentionDays").default(30).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => [uniqueIndex("feedbackRetentionSchedules_taskUid_unique").on(table.scheduleCronTaskUid)]);
+
 export type ChecklistDraft = typeof checklistDrafts.$inferSelect;
 export type FeedbackSubmission = typeof feedbackSubmissions.$inferSelect;
+export type FeedbackRetentionSchedule = typeof feedbackRetentionSchedules.$inferSelect;

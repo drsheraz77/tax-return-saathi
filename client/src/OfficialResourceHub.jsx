@@ -165,7 +165,7 @@ export default function OfficialResourceHub() {
                 <h4>Privacy & data use <span lang="ur" dir="rtl">رازداری اور ڈیٹا کا استعمال</span></h4>
                 <p>Browser save stays in this browser. If you choose account save after signing in, we store only the checklist’s fixed high-level choices and progress marks so you can resume later. You can delete that account draft at any time.</p>
                 <p lang="ur" dir="rtl">براؤزر سیو اسی براؤزر میں رہتا ہے۔ اگر آپ سائن اِن کے بعد اکاؤنٹ سیو منتخب کریں تو صرف چیک لسٹ کے طے شدہ عمومی انتخاب اور پیش رفت محفوظ ہوتی ہے تاکہ آپ بعد میں دوبارہ کام کر سکیں۔ آپ اکاؤنٹ ڈرافٹ کسی بھی وقت حذف کر سکتے ہیں۔</p>
-                <p>We do not ask for or store tax amounts, CNIC, NTN, passwords, bank or account details, documents, or uploads in these draft tools. Feedback is voluntary, is not linked to an account, and is used only to review product feedback. Do not include sensitive information.</p>
+                <p>We do not ask for or store tax amounts, CNIC, NTN, passwords, bank or account details, documents, or uploads in these draft tools. Feedback is voluntary, is not linked to an account, and is used only to review product feedback. Anonymous feedback is scheduled for deletion 30 days after submission. Do not include sensitive information.</p>
                 <div className="official-resource-hub__privacy-actions" aria-label="Account data privacy controls">
                   {!accountUser && <button type="button" onClick={() => window.location.assign("/api/oauth/login")} disabled={isAccountLoading}>Sign in to manage account-held data</button>}
                   {accountUser && <button className="official-resource-hub__danger-button" type="button" onClick={() => { setPrivacyNotice(""); setShowDataDeletionConfirm(true); }}>Delete my account-held data</button>}
@@ -196,7 +196,7 @@ export default function OfficialResourceHub() {
                   </select>
                   <label htmlFor="feedback-message">Your feedback</label>
                   <textarea id="feedback-message" value={feedbackMessage} onChange={(event) => setFeedbackMessage(event.target.value)} maxLength={1000} minLength={15} required placeholder="Do not include CNIC, NTN, passwords, bank details, or tax records." />
-                  <p className="official-resource-hub__feedback-note">No email or account details are requested. Messages containing sensitive details are rejected.</p>
+                  <p className="official-resource-hub__feedback-note">No email or account details are requested. Messages containing sensitive details are rejected and accepted anonymous feedback is scheduled for deletion after 30 days.</p>
                   <button type="submit" disabled={feedbackMutation.isPending}>{feedbackMutation.isPending ? "Sending…" : "Send feedback"}</button>
                   {feedbackNotice && <p role="status" className="official-resource-hub__feedback-status">{feedbackNotice}</p>}
                 </form> : <section className="official-resource-hub__acknowledgement" role="status" aria-live="polite" aria-label="Feedback acknowledgement">

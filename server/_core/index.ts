@@ -4,6 +4,7 @@ import { createServer } from "http";
 import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { manusLlmProxy } from "../manusLlmProxy";
+import { feedbackRetentionHandler } from "../feedbackRetention";
 import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
@@ -39,6 +40,8 @@ async function startServer() {
   registerOAuthRoutes(app);
   // Retain the uploaded browser route while the server uses the managed AI proxy.
   app.all("/api/claude", manusLlmProxy);
+  // Platform-managed scheduled callback; it authenticates cron sessions itself.
+  app.post("/api/scheduled/feedback-retention", feedbackRetentionHandler);
   // tRPC API
   app.use(
     "/api/trpc",

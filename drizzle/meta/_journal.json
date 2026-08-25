@@ -15,6 +15,13 @@
       "when": 1787594143075,
       "tag": "0001_last_rocket_raccoon",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1787658816108,
+      "tag": "0002_strong_tigra",
+      "breakpoints": true
     }
   ]
 }

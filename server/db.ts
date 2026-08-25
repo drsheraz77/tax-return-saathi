@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { eq, lt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { checklistDrafts, feedbackSubmissions, InsertUser, users } from "../drizzle/schema";
+import { checklistDrafts, feedbackRetentionSchedules, feedbackSubmissions, InsertUser, users } from "../drizzle/schema";
 import type { ChecklistDraftPayload, FeedbackInput } from "./draftValidation";
 import { ENV } from './_core/env';
 
@@ -116,4 +116,20 @@ export async function createFeedbackSubmission(input: FeedbackInput) {
   const db = await getDb();
   if (!db) throw new Error("Database is unavailable");
   await db.insert(feedbackSubmissions).values(input);
+}
+
+export async function getFeedbackRetentionScheduleByTaskUid(taskUid: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable");
+  const rows = await db.select().from(feedbackRetentionSchedules)
+    .where(eq(feedbackRetentionSchedules.scheduleCronTaskUid, taskUid)).limit(1);
+  return rows[0];
+}
+
+/** Idempotently delete anonymous feedback that has reached the configured retention cutoff. */
+export async function deleteFeedbackOlderThan(cutoff: Date): Promise<number> {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable");
+  const result = await db.delete(feedbackSubmissions).where(lt(feedbackSubmissions.createdAt, cutoff));
+  return Number((result as unknown as { affectedRows?: number }).affectedRows ?? 0);
 }
