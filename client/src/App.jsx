@@ -60,6 +60,7 @@ const T = {
     noticeHeroSub: "Upload a photo of it, or type what it says. We'll explain it in simple words — what it means, what you must do, and by when. Free, private, and in your language.",
     noticeHeroCalm: "A notice is not a punishment. Most are routine and can be sorted out by replying on time. We'll walk you through it.",
     noticeUploadBtn: "📷 Upload a photo of the notice",
+    noticeUploadPrivacy: "Before uploading: this file is sent through the app’s server-side managed AI pathway only to provide an educational explanation. It is not stored in this app’s database, does not submit a return or make a binding tax decision, and should not include passwords, OTPs, bank-account details, or an unmasked CNIC number.",
     noticeTypeBtn: "⌨️ Or type what it says",
     noticeTypePlaceholder: "Type or paste the notice text here — even a few lines helps",
     noticeExplainBtn: "Explain this to me",
@@ -523,6 +524,7 @@ const T = {
     noticeHeroSub: "اس کی تصویر اپ لوڈ کریں، یا جو لکھا ہے وہ ٹائپ کریں۔ ہم آسان الفاظ میں سمجھائیں گے — اس کا مطلب کیا ہے، آپ کو کیا کرنا ہے، اور کب تک۔ مفت، نجی، اور آپ کی زبان میں۔",
     noticeHeroCalm: "نوٹس کوئی سزا نہیں۔ زیادہ تر معمولی ہوتے ہیں اور وقت پر جواب دے کر حل ہو جاتے ہیں۔ ہم آپ کے ساتھ ہیں۔",
     noticeUploadBtn: "📷 نوٹس کی تصویر اپ لوڈ کریں",
+    noticeUploadPrivacy: "اپ لوڈ کرنے سے پہلے: یہ فائل صرف تعلیمی وضاحت دینے کے لیے ایپ کے سرور سائیڈ مینیجڈ اے آئی راستے سے گزرتی ہے۔ یہ اس ایپ کے ڈیٹابیس میں محفوظ نہیں کی جاتی، ریٹرن جمع نہیں کرتی اور نہ ہی حتمی ٹیکس فیصلہ کرتی ہے۔ پاس ورڈ، OTP، بینک اکاؤنٹ کی تفصیلات یا بغیر چھپایا ہوا شناختی کارڈ نمبر شامل نہ کریں۔",
     noticeTypeBtn: "⌨️ یا جو لکھا ہے وہ ٹائپ کریں",
     noticeTypePlaceholder: "نوٹس کا متن یہاں ٹائپ یا پیسٹ کریں — چند سطریں بھی مددگار ہیں",
     noticeExplainBtn: "مجھے یہ سمجھائیں",
@@ -2419,6 +2421,7 @@ Respond ONLY with JSON, no markdown fences, in ${lang === "ur" ? "simple everyda
             <div className="text-lg font-bold mb-2" style={{ color: COLORS.green }}>{t.noticeUploadBtn}</div>
             <input type="file" accept="application/pdf,image/*" onChange={onFile} className="text-sm mx-auto" style={{ direction: "ltr" }} />
           </label>
+          <p className="text-xs mt-3 text-start leading-relaxed" style={{ color: COLORS.green2 }}>{t.noticeUploadPrivacy}</p>
           {file && <div className="text-xs mt-3 opacity-70" style={{ direction: "ltr" }}>📄 {file.name}</div>}
         </div>
       )}
