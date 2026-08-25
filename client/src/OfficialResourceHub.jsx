@@ -15,12 +15,28 @@ export default function OfficialResourceHub() {
   const [feedbackCategory, setFeedbackCategory] = useState("general");
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [feedbackNotice, setFeedbackNotice] = useState("");
+  const [feedbackAcknowledged, setFeedbackAcknowledged] = useState(false);
+  const [showDataDeletionConfirm, setShowDataDeletionConfirm] = useState(false);
+  const [privacyNotice, setPrivacyNotice] = useState("");
   const matchingFaq = useMemo(() => searchIrisFaq(faqQuery), [faqQuery]);
   const matchingFreelancerFaq = useMemo(() => searchFreelancerFaq(freelancerFaqQuery), [freelancerFaqQuery]);
-  const feedbackMutation = trpc.feedback.submit.useMutation({
+  const { data: accountUser, isLoading: isAccountLoading } = trpc.auth.me.useQuery();
+  const privacyUtils = trpc.useUtils();
+  const accountPrivacyQuery = trpc.privacy.summary.useQuery(undefined, { enabled: Boolean(accountUser), retry: false });
+  const accountDataDeletionMutation = trpc.privacy.deleteAccountHeldData.useMutation({
     onSuccess: () => {
+      privacyUtils.privacy.summary.invalidate();
+      privacyUtils.checklistDraft.get.invalidate();
+      setShowDataDeletionConfirm(false);
+      setPrivacyNotice("Your account-held checklist draft data was deleted.");
+    },
+    onError: (error) => setPrivacyNotice(error.message),
+  });
+  const feedbackMutation = trpc.feedback.submit.useMutation({
+    onSuccess: (result) => {
       setFeedbackMessage("");
-      setFeedbackNotice("Thank you. Your feedback was saved without account or contact information.");
+      setFeedbackNotice(result.acknowledgement);
+      setFeedbackAcknowledged(true);
     },
     onError: (error) => setFeedbackNotice(error.message),
   });
@@ -86,6 +102,15 @@ export default function OfficialResourceHub() {
         .official-resource-hub__feedback-form button:disabled { cursor: not-allowed; opacity: .5; }
         .official-resource-hub__feedback-note { color: #625f4e !important; font-size: 11px !important; }
         .official-resource-hub__feedback-status { color: #075c48 !important; font-weight: 700; }
+        .official-resource-hub__acknowledgement { border: 1px solid #9fbd9a; border-radius: 9px; background: #edf7eb; padding: 10px; color: #164b2c; }
+        .official-resource-hub__acknowledgement h5 { margin: 0 0 5px; font-size: 13px; }
+        .official-resource-hub__acknowledgement p { margin: 4px 0; }
+        .official-resource-hub__acknowledgement button, .official-resource-hub__privacy-actions button { border: 1px solid #0B3D2E; border-radius: 8px; background: #fffef9; color: #0B3D2E; cursor: pointer; padding: 7px 9px; font: 700 12px/1.2 inherit; }
+        .official-resource-hub__privacy-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 9px; }
+        .official-resource-hub__danger-button { border-color: #8a2c22 !important; background: #fff7f5 !important; color: #7a231b !important; }
+        .official-resource-hub__confirm { margin-top: 10px; border: 1px solid #b98554; border-radius: 9px; background: #fff4e8; padding: 10px; }
+        .official-resource-hub__confirm h5 { margin: 0 0 5px; color: #6e311e; font-size: 13px; }
+        .official-resource-hub__confirm p { margin: 5px 0; }
         @media (max-width: 520px) { .official-resource-hub { left: 12px; bottom: 126px; } .official-resource-hub__panel { max-height: calc(100vh - 156px); } .official-resource-hub__toggle { font-size: 13px; } }
         @media print { body * { visibility: hidden !important; } .official-resource-hub__print-sheet, .official-resource-hub__print-sheet * { visibility: visible !important; } .official-resource-hub__print-sheet { display: block !important; position: fixed; inset: 0; width: auto; margin: 0; border: 0; border-radius: 0; padding: 20px; background: #fff; color: #000; } .official-resource-hub__print-action { display: none !important; } }
       `}</style>
@@ -141,11 +166,27 @@ export default function OfficialResourceHub() {
                 <p>Browser save stays in this browser. If you choose account save after signing in, we store only the checklist’s fixed high-level choices and progress marks so you can resume later. You can delete that account draft at any time.</p>
                 <p lang="ur" dir="rtl">براؤزر سیو اسی براؤزر میں رہتا ہے۔ اگر آپ سائن اِن کے بعد اکاؤنٹ سیو منتخب کریں تو صرف چیک لسٹ کے طے شدہ عمومی انتخاب اور پیش رفت محفوظ ہوتی ہے تاکہ آپ بعد میں دوبارہ کام کر سکیں۔ آپ اکاؤنٹ ڈرافٹ کسی بھی وقت حذف کر سکتے ہیں۔</p>
                 <p>We do not ask for or store tax amounts, CNIC, NTN, passwords, bank or account details, documents, or uploads in these draft tools. Feedback is voluntary, is not linked to an account, and is used only to review product feedback. Do not include sensitive information.</p>
+                <div className="official-resource-hub__privacy-actions" aria-label="Account data privacy controls">
+                  {!accountUser && <button type="button" onClick={() => window.location.assign("/api/oauth/login")} disabled={isAccountLoading}>Sign in to manage account-held data</button>}
+                  {accountUser && <button className="official-resource-hub__danger-button" type="button" onClick={() => { setPrivacyNotice(""); setShowDataDeletionConfirm(true); }}>Delete my account-held data</button>}
+                </div>
+                {accountUser && <p className="official-resource-hub__feedback-note">{accountPrivacyQuery.isLoading ? "Checking account-held data…" : accountPrivacyQuery.data?.hasChecklistDraft ? "One high-level checklist draft is currently stored in your account." : "No checklist draft is currently stored in your account."} Feedback cannot be included because it is intentionally anonymous and not linked to your account.</p>}
+                {privacyNotice && <p role="status" className="official-resource-hub__feedback-status">{privacyNotice}</p>}
+                {showDataDeletionConfirm && (
+                  <section className="official-resource-hub__confirm" role="alertdialog" aria-labelledby="account-data-delete-title" aria-describedby="account-data-delete-copy">
+                    <h5 id="account-data-delete-title">Delete your account-held Tax Return Saathi data?</h5>
+                    <p id="account-data-delete-copy">This permanently deletes only your high-level checklist draft from this site. It does not delete your Manus sign-in profile, browser-local drafts, or anonymous feedback.</p>
+                    <div className="official-resource-hub__privacy-actions">
+                      <button type="button" onClick={() => setShowDataDeletionConfirm(false)} disabled={accountDataDeletionMutation.isPending}>Cancel</button>
+                      <button className="official-resource-hub__danger-button" type="button" onClick={() => accountDataDeletionMutation.mutate({ confirmation: "DELETE_MY_DRAFT_DATA" })} disabled={accountDataDeletionMutation.isPending}>{accountDataDeletionMutation.isPending ? "Deleting…" : "Permanently delete checklist data"}</button>
+                    </div>
+                  </section>
+                )}
               </div>
               <div className="official-resource-hub__support-card">
                 <h4>Share feedback <span lang="ur" dir="rtl">اپنی رائے دیں</span></h4>
                 <p>Tell us how the tool can be clearer or easier to use. This is not a channel for tax records, personal tax advice, or urgent filing help.</p>
-                <form className="official-resource-hub__feedback-form" onSubmit={(event) => { event.preventDefault(); setFeedbackNotice(""); feedbackMutation.mutate({ category: feedbackCategory, message: feedbackMessage }); }}>
+                {!feedbackAcknowledged ? <form className="official-resource-hub__feedback-form" onSubmit={(event) => { event.preventDefault(); setFeedbackNotice(""); feedbackMutation.mutate({ category: feedbackCategory, message: feedbackMessage }); }}>
                   <label htmlFor="feedback-category">Topic</label>
                   <select id="feedback-category" value={feedbackCategory} onChange={(event) => setFeedbackCategory(event.target.value)}>
                     <option value="general">General feedback</option>
@@ -158,7 +199,12 @@ export default function OfficialResourceHub() {
                   <p className="official-resource-hub__feedback-note">No email or account details are requested. Messages containing sensitive details are rejected.</p>
                   <button type="submit" disabled={feedbackMutation.isPending}>{feedbackMutation.isPending ? "Sending…" : "Send feedback"}</button>
                   {feedbackNotice && <p role="status" className="official-resource-hub__feedback-status">{feedbackNotice}</p>}
-                </form>
+                </form> : <section className="official-resource-hub__acknowledgement" role="status" aria-live="polite" aria-label="Feedback acknowledgement">
+                  <h5>Feedback received <span lang="ur" dir="rtl">آپ کی رائے موصول ہو گئی</span></h5>
+                  <p>{feedbackNotice}</p>
+                  <p>Your message is anonymous; this site cannot reply directly. For official tax or IRIS help, use the FBR contact details below.</p>
+                  <button type="button" onClick={() => { setFeedbackAcknowledged(false); setFeedbackNotice(""); }}>Send another feedback message</button>
+                </section>}
               </div>
               <div className="official-resource-hub__support-card">
                 <h4>Contact & official help <span lang="ur" dir="rtl">رابطہ اور سرکاری مدد</span></h4>

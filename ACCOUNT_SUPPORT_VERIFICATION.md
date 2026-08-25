@@ -46,6 +46,24 @@ The managed 375 × 812 screenshot confirmed the account-save, resource-hub, chec
 
 The final `pnpm test` run passed **6 test files and 26 tests**. The reviewed draft-validation suite confirms controlled high-level values only, rejects common sensitive identifiers in feedback, retrieves drafts with the authenticated server-side owner ID, requires authentication for account drafts, and keeps feedback unlinked to an account. `pnpm build` completed successfully. Its only advisory was the existing client-chunk-size warning; no build error occurred.
 
+## Privacy-management and acknowledgement interface
+
+In the managed preview, **Delete my account-held data** opened a confirmation card that stated it permanently removes only the signed-in user’s high-level checklist draft and does not include anonymous feedback or browser-local drafts. The card offered **Cancel** and **Permanently delete checklist data**. Selecting **Cancel** closed the card without a deletion request. The feedback panel visibly retained its sensitive-data warning and dedicated **Send feedback** action. The acknowledgement result is covered by the server contract test, which returns the explicit received-without-account-or-contact-information message after an accepted feedback submission; no test feedback was posted to production during visual verification.
+
+The final validation run passed **6 test files and 27 tests**, including the expanded deletion-confirmation, owner-scoped deletion, feedback acknowledgement, and sensitive-data screening assertions. `pnpm build` completed successfully. It emitted only the established client-chunk-size advisory and no build error.
+
+## Feedback acknowledgement browser verification
+
+With the user’s approval, the preview submitted the non-sensitive message **“Test feedback: acknowledgement screen verification.”** The panel replaced the form with the bilingual **Feedback received** acknowledgement. It stated that the message was received without an account or contact detail, warned that replies are not direct, and exposed **Send another feedback message**. No sensitive information was entered, requested, or displayed.
+
+## Disposable account-data deletion setup
+
+With the user’s approval, a new disposable account draft containing only **This is my first return** was saved at 11:34 local preview time. The account-save confirmation appeared, with the saved timestamp and the resume/delete controls. No identity, tax amount, financial account, document, or password data was entered. The next step is the already-approved privacy-management deletion confirmation.
+
+## Confirmed self-service account-data deletion
+
+With the user’s explicit confirmation, the resource hub opened the **Delete your account-held Tax Return Saathi data?** confirmation. It stated that deletion is limited to the signed-in user’s high-level checklist draft, does not delete browser-local drafts, and does not include anonymous feedback. Selecting **Permanently delete checklist data** showed **Deleting…**, then the success message **“Your account-held checklist draft data was deleted.”** The panel returned to the no-draft state. The completed feedback acknowledgement remained visible, demonstrating that anonymous feedback is intentionally outside this account-draft deletion scope.
+
 ## Source
 
 [1] Federal Board of Revenue, [Contact Us](https://www.fbr.gov.pk/contact-us/142252/173964), accessed 24 August 2026.

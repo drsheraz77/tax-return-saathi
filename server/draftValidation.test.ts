@@ -61,10 +61,21 @@ describe("authenticated checklist draft and feedback safeguards", () => {
     await expect(caller.checklistDraft.get()).rejects.toBeInstanceOf(TRPCError);
   });
 
+  it("summarizes and deletes only the authenticated user's account-held draft after an explicit confirmation value", async () => {
+    dbMocks.getChecklistDraftForUser.mockResolvedValue({ payload: JSON.stringify(validDraft), updatedAt: new Date() });
+    dbMocks.deleteChecklistDraftForUser.mockResolvedValue(undefined);
+    const caller = appRouter.createCaller(authedContext as any);
+    await expect(caller.privacy.summary()).resolves.toEqual({ hasChecklistDraft: true, feedbackIsAnonymous: true });
+    await expect(caller.privacy.deleteAccountHeldData({ confirmation: "DELETE_MY_DRAFT_DATA" })).resolves.toEqual({ success: true });
+    expect(dbMocks.getChecklistDraftForUser).toHaveBeenCalledWith(42);
+    expect(dbMocks.deleteChecklistDraftForUser).toHaveBeenCalledWith(42);
+    await expect(caller.privacy.deleteAccountHeldData({ confirmation: "DELETE" } as any)).rejects.toBeInstanceOf(TRPCError);
+  });
+
   it("accepts feedback without associating it with an account", async () => {
     dbMocks.createFeedbackSubmission.mockResolvedValue(undefined);
     const caller = appRouter.createCaller({ ...authedContext, user: null } as any);
-    await expect(caller.feedback.submit({ category: "content", message: "Please add more plain-language examples for documents." })).resolves.toEqual({ success: true });
+    await expect(caller.feedback.submit({ category: "content", message: "Please add more plain-language examples for documents." })).resolves.toEqual({ success: true, acknowledgement: "Thank you. Your feedback was received without account or contact information." });
     expect(dbMocks.createFeedbackSubmission).toHaveBeenCalledWith({ category: "content", message: "Please add more plain-language examples for documents." });
   });
 });

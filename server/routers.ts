@@ -54,11 +54,30 @@ export const appRouter = router({
     }),
   }),
 
+  privacy: router({
+    summary: protectedProcedure.query(async ({ ctx }) => {
+      const draft = await getChecklistDraftForUser(ctx.user.id);
+      return {
+        hasChecklistDraft: Boolean(draft),
+        feedbackIsAnonymous: true,
+      } as const;
+    }),
+    deleteAccountHeldData: protectedProcedure.input(z.object({ confirmation: z.literal("DELETE_MY_DRAFT_DATA") })).mutation(async ({ ctx }) => {
+      try {
+        await deleteChecklistDraftForUser(ctx.user.id);
+        return { success: true } as const;
+      } catch (error) {
+        console.error("[Privacy] account-held data deletion failed", error);
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Your account-held checklist data could not be deleted." });
+      }
+    }),
+  }),
+
   feedback: router({
     submit: publicProcedure.input(feedbackInputSchema).mutation(async ({ input }) => {
       try {
         await createFeedbackSubmission(input);
-        return { success: true } as const;
+        return { success: true, acknowledgement: "Thank you. Your feedback was received without account or contact information." } as const;
       } catch (error) {
         console.error("[Feedback] submission failed", error);
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Feedback could not be sent. Please try again later." });

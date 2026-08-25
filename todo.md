@@ -124,3 +124,11 @@
 - [x] Re-run and record the full test suite and production build, and re-read the draft-validation assertions for ownership and sensitive-data boundaries.
 - [x] Record the unsuccessful independent mobile-interaction automation attempt and distinguish it from the completed desktop lifecycle and mobile layout evidence.
 - [x] Re-run final automated validation and review the persisted account-support verification evidence before publication.
+- [x] Define the self-service account-data deletion scope, confirmation wording, ownership enforcement, and feedback acknowledgement boundary.
+- [x] Add authenticated account-data deletion that removes only the requesting user’s account-held draft data after explicit confirmation.
+- [x] Add a post-submission feedback acknowledgement screen without exposing or storing extra personal data.
+- [x] Add unit coverage and verify cancellation, confirmation, completion, account ownership, feedback acknowledgement, and responsive layout.
+- [ ] Run final tests and production build, then publish the verified privacy-management enhancement.
+- [x] Submit a non-sensitive test feedback message in preview and record the acknowledgement screen without exposing personal data.
+- [x] Create and then fully delete a disposable signed-in checklist draft through the privacy-management confirmation flow, with user confirmation before deletion.
+- [x] Record the completed browser evidence for feedback acknowledgement and account-data deletion in the verification log.
