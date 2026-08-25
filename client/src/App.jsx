@@ -51,11 +51,11 @@ const T = {
   en: {
     dir: "ltr",
     appTitle: "Tax Return Saathi",
-    appSub: "Your guide to the new FBR return form · Tax Year 2026",
+    appSub: "Review your return before filing on IRIS · Tax Year 2026",
     langBtn: "اردو",
     disclaimer:
-      "Guidance tool only — not affiliated with FBR. Always file your official return on IRIS (iris.fbr.gov.pk) and verify figures with a tax advisor. Deadline: 30 September 2026.",
-    tabs: { notice: "Understand my FBR notice", checklist: "My documents checklist", shop: "For shopkeepers", guide: "Step-by-step guide", scenarios: "Real-life scenarios", mistakes: "Common mistakes", check: "Check my return", calc: "Tax calculator", chat: "Ask the AI assistant" },
+      "Education-only review — this AI cannot access or reproduce FBR checks, confirm figures, or predict notices. File your official return on IRIS (iris.fbr.gov.pk) and verify figures with a tax advisor.",
+    tabs: { check: "Review completed return", checklist: "Prepare my documents", guide: "Filing guide", mistakes: "Common errors", scenarios: "Examples", notice: "FBR notice guidance", shop: "For shopkeepers", calc: "Tax estimator", chat: "Ask a guide" },
     noticeHeroTitle: "Got a letter or notice from FBR? Don't panic.",
     noticeHeroSub: "Upload a photo of it, or type what it says. We'll explain it in simple words — what it means, what you must do, and by when. Free, private, and in your language.",
     noticeHeroCalm: "A notice is not a punishment. Most are routine and can be sorted out by replying on time. We'll walk you through it.",
@@ -156,15 +156,15 @@ const T = {
     privacySections: [
       { h: "This is a guidance tool, not official FBR service", b: "Tax Return Saathi is an independent, free educational tool. It is NOT affiliated with, endorsed by, or connected to the Federal Board of Revenue (FBR) or the Government of Pakistan. Your official tax return must always be filed on FBR's own IRIS portal at iris.fbr.gov.pk." },
       { h: "This is not legal or tax advice", b: "The explanations, calculators, checklists, and AI answers here are to help you understand your taxes in simple language. They are general information, not professional advice for your specific situation. Tax figures and rules can change and can be interpreted differently. For any important decision — especially a demand for money, an audit, a court matter, or a large or unusual transaction — please consult a qualified tax advisor or lawyer, or call the FBR helpline on 051-111-772-772." },
-      { h: "What happens to documents and notices you upload", b: "When you use the notice-explainer or document gap-check, the file or text you provide is sent through this app's server-side managed AI pathway to generate an educational explanation, and the response is shown back to you. Your uploads are used only to answer that request. This app does not persist your uploaded content in its own database, build a profile of you, or sell your data. The explanation does not submit a return or make a binding tax decision; please avoid uploading passwords, OTPs, bank-account details, or unmasked CNIC numbers." },
+      { h: "What happens to documents and notices you upload", b: "When you use the pre-filing return review or notice explainer, the file or text you provide is sent through this app's server-side managed AI pathway to generate an educational explanation, and the response is shown back to you. Your uploads are used only to answer that request. This app does not persist your uploaded content in its own database, build a profile of you, or sell your data. The review cannot access or reproduce FBR checks, submit a return, make a binding tax decision, or predict whether FBR will raise a notice; please avoid uploading passwords, OTPs, bank-account details, or unmasked CNIC numbers." },
       { h: "What we store on your device", b: "The app runs in your browser. Your answers to the checklist and calculators stay on your device during your visit and are not sent anywhere except when an AI feature needs them. We do not require you to create an account or give your CNIC, password, or bank details to use the tool — and you should never enter your IRIS password anywhere except the real IRIS site." },
       { h: "Accuracy and your responsibility", b: "We work hard to keep information correct and verified against the Income Tax Ordinance 2001 and FBR's forms, but we cannot guarantee it is complete or current for your case. You remain responsible for what you file. Always confirm figures on IRIS before submitting your return." },
       { h: "Security reminder", b: "Never share your IRIS password, CNIC PIN, or banking OTP with anyone — including anyone claiming to be from FBR or from this app. FBR will not ask for your password. This app will never ask for it either." },
     ],
     privacyContact: "Questions? This tool is provided as a free public service. For official matters, contact FBR directly at iris.fbr.gov.pk or 051-111-772-772.",
-    checkTitle: "Upload your return or tax documents — find the gaps",
-    checkSub: "Answer a few questions, then upload your draft return, salary certificate, or wealth statement (PDF or photo). The AI compares what's in your documents against what your situation requires and flags what's missing.",
-    checkPrivacy: "Your document is sent through this app's server-side managed AI pathway only for this analysis and is not persisted in this app's database. The explanation is educational, not a return submission or binding tax decision. Please do not upload passwords, OTPs, bank-account details, or an unmasked CNIC number.",
+    checkTitle: "Review your completed income tax return before filing",
+    checkSub: "Upload a redacted completed return and selected supporting pages. AI will highlight visible gaps or possible discrepancies for you to verify before you submit on IRIS.",
+    checkPrivacy: "This is an education-only review. It cannot access or reproduce FBR checks, confirm your figures, predict notices, submit a return, or make a binding tax decision. Your redacted file is sent through the app's server-side managed AI pathway for this analysis and is not persisted in this app's database. Do not upload passwords, OTPs, bank-account details, or an unmasked CNIC number.",
     qIncome: "Which income sources did you have this year (Jul 2025 – Jun 2026)?",
     incomeOpts: [
       { id: "salary", label: "Salary" },
@@ -187,18 +187,18 @@ const T = {
     qFirst: "Is this your first time filing?",
     yes: "Yes",
     no: "No",
-    uploadLabel: "Upload documents (PDF or photo, up to 3 files, max 4 MB each)",
-    uploadHint: "Draft return printout, salary/tax certificate, wealth statement, or bank certificates",
-    analyzeBtn: "Analyze my documents",
-    analyzing: "Reading your documents and checking for gaps…",
+    uploadLabel: "Upload a redacted completed return (PDF or photo, up to 3 files, max 4 MB each)",
+    uploadHint: "Completed return printout and, if needed, redacted salary/tax certificate or wealth-statement pages",
+    analyzeBtn: "Review my return",
+    analyzing: "Reviewing visible entries and possible gaps…",
     tooBig: "is too large (max 4 MB). Please compress or re-scan it.",
     badType: "isn't a PDF or image. Please upload PDF, JPG, or PNG.",
     needFile: "Please upload at least one document first.",
-    resFound: "✓ Found in your documents",
-    resMissing: "✗ Missing or incomplete",
-    resWarnings: "⚠ Warnings",
-    resAsk: "Questions to resolve",
-    checkAgain: "Check different documents",
+    resFound: "✓ Visible in your submitted pages",
+    resMissing: "✗ Potential gaps to verify",
+    resWarnings: "⚠ Possible discrepancies to check",
+    resAsk: "Questions to resolve before submitting",
+    checkAgain: "Review another redacted return",
     analyzeError: "Analysis failed. Please try again — if the file is a scanned photo, make sure it's clear and readable.",
     mistakesTitle: "12 mistakes that trigger notices, penalties, or lost refunds",
     mistakesSub: "The errors tax practitioners and educators see most often on IRIS — check your return against this list before you press submit.",
@@ -515,11 +515,11 @@ const T = {
   ur: {
     dir: "rtl",
     appTitle: "ٹیکس ریٹرن ساتھی",
-    appSub: "نئے ایف بی آر فارم کے لیے آپ کا رہنما · ٹیکس سال ۲۰۲۶",
+    appSub: "IRIS پر جمع کرانے سے پہلے اپنا ریٹرن چیک کریں · ٹیکس سال ۲۰۲۶",
     langBtn: "English",
     disclaimer:
-      "یہ صرف رہنمائی کا ٹول ہے — ایف بی آر سے منسلک نہیں۔ اپنا سرکاری ریٹرن ہمیشہ IRIS (iris.fbr.gov.pk) پر جمع کریں اور اعداد و شمار کسی ٹیکس مشیر سے تصدیق کروائیں۔ آخری تاریخ: ۳۰ ستمبر ۲۰۲۶۔",
-    tabs: { notice: "میرا ایف بی آر نوٹس سمجھیں", checklist: "میری دستاویزات کی فہرست", shop: "دکانداروں کے لیے", guide: "مرحلہ وار رہنمائی", scenarios: "حقیقی واقعات", mistakes: "عام غلطیاں", check: "میرا ریٹرن جانچیں", calc: "ٹیکس کیلکولیٹر", chat: "اے آئی معاون سے پوچھیں" },
+      "یہ صرف تعلیمی جانچ ہے — یہ اے آئی ایف بی آر کی جانچ تک رسائی نہیں رکھتا، اسے نقل نہیں کر سکتا، اعداد کی تصدیق یا نوٹس کی پیش گوئی نہیں کر سکتا۔ سرکاری ریٹرن IRIS (iris.fbr.gov.pk) پر جمع کریں اور اعداد کی ٹیکس مشیر سے تصدیق کروائیں۔",
+    tabs: { check: "مکمل ریٹرن جانچیں", checklist: "دستاویزات تیار کریں", guide: "فائلنگ رہنمائی", mistakes: "عام غلطیاں", scenarios: "مثالیں", notice: "ایف بی آر نوٹس رہنمائی", shop: "دکانداروں کے لیے", calc: "ٹیکس اندازہ", chat: "رہنمائی پوچھیں" },
     noticeHeroTitle: "ایف بی آر سے خط یا نوٹس آیا ہے؟ گھبرائیں نہیں۔",
     noticeHeroSub: "اس کی تصویر اپ لوڈ کریں، یا جو لکھا ہے وہ ٹائپ کریں۔ ہم آسان الفاظ میں سمجھائیں گے — اس کا مطلب کیا ہے، آپ کو کیا کرنا ہے، اور کب تک۔ مفت، نجی، اور آپ کی زبان میں۔",
     noticeHeroCalm: "نوٹس کوئی سزا نہیں۔ زیادہ تر معمولی ہوتے ہیں اور وقت پر جواب دے کر حل ہو جاتے ہیں۔ ہم آپ کے ساتھ ہیں۔",
@@ -620,15 +620,15 @@ const T = {
     privacySections: [
       { h: "یہ ایک رہنمائی کا آلہ ہے، سرکاری ایف بی آر سروس نہیں", b: "ٹیکس ریٹرن ساتھی ایک آزاد، مفت تعلیمی آلہ ہے۔ اس کا فیڈرل بورڈ آف ریونیو (ایف بی آر) یا حکومتِ پاکستان سے کوئی تعلق، الحاق یا توثیق نہیں۔ آپ کا سرکاری ٹیکس ریٹرن ہمیشہ ایف بی آر کے اپنے IRIS پورٹل iris.fbr.gov.pk پر ہی جمع ہونا چاہیے۔" },
       { h: "یہ قانونی یا ٹیکس مشورہ نہیں", b: "یہاں دی گئی وضاحتیں، کیلکولیٹر، فہرستیں اور اے آئی جوابات آپ کو آسان زبان میں اپنا ٹیکس سمجھنے میں مدد کے لیے ہیں۔ یہ عام معلومات ہیں، آپ کی مخصوص صورتحال کے لیے پیشہ ورانہ مشورہ نہیں۔ ٹیکس کے اعداد اور قوانین بدل سکتے ہیں اور مختلف تشریح ہو سکتی ہے۔ کسی اہم فیصلے — خاص طور پر رقم کے مطالبے، آڈٹ، عدالتی معاملے، یا بڑے یا غیر معمولی لین دین — کے لیے کسی مستند ٹیکس مشیر یا وکیل سے رجوع کریں، یا ایف بی آر ہیلپ لائن 051-111-772-772 پر کال کریں۔" },
-      { h: "آپ کے اپ لوڈ کردہ دستاویزات اور نوٹسز کا کیا ہوتا ہے", b: "جب آپ نوٹس ایکسپلینر یا دستاویزات کی جانچ استعمال کرتے ہیں، تو آپ کی فراہم کردہ فائل یا متن تعلیمی وضاحت بنانے کے لیے اس ایپ کے سرور سائیڈ مینیجڈ اے آئی راستے سے گزرتا ہے، اور جواب آپ کو دکھایا جاتا ہے۔ آپ کے اپ لوڈ صرف اسی درخواست کا جواب دینے کے لیے استعمال ہوتے ہیں۔ یہ ایپ آپ کے اپ لوڈ کردہ مواد کو اپنے ڈیٹابیس میں محفوظ نہیں کرتی، آپ کی پروفائل نہیں بناتی، اور آپ کا ڈیٹا فروخت نہیں کرتی۔ یہ وضاحت ریٹرن جمع نہیں کرتی اور نہ ہی حتمی ٹیکس فیصلہ کرتی ہے؛ پاس ورڈ، OTP، بینک اکاؤنٹ کی تفصیلات، یا بغیر چھپایا ہوا شناختی کارڈ نمبر اپ لوڈ نہ کریں۔" },
+      { h: "آپ کے اپ لوڈ کردہ دستاویزات اور نوٹسز کا کیا ہوتا ہے", b: "جب آپ فائلنگ سے پہلے ریٹرن جانچ یا نوٹس ایکسپلینر استعمال کرتے ہیں، تو آپ کی فراہم کردہ فائل یا متن تعلیمی وضاحت بنانے کے لیے اس ایپ کے سرور سائیڈ مینیجڈ اے آئی راستے سے گزرتا ہے، اور جواب آپ کو دکھایا جاتا ہے۔ آپ کے اپ لوڈ صرف اسی درخواست کا جواب دینے کے لیے استعمال ہوتے ہیں۔ یہ ایپ آپ کے اپ لوڈ کردہ مواد کو اپنے ڈیٹابیس میں محفوظ نہیں کرتی، آپ کی پروفائل نہیں بناتی، اور آپ کا ڈیٹا فروخت نہیں کرتی۔ یہ جانچ ایف بی آر کی جانچ تک رسائی نہیں رکھتی، اسے نقل نہیں کر سکتی، ریٹرن جمع نہیں کرتی، حتمی ٹیکس فیصلہ نہیں کرتی، اور نوٹس کی پیش گوئی نہیں کر سکتی؛ پاس ورڈ، OTP، بینک اکاؤنٹ کی تفصیلات، یا بغیر چھپایا ہوا شناختی کارڈ نمبر اپ لوڈ نہ کریں۔" },
       { h: "آپ کے آلے پر ہم کیا محفوظ کرتے ہیں", b: "ایپ آپ کے براؤزر میں چلتی ہے۔ فہرست اور کیلکولیٹر کے آپ کے جوابات آپ کے دورے کے دوران آپ ہی کے آلے پر رہتے ہیں اور کہیں نہیں بھیجے جاتے سوائے اس کے کہ کسی اے آئی فیچر کو ان کی ضرورت ہو۔ ٹول استعمال کرنے کے لیے آپ کو اکاؤنٹ بنانے یا اپنا شناختی کارڈ، پاس ورڈ یا بینک تفصیلات دینے کی ضرورت نہیں — اور آپ کو اپنا IRIS پاس ورڈ اصل IRIS سائٹ کے علاوہ کہیں درج نہیں کرنا چاہیے۔" },
       { h: "درستگی اور آپ کی ذمہ داری", b: "ہم معلومات کو انکم ٹیکس آرڈیننس ۲۰۰۱ اور ایف بی آر کے فارمز کے مطابق درست اور تصدیق شدہ رکھنے کی پوری کوشش کرتے ہیں، لیکن ہم آپ کے معاملے کے لیے اس کے مکمل یا موجودہ ہونے کی ضمانت نہیں دے سکتے۔ آپ جو فائل کرتے ہیں اس کی ذمہ داری آپ پر ہے۔ ریٹرن جمع کرانے سے پہلے ہمیشہ IRIS پر اعداد کی تصدیق کریں۔" },
       { h: "سیکیورٹی یاد دہانی", b: "اپنا IRIS پاس ورڈ، شناختی کارڈ پن، یا بینکنگ OTP کبھی کسی کے ساتھ شیئر نہ کریں — بشمول کوئی جو ایف بی آر یا اس ایپ سے ہونے کا دعویٰ کرے۔ ایف بی آر آپ سے پاس ورڈ نہیں مانگے گا۔ یہ ایپ بھی کبھی نہیں مانگے گی۔" },
     ],
     privacyContact: "سوالات؟ یہ آلہ ایک مفت عوامی خدمت کے طور پر فراہم کیا گیا ہے۔ سرکاری معاملات کے لیے ایف بی آر سے براہِ راست iris.fbr.gov.pk یا 051-111-772-772 پر رابطہ کریں۔",
-    checkTitle: "اپنا ریٹرن یا ٹیکس دستاویزات اپ لوڈ کریں — کمی معلوم کریں",
-    checkSub: "چند سوالوں کے جواب دیں، پھر اپنا ڈرافٹ ریٹرن، تنخواہ سرٹیفکیٹ یا ویلتھ اسٹیٹمنٹ (PDF یا تصویر) اپ لوڈ کریں۔ اے آئی آپ کی دستاویزات کا موازنہ آپ کی صورتحال کے تقاضوں سے کر کے کمی کی نشاندہی کرے گا۔",
-    checkPrivacy: "آپ کی دستاویز صرف اسی تجزیے کے لیے اس ایپ کے سرور سائیڈ مینیجڈ اے آئی راستے سے گزرتی ہے اور اس ایپ کے ڈیٹابیس میں محفوظ نہیں کی جاتی۔ وضاحت تعلیمی ہے، ریٹرن جمع کرانے یا حتمی ٹیکس فیصلے کے لیے نہیں۔ پاس ورڈ، OTP، بینک اکاؤنٹ کی تفصیلات، یا بغیر چھپایا ہوا شناختی کارڈ نمبر اپ لوڈ نہ کریں۔",
+    checkTitle: "جمع کرانے سے پہلے اپنا مکمل انکم ٹیکس ریٹرن جانچیں",
+    checkSub: "اپنا چھپایا ہوا مکمل ریٹرن اور منتخب معاون صفحات اپ لوڈ کریں۔ اے آئی IRIS پر جمع کرانے سے پہلے نظر آنے والی کمی یا ممکنہ تضاد کی نشان دہی کرے گا تاکہ آپ اسے تصدیق کر سکیں۔",
+    checkPrivacy: "یہ صرف تعلیمی جانچ ہے۔ یہ ایف بی آر کی جانچ تک رسائی نہیں رکھتا، اسے نقل نہیں کر سکتا، آپ کے اعداد کی تصدیق، نوٹس کی پیش گوئی، ریٹرن جمع، یا حتمی ٹیکس فیصلہ نہیں کر سکتا۔ آپ کی چھپائی ہوئی فائل اسی تجزیے کے لیے ایپ کے سرور سائیڈ مینیجڈ اے آئی راستے سے گزرتی ہے اور ایپ کے ڈیٹابیس میں محفوظ نہیں کی جاتی۔ پاس ورڈ، OTP، بینک اکاؤنٹ کی تفصیلات، یا بغیر چھپایا ہوا شناختی کارڈ نمبر اپ لوڈ نہ کریں۔",
     qIncome: "اس سال (جولائی ۲۰۲۵ – جون ۲۰۲۶) آپ کی آمدنی کے ذرائع کون سے تھے؟",
     incomeOpts: [
       { id: "salary", label: "تنخواہ" },
@@ -651,18 +651,18 @@ const T = {
     qFirst: "کیا آپ پہلی بار فائل کر رہے ہیں؟",
     yes: "جی ہاں",
     no: "نہیں",
-    uploadLabel: "دستاویزات اپ لوڈ کریں (PDF یا تصویر، زیادہ سے زیادہ ۳ فائلیں، ہر ایک ۴ ایم بی تک)",
-    uploadHint: "ڈرافٹ ریٹرن پرنٹ، تنخواہ/ٹیکس سرٹیفکیٹ، ویلتھ اسٹیٹمنٹ یا بینک سرٹیفکیٹ",
-    analyzeBtn: "میری دستاویزات کا تجزیہ کریں",
-    analyzing: "آپ کی دستاویزات پڑھی جا رہی ہیں اور کمی جانچی جا رہی ہے…",
+    uploadLabel: "اپنا چھپایا ہوا مکمل ریٹرن اپ لوڈ کریں (PDF یا تصویر، زیادہ سے زیادہ ۳ فائلیں، ہر ایک ۴ ایم بی تک)",
+    uploadHint: "مکمل ریٹرن پرنٹ اور، ضرورت ہو تو، چھپائے ہوئے تنخواہ/ٹیکس سرٹیفکیٹ یا ویلتھ اسٹیٹمنٹ کے صفحات",
+    analyzeBtn: "میرا ریٹرن جانچیں",
+    analyzing: "نظر آنے والے اندراجات اور ممکنہ کمی کا جائزہ لیا جا رہا ہے…",
     tooBig: "بہت بڑی ہے (زیادہ سے زیادہ ۴ ایم بی)۔ کمپریس کر کے دوبارہ کوشش کریں۔",
     badType: "PDF یا تصویر نہیں ہے۔ PDF، JPG یا PNG اپ لوڈ کریں۔",
     needFile: "پہلے کم از کم ایک دستاویز اپ لوڈ کریں۔",
-    resFound: "✓ دستاویزات میں موجود",
-    resMissing: "✗ غائب یا نامکمل",
-    resWarnings: "⚠ انتباہات",
-    resAsk: "حل طلب سوالات",
-    checkAgain: "دوسری دستاویزات جانچیں",
+    resFound: "✓ جمع کرائے گئے صفحات میں نظر آیا",
+    resMissing: "✗ تصدیق کے لیے ممکنہ کمی",
+    resWarnings: "⚠ جانچنے کے لیے ممکنہ تضاد",
+    resAsk: "جمع کرانے سے پہلے حل طلب سوالات",
+    checkAgain: "کوئی اور چھپایا ہوا ریٹرن جانچیں",
     analyzeError: "تجزیہ ناکام ہوا۔ دوبارہ کوشش کریں — اگر فائل اسکین شدہ تصویر ہے تو یقینی بنائیں کہ صاف اور پڑھنے کے قابل ہو۔",
     mistakesTitle: "۱۲ غلطیاں جو نوٹس، جرمانے یا ریفنڈ کے نقصان کا سبب بنتی ہیں",
     mistakesSub: "وہ غلطیاں جو ٹیکس ماہرین IRIS پر سب سے زیادہ دیکھتے ہیں — جمع کرانے سے پہلے اپنا ریٹرن اس فہرست سے ملا لیں۔",
@@ -2230,7 +2230,7 @@ RESPOND ONLY with JSON, no markdown fences, no preamble, in ${lang === "ur" ? "U
   );
 }
 
-// ── FBR Notice Explainer (the hero feature) ──────────────────
+// ── FBR Notice Explainer ─────────────────────────────────────
 function NoticeExplainer({ lang, t }) {
   const [mode, setMode] = useState(null); // 'upload' | 'type'
   const [file, setFile] = useState(null);
@@ -2761,7 +2761,7 @@ function Privacy({ lang, t, onBack }) {
 // ── App ──────────────────────────────────────────────────────
 export default function TaxReturnSaathi() {
   const [lang, setLang] = useState("en");
-  const [tab, setTab] = useState("notice");
+  const [tab, setTab] = useState("check");
   const [showPrivacy, setShowPrivacy] = useState(false);
   const t = T[lang];
 
@@ -2818,7 +2818,7 @@ export default function TaxReturnSaathi() {
       {!showPrivacy && (
       <nav className="max-w-3xl mx-auto px-4 mt-5 flex gap-2 flex-wrap">
         {Object.entries(t.tabs).map(([k, label]) => {
-          const isHero = k === "notice";
+          const isHero = k === "check";
           const active = tab === k;
           return (
             <button

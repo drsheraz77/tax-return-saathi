@@ -143,3 +143,6 @@
 - [x] Update the privacy/data-use content to state the implemented 30-day feedback-retention period and deletion scope.
 - [x] Add unit coverage and verify upload disclosure, feedback-retention cleanup, privacy copy, and the scheduled process configuration.
 - [x] Run final tests and production build, then publish the verified disclosure and feedback-retention enhancement.
+- [x] Reposition the homepage hero around an education-only pre-filing review of a completed income-tax return, without claiming to reproduce FBR’s validation or determine an outcome.
+- [x] Update the primary review journey and supporting headings so users can submit a completed return for AI-assisted discrepancy and completeness guidance while retaining existing education sections.
+- [x] Add focused coverage and verify the revised review-first journey, responsive layout, safety boundaries, tests, and production build before publication.
