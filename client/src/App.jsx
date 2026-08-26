@@ -2861,6 +2861,19 @@ export default function TaxReturnSaathi() {
         <p id="pilot-testing-notice" className="max-w-3xl mx-auto text-xs mt-1" style={{ color: "#4d513c" }}>
           {lang === "ur" ? "آزمائشی ورژن: یہ آزاد تعلیمی اور تیاری کی خدمت فی الحال پائلٹ ٹیسٹنگ میں ہے؛ یہ ایف بی آر کی سروس نہیں، ریٹرن جمع نہیں کرتی، اور کسی ذاتی نتیجے کی تصدیق نہیں کرتی۔" : "Pilot testing: this independent education and preparation service is being tested; it is not an FBR service, does not submit returns, and does not confirm personal outcomes."}
         </p>
+        <div className="max-w-3xl mx-auto mt-2">
+          <button
+            id="pilot-feedback-button"
+            type="button"
+            onClick={() => window.dispatchEvent(new Event("tax-return-saathi:open-pilot-feedback"))}
+            className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-bold shadow-sm"
+            style={{ background: "#0B3D2E", color: "#fffdf2", borderColor: "#0B3D2E" }}
+          >
+            <span lang="ur" dir="rtl">آزمائشی رائے دیں</span>
+            <span aria-hidden="true">·</span>
+            <span>Pilot Feedback</span>
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}

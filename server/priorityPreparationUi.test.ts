@@ -7,6 +7,7 @@ const taxYearPanel = readFileSync(resolve(projectRoot, "client/src/TaxYear2026Up
 const resourceHub = readFileSync(resolve(projectRoot, "client/src/OfficialResourceHub.jsx"), "utf8");
 const taxpayerProfile = readFileSync(resolve(projectRoot, "client/src/TaxpayerPreparationProfile.jsx"), "utf8");
 const appEntry = readFileSync(resolve(projectRoot, "client/src/main.jsx"), "utf8");
+const authoredApp = readFileSync(resolve(projectRoot, "client/src/App.jsx"), "utf8");
 
 describe("priority preparation workflow wiring", () => {
   it("renders the limited source foundation and structured FBR-notice preparation guide", () => {
@@ -139,5 +140,16 @@ describe("priority preparation workflow wiring", () => {
     expect(taxYearPanel).toContain("REVIEWED_SOURCE_CHANGE_LOG.entries[0].dateIso");
     expect(taxYearPanel).toContain("Last manual source review");
     expect(taxYearPanel).toContain("Manual catalogue review — not live updates.");
+  });
+
+  it("adds an Urdu-first Pilot Feedback entry point that opens the existing anonymous feedback form", () => {
+    expect(authoredApp).toContain('id="pilot-feedback-button"');
+    expect(authoredApp).toContain("آزمائشی رائے دیں");
+    expect(authoredApp).toContain("Pilot Feedback");
+    expect(authoredApp).toContain("tax-return-saathi:open-pilot-feedback");
+    expect(resourceHub).toContain('id="pilot-feedback-form"');
+    expect(resourceHub).toContain("window.addEventListener(\"tax-return-saathi:open-pilot-feedback\"");
+    expect(resourceHub).toContain("No email or account details are requested");
+    expect(resourceHub).toContain("scheduled for deletion after 30 days");
   });
 });

@@ -248,3 +248,5 @@
 - [x] Add an EU/EEA/UK privacy consent interface that offers equivalent accept and decline choices for optional non-essential processing, stores only the locally needed consent choice, and does not assert legal certification.
 - [x] Produce a source-cited Google AdSense policy-readiness assessment that distinguishes verified site safeguards, needed account-side configuration, content or disclosure gaps, and the absence of any approval guarantee.
 - [x] Add focused tests and verify pilot/privacy/consent accessibility, refusal and persistence behaviour, no advertising or analytics execution before consent, Urdu/English presentation, responsive layout, full suite, and production build before publication.
+- [x] Add a prominent Urdu-first Pilot Feedback button to the main interface that opens the existing bounded feedback flow without adding fields, retention, tracking, or sensitive-data collection.
+- [x] Add focused coverage and verify the Pilot Feedback entry point, feedback privacy wording, Urdu/English presentation, desktop/mobile layout, full suite, and production build before publication.

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AI_ANSWER_EVALUATION_STEPS, CALCULATION_EXPLANATION_MAP, COMPLEX_SITUATION_PREPARATION_PATHS, FILING_READINESS_STEPS, FREELANCER_FAQ, FREELANCER_PRE_FILING_CHECKLIST, getFilingReadinessSummary, getOfficialResourceCategoryReview, getPreSubmissionErrorPreventionSummary, getSourceAwareQuestionPlan, getTemporaryGuidanceSummary, IRIS_FAQ, IRIS_NAVIGATION_WALKTHROUGH, OFFICIAL_RESOURCE_HUB, POST_SUBMISSION_CONTINUITY_STEPS, PRE_FILING_CHECKLIST, PRE_SUBMISSION_ERROR_PREVENTION_STEPS, RETURN_WEALTH_RELATIONSHIP_STEPS, searchFreelancerFaq, searchIrisFaq, SOURCE_AWARE_QUESTION_PLANS } from "./officialResourceHub.js";
 import { trpc } from "./lib/trpc";
 import { getWealthReadinessPrintRows, getWealthStatementReadinessSummary, WEALTH_READINESS_OPTIONS, WEALTH_STATEMENT_PREPARATION_STEPS } from "./wealthStatementPreparation.js";
@@ -70,6 +70,16 @@ export default function OfficialResourceHub() {
     },
     onError: (error) => setFeedbackNotice(error.message),
   });
+
+  useEffect(() => {
+    function openPilotFeedback() {
+      setIsOpen(true);
+      window.requestAnimationFrame(() => document.getElementById("pilot-feedback-form")?.focus());
+    }
+
+    window.addEventListener("tax-return-saathi:open-pilot-feedback", openPilotFeedback);
+    return () => window.removeEventListener("tax-return-saathi:open-pilot-feedback", openPilotFeedback);
+  }, []);
 
   function toggleChecklistItem(itemId) {
     setCheckedItems((current) => ({ ...current, [itemId]: !current[itemId] }));
@@ -250,7 +260,7 @@ export default function OfficialResourceHub() {
                   </section>
                 )}
               </div>
-              <div className="official-resource-hub__support-card">
+              <div id="pilot-feedback-form" className="official-resource-hub__support-card" tabIndex={-1}>
                 <h4>Share feedback <span lang="ur" dir="rtl">اپنی رائے دیں</span></h4>
                 <p>Tell us how the tool can be clearer or easier to use. This is not a channel for tax records, personal tax advice, or urgent filing help.</p>
                 {!feedbackAcknowledged ? <form className="official-resource-hub__feedback-form" onSubmit={(event) => { event.preventDefault(); setFeedbackNotice(""); feedbackMutation.mutate({ category: feedbackCategory, message: feedbackMessage }); }}>
