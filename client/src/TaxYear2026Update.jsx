@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FBR_NOTICE_ARCHIVE } from "./fbrNoticeArchive.js";
-import { FBR_NOTICE_PREPARATION_TYPES, FBR_NOTICE_SUPPORT_URL, getNoticePreparationSteps } from "./fbrNoticePreparation.js";
+import { FBR_NOTICE_PREPARATION_TYPES, FBR_NOTICE_SUPPORT_URL, getNoticeDocumentChecklist, getNoticePreparationSteps } from "./fbrNoticePreparation.js";
 import { TAX_KNOWLEDGE_FOUNDATION } from "./taxKnowledgeFoundation.js";
 import { TAX_YEAR_2026_SOURCES, TAX_YEAR_2026_UPDATE } from "./taxYear2026Update.js";
 
@@ -14,6 +14,7 @@ export default function TaxYear2026Update() {
   const [archiveOpen, setArchiveOpen] = useState(false);
   const [noticeGuideOpen, setNoticeGuideOpen] = useState(false);
   const [noticeType, setNoticeType] = useState("unsure");
+  const [noticeDocumentItems, setNoticeDocumentItems] = useState({});
 
   return (
     <aside className="tax-year-update" aria-label="Verified Tax Year 2026 filing updates">
@@ -110,7 +111,7 @@ export default function TaxYear2026Update() {
                 <h3 className="tax-year-update__notice-heading">Prepare safely; do not upload or enter notice details here.<br /><span lang="ur" dir="rtl">محفوظ تیاری کریں؛ نوٹس کی تفصیل یہاں اپ لوڈ یا درج نہ کریں۔</span></h3>
                 <p className="tax-year-update__notice-copy">Select only a broad, temporary category. This guide does not identify a notice, calculate a deadline, draft a response, or determine the correct outcome.</p>
                 <label htmlFor="fbr-notice-type">Broad notice category / <span lang="ur" dir="rtl">نوٹس کی عمومی قسم</span></label>
-                <select id="fbr-notice-type" className="tax-year-update__select" value={noticeType} onChange={(event) => setNoticeType(event.target.value)}>
+                <select id="fbr-notice-type" className="tax-year-update__select" value={noticeType} onChange={(event) => { setNoticeType(event.target.value); setNoticeDocumentItems({}); }}>
                   {FBR_NOTICE_PREPARATION_TYPES.map((type) => <option key={type.value} value={type.value}>{type.label} — {type.labelUrdu}</option>)}
                 </select>
                 <ol className="tax-year-update__notice-list">
@@ -118,6 +119,16 @@ export default function TaxYear2026Update() {
                     <li className="tax-year-update__notice-item" key={step.id}><span className="tax-year-update__notice-step">{step.label}<br /><span lang="ur" dir="rtl">{step.labelUrdu}</span></span></li>
                   ))}
                 </ol>
+                <h4 className="tax-year-update__notice-heading">Temporary document-preparation categories<br /><span lang="ur" dir="rtl">عارضی دستاویز تیاری زمرے</span></h4>
+                <p className="tax-year-update__notice-copy">Mark only broad categories to organise your own private response preparation. Do not enter reference numbers, identifiers, tax amounts, notice text, passwords, OTPs, or upload documents here. These marks disappear when this page is refreshed.</p>
+                <ul className="tax-year-update__notice-list" aria-label="Temporary notice-response document preparation categories">
+                  {getNoticeDocumentChecklist(noticeType).map((item) => (
+                    <li className="tax-year-update__notice-item" key={item.id}>
+                      <label><input type="checkbox" checked={Boolean(noticeDocumentItems[item.id])} onChange={() => setNoticeDocumentItems((current) => ({ ...current, [item.id]: !current[item.id] }))} /> <span className="tax-year-update__notice-step">{item.label}<br /><span lang="ur" dir="rtl">{item.labelUrdu}</span></span></label>
+                    </li>
+                  ))}
+                </ul>
+                <button className="tax-year-update__archive-toggle" type="button" onClick={() => setNoticeDocumentItems({})}>Clear temporary categories · <span lang="ur" dir="rtl">عارضی زمرے صاف کریں</span></button>
                 <p className="tax-year-update__note">For an unclear notice, response, or deadline, verify directly through the official channel or seek qualified advice.</p>
                 <a className="tax-year-update__archive-link" href={FBR_NOTICE_SUPPORT_URL} {...linkProps}>Open FBR contact and support route ↗</a>
               </section>

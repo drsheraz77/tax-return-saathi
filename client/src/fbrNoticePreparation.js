@@ -61,4 +61,22 @@ export function getNoticePreparationSteps(type = "unsure") {
   return [...BASE_NOTICE_STEPS, TYPE_PROMPTS[type] || TYPE_PROMPTS.unsure];
 }
 
+const COMMON_DOCUMENT_CATEGORIES = [
+  { id: "notice-copy", label: "Official notice or portal-message copy — keep it private; do not upload it here", labelUrdu: "سرکاری نوٹس یا پورٹل پیغام کی نقل — اسے نجی رکھیں؛ یہاں اپ لوڈ نہ کریں" },
+  { id: "prior-submission", label: "Relevant previously submitted return or acknowledgement — review privately", labelUrdu: "متعلقہ پہلے جمع شدہ ریٹرن یا رسید — نجی طور پر دیکھیں" },
+  { id: "official-correspondence", label: "Relevant official correspondence or IRIS message references — review only through official channels", labelUrdu: "متعلقہ سرکاری خط و کتابت یا آئرس پیغام حوالہ — صرف سرکاری ذرائع سے دیکھیں" },
+];
+
+const TYPE_DOCUMENT_CATEGORIES = {
+  "return-or-records": { id: "return-records", label: "Preparation records connected to the stated return period — organise privately", labelUrdu: "بتائی گئی ریٹرن مدت سے متعلق تیاری ریکارڈ — نجی طور پر ترتیب دیں" },
+  "registration-or-iris": { id: "profile-check", label: "Official profile or registration information — verify only in IRIS or with FBR", labelUrdu: "سرکاری پروفائل یا رجسٹریشن معلومات — صرف آئرس یا ایف بی آر سے تصدیق کریں" },
+  "wealth-or-reconciliation": { id: "wealth-support", label: "Broad support categories connected to the question — organise privately", labelUrdu: "سوال سے متعلق عمومی ثبوت کی اقسام — نجی طور پر ترتیب دیں" },
+  other: { id: "clarification", label: "A short list of questions to clarify through FBR or a qualified professional", labelUrdu: "ایف بی آر یا اہل پیشہ ور سے وضاحت کے لیے مختصر سوالات کی فہرست" },
+  unsure: { id: "clarification", label: "A short list of questions to clarify through FBR or a qualified professional", labelUrdu: "ایف بی آر یا اہل پیشہ ور سے وضاحت کے لیے مختصر سوالات کی فہرست" },
+};
+
+export function getNoticeDocumentChecklist(type = "unsure") {
+  return [...COMMON_DOCUMENT_CATEGORIES, TYPE_DOCUMENT_CATEGORIES[type] || TYPE_DOCUMENT_CATEGORIES.unsure];
+}
+
 export const FBR_NOTICE_SUPPORT_URL = "https://www.fbr.gov.pk/contact-us/142252/173964";

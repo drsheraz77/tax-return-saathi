@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
-import { FILING_READINESS_STEPS, FREELANCER_FAQ, FREELANCER_PRE_FILING_CHECKLIST, getFilingReadinessSummary, IRIS_FAQ, OFFICIAL_RESOURCE_HUB, PRE_FILING_CHECKLIST, searchFreelancerFaq, searchIrisFaq } from "./officialResourceHub.js";
+import { FILING_READINESS_STEPS, FREELANCER_FAQ, FREELANCER_PRE_FILING_CHECKLIST, getFilingReadinessSummary, getOfficialResourceCategoryReview, IRIS_FAQ, OFFICIAL_RESOURCE_HUB, PRE_FILING_CHECKLIST, searchFreelancerFaq, searchIrisFaq } from "./officialResourceHub.js";
 import { trpc } from "./lib/trpc";
-import { getWealthStatementReadinessSummary, WEALTH_READINESS_OPTIONS, WEALTH_STATEMENT_PREPARATION_STEPS } from "./wealthStatementPreparation.js";
+import { getWealthReadinessPrintRows, getWealthStatementReadinessSummary, WEALTH_READINESS_OPTIONS, WEALTH_STATEMENT_PREPARATION_STEPS } from "./wealthStatementPreparation.js";
 
 const linkProps = { target: "_blank", rel: "noreferrer" };
 
@@ -144,6 +144,7 @@ export default function OfficialResourceHub() {
             {OFFICIAL_RESOURCE_HUB.sections.map((section) => {
               const isExpanded = expandedSection === section.id;
               const panelId = `official-resource-${section.id}`;
+              const categoryReview = getOfficialResourceCategoryReview(section);
               return (
                 <section className="official-resource-hub__accordion" key={section.id}>
                   <button className="official-resource-hub__section-toggle" type="button" onClick={() => setExpandedSection((current) => current === section.id ? "" : section.id)} aria-expanded={isExpanded} aria-controls={panelId}>
@@ -154,6 +155,7 @@ export default function OfficialResourceHub() {
                     <div id={panelId} className="official-resource-hub__section-content">
                       <p className="official-resource-hub__intro">{section.introduction}</p>
                       <p className="official-resource-hub__intro" lang="ur" dir="rtl">{section.introductionUrdu}</p>
+                      <p className="official-resource-hub__print-meta"><strong>Category source review · {categoryReview.reviewedOn}</strong><br />{categoryReview.scope}<br /><span lang="ur" dir="rtl">زمرہ وار ماخذ جائزہ · {categoryReview.reviewedOn}<br />{categoryReview.scopeUrdu}</span></p>
                       <ul className="official-resource-hub__list">
                         {section.resources.map((resource) => (
                           <li className="official-resource-hub__item" key={resource.id}>
@@ -351,6 +353,14 @@ export default function OfficialResourceHub() {
                       </li>
                     ))}
                   </ul>
+                  <section className="official-resource-hub__print-summary" aria-label="Printable local wealth readiness summary">
+                    <h4>Printable temporary readiness summary<br /><span lang="ur" dir="rtl">پرنٹ کے قابل عارضی تیاری خلاصہ</span></h4>
+                    <p>Only these broad on-screen states are included. No amounts, identities, documents, or account details are shown, saved, or sent.</p>
+                    <ul className="official-resource-hub__print-list">
+                      {getWealthReadinessPrintRows(wealthReadinessItems).map((row) => <li key={`print-${row.id}`}><strong>{row.label}: {row.status}</strong><br /><span lang="ur" dir="rtl">{row.labelUrdu}: {row.statusUrdu}</span></li>)}
+                    </ul>
+                  </section>
+                  <button className="official-resource-hub__print-action" type="button" onClick={() => window.print()}>Print temporary summary / <span lang="ur" dir="rtl">عارضی خلاصہ پرنٹ کریں</span></button>
                   <button className="official-resource-hub__print-action" type="button" onClick={() => setWealthReadinessItems({})}>Clear temporary choices / <span lang="ur" dir="rtl">عارضی انتخاب صاف کریں</span></button>
                   <p className="official-resource-hub__footer">Nothing from this board is written to browser storage, your account, or the app database. Verify current requirements through official FBR sources before acting.</p>
                 </section>

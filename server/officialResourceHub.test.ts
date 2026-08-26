@@ -5,6 +5,7 @@ import {
   FREELANCER_PRE_FILING_CHECKLIST,
   FILING_READINESS_STEPS,
   getFilingReadinessSummary,
+  getOfficialResourceCategoryReview,
   OFFICIAL_RESOURCE_HUB,
   PRE_FILING_CHECKLIST,
   searchFreelancerFaq,
@@ -70,5 +71,13 @@ describe("official resource hub", () => {
     expect(getFilingReadinessSummary()).toMatchObject({ completed: 0, total: 4, status: "not-started", label: "Not started" });
     expect(getFilingReadinessSummary({ "year-and-route": true, "records-in-hand": true })).toMatchObject({ completed: 2, status: "in-progress" });
     expect(getFilingReadinessSummary(Object.fromEntries(FILING_READINESS_STEPS.map((item) => [item.id, true])))).toMatchObject({ completed: 4, status: "steps-marked", label: "Preparation steps marked" });
+  });
+
+  it("derives a dated, limited review scope for each official resource category", () => {
+    const section = OFFICIAL_RESOURCE_HUB.sections.find((item) => item.id === "filing");
+    const review = getOfficialResourceCategoryReview(section);
+    expect(review.reviewedOn).toBe(OFFICIAL_RESOURCE_HUB.reviewedOn);
+    expect(review.scope).toContain(section?.title);
+    expect(review.scopeUrdu).toContain(section?.titleUrdu);
   });
 });

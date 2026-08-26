@@ -372,6 +372,14 @@ export function validateOfficialResourceHub(hub = OFFICIAL_RESOURCE_HUB) {
   );
 }
 
+export function getOfficialResourceCategoryReview(section) {
+  return {
+    reviewedOn: OFFICIAL_RESOURCE_HUB.reviewedOn,
+    scope: `${section.title}: linked official starting points and their stated preparation purpose were checked.`,
+    scopeUrdu: `${section.titleUrdu}: درج سرکاری ابتدائی لنکس اور ان کے بتائے گئے تیاری مقصد کا جائزہ لیا گیا۔`,
+  };
+}
+
 export function validateResourceTools(faq = IRIS_FAQ, checklist = PRE_FILING_CHECKLIST, freelancerFaq = FREELANCER_FAQ, freelancerChecklist = FREELANCER_PRE_FILING_CHECKLIST) {
   const isValidFaq = (items) => items.every((item) => {
     try {

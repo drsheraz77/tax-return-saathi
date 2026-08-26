@@ -168,3 +168,7 @@
 - [x] Add a versioned tax-year and official-source foundation for a small initial set of guidance topics, with clear source purpose and no claim that it is a complete tax-rule database.
 - [x] Expand the FBR-notice preparation path into a structured, non-determinative guidance workflow with safe notice-type, deadline-preparation, document-preparation, and escalation prompts.
 - [x] Add focused tests and verify the new privacy boundaries, Urdu/English interaction, responsive layout, full test suite, and production build before publication.
+- [x] Add a printable local-only wealth-readiness summary that presents only controlled completion states and never outputs or stores financial figures, identities, or documents.
+- [x] Add visible source-review tracking by official resource category, showing limited review scope and review date without asserting legal completeness.
+- [x] Add a guided FBR-notice response document checklist with broad non-sensitive categories, temporary choices, and escalation to the notice, IRIS, official FBR support, or a qualified professional.
+- [x] Add focused tests and verify the printable output, privacy boundaries, bilingual interaction, responsive layouts, full test suite, and production build before publication.

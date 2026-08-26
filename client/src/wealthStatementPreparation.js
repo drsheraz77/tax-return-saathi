@@ -41,3 +41,17 @@ export function getWealthStatementReadinessSummary(choices = {}) {
     notSure,
   };
 }
+
+export function getWealthReadinessPrintRows(choices = {}) {
+  const labels = Object.fromEntries(WEALTH_READINESS_OPTIONS.map((option) => [option.value, option]));
+  return WEALTH_STATEMENT_PREPARATION_STEPS.map((step) => {
+    const option = labels[choices[step.id]] || labels[""];
+    return {
+      id: step.id,
+      label: step.label,
+      labelUrdu: step.labelUrdu,
+      status: option.label,
+      statusUrdu: option.labelUrdu,
+    };
+  });
+}

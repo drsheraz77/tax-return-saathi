@@ -12,6 +12,8 @@ describe("priority preparation workflow wiring", () => {
     expect(taxYearPanel).toContain("fbr-notice-preparation-guide");
     expect(taxYearPanel).toContain("FBR_NOTICE_PREPARATION_TYPES");
     expect(taxYearPanel).toContain("does not identify a notice, calculate a deadline");
+    expect(taxYearPanel).toContain("getNoticeDocumentChecklist(noticeType)");
+    expect(taxYearPanel).toContain("Temporary document-preparation categories");
   });
 
   it("renders the temporary wealth board with a clear local-only storage boundary", () => {
@@ -19,5 +21,8 @@ describe("priority preparation workflow wiring", () => {
     expect(resourceHub).toContain("WEALTH_STATEMENT_PREPARATION_STEPS");
     expect(resourceHub).toContain("setWealthReadinessItems({})");
     expect(resourceHub).toContain("Nothing from this board is written to browser storage, your account, or the app database");
+    expect(resourceHub).toContain("getWealthReadinessPrintRows(wealthReadinessItems)");
+    expect(resourceHub).toContain("Print temporary summary");
+    expect(resourceHub).toContain("Category source review");
   });
 });
