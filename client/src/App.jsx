@@ -165,6 +165,10 @@ const T = {
     checkTitle: "Review your completed income tax return before filing",
     checkSub: "Upload a redacted completed return and selected supporting pages. AI will highlight visible gaps or possible discrepancies for you to verify before you submit on IRIS.",
     checkPrivacy: "This is an education-only review. It cannot access or reproduce FBR checks, confirm your figures, predict notices, submit a return, or make a binding tax decision. Your redacted file is sent through the app's server-side managed AI pathway for this analysis and is not persisted in this app's database. Do not upload passwords, OTPs, bank-account details, or an unmasked CNIC number.",
+    redactionConfirm: "I confirm that I removed or masked passwords, OTPs, full CNIC numbers, and bank, account, card, or IBAN details before selecting files.",
+    redactionHint: "This check is for your safety; it does not verify file contents. Upload only pages needed for this educational review.",
+    redactionRequired: "Confirm that you removed or masked restricted data before selecting documents.",
+    reviewTrustBoundary: "Independent preparation support, not an FBR service. For a demand, audit, court matter, or unresolved complex issue, use official FBR guidance or a qualified tax adviser before acting.",
     qIncome: "Which income sources did you have this year (Jul 2025 – Jun 2026)?",
     incomeOpts: [
       { id: "salary", label: "Salary" },
@@ -629,6 +633,10 @@ const T = {
     checkTitle: "جمع کرانے سے پہلے اپنا مکمل انکم ٹیکس ریٹرن جانچیں",
     checkSub: "اپنا چھپایا ہوا مکمل ریٹرن اور منتخب معاون صفحات اپ لوڈ کریں۔ اے آئی IRIS پر جمع کرانے سے پہلے نظر آنے والی کمی یا ممکنہ تضاد کی نشان دہی کرے گا تاکہ آپ اسے تصدیق کر سکیں۔",
     checkPrivacy: "یہ صرف تعلیمی جانچ ہے۔ یہ ایف بی آر کی جانچ تک رسائی نہیں رکھتا، اسے نقل نہیں کر سکتا، آپ کے اعداد کی تصدیق، نوٹس کی پیش گوئی، ریٹرن جمع، یا حتمی ٹیکس فیصلہ نہیں کر سکتا۔ آپ کی چھپائی ہوئی فائل اسی تجزیے کے لیے ایپ کے سرور سائیڈ مینیجڈ اے آئی راستے سے گزرتی ہے اور ایپ کے ڈیٹابیس میں محفوظ نہیں کی جاتی۔ پاس ورڈ، OTP، بینک اکاؤنٹ کی تفصیلات، یا بغیر چھپایا ہوا شناختی کارڈ نمبر اپ لوڈ نہ کریں۔",
+    redactionConfirm: "میں تصدیق کرتا/کرتی ہوں کہ فائل منتخب کرنے سے پہلے میں نے پاس ورڈ، OTP، مکمل شناختی کارڈ نمبر، اور بینک، اکاؤنٹ، کارڈ یا IBAN کی تفصیلات ہٹا یا چھپا دی ہیں۔",
+    redactionHint: "یہ جانچ صرف آپ کی حفاظت کے لیے ہے؛ یہ فائل کا مواد نہیں جانچتی۔ صرف وہ صفحات اپ لوڈ کریں جو اس تعلیمی جانچ کے لیے درکار ہوں۔",
+    redactionRequired: "دستاویز منتخب کرنے سے پہلے تصدیق کریں کہ آپ نے محدود معلومات ہٹا یا چھپا دی ہیں۔",
+    reviewTrustBoundary: "یہ آزاد تیاری کی مدد ہے، ایف بی آر سروس نہیں۔ رقم کے مطالبے، آڈٹ، عدالتی معاملے، یا کسی غیر حل شدہ پیچیدہ مسئلے میں کارروائی سے پہلے سرکاری ایف بی آر رہنمائی یا مستند ٹیکس مشیر سے رجوع کریں۔",
     qIncome: "اس سال (جولائی ۲۰۲۵ – جون ۲۰۲۶) آپ کی آمدنی کے ذرائع کون سے تھے؟",
     incomeOpts: [
       { id: "salary", label: "تنخواہ" },
@@ -1923,6 +1931,7 @@ function GapCheck({ lang, t }) {
   const [assets, setAssets] = useState({});
   const [firstTime, setFirstTime] = useState(null);
   const [files, setFiles] = useState([]);
+  const [redactionConfirmed, setRedactionConfirmed] = useState(false);
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState(null);
   const [err, setErr] = useState("");
@@ -1932,6 +1941,11 @@ function GapCheck({ lang, t }) {
 
   const onFiles = (e) => {
     setErr("");
+    if (!redactionConfirmed) {
+      setErr(t.redactionRequired);
+      e.target.value = "";
+      return;
+    }
     const picked = Array.from(e.target.files || []).slice(0, 3);
     for (const f of picked) {
       if (f.size > 4 * 1024 * 1024) {
@@ -1958,6 +1972,10 @@ function GapCheck({ lang, t }) {
 
   const analyze = async () => {
     setErr("");
+    if (!redactionConfirmed) {
+      setErr(t.redactionRequired);
+      return;
+    }
     if (files.length === 0) {
       setErr(t.needFile);
       return;
@@ -2133,7 +2151,7 @@ RESPOND ONLY with JSON, no markdown fences, no preamble, in ${lang === "ur" ? "U
         )}
 
         <button
-          onClick={() => { setResult(null); setFiles([]); }}
+          onClick={() => { setResult(null); setFiles([]); setRedactionConfirmed(false); }}
           className="rounded-lg px-5 py-2 text-sm font-semibold"
           style={{ background: COLORS.green, color: "#F6F4EC" }}
         >
@@ -2150,6 +2168,9 @@ RESPOND ONLY with JSON, no markdown fences, no preamble, in ${lang === "ur" ? "U
       </h2>
       <p className="text-sm mb-2 opacity-70">{t.checkSub}</p>
       <p className="text-xs mb-5" style={{ color: "#6B5A17" }}>🔒 {t.checkPrivacy}</p>
+      <div className="rounded-xl border p-3 mb-4 text-xs leading-relaxed" style={{ borderColor: "#B5CDBD", background: "#F0F5F1", color: COLORS.green2 }}>
+        <strong>{lang === "ur" ? "حد اور اگلا قدم:" : "Scope and next step:"}</strong> {t.reviewTrustBoundary}
+      </div>
 
       <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#DDD6C4", background: "#FFFFFF" }}>
         <div className="font-bold text-sm mb-2">{t.qIncome}</div>
@@ -2198,11 +2219,28 @@ RESPOND ONLY with JSON, no markdown fences, no preamble, in ${lang === "ur" ? "U
       <div className="rounded-xl border-2 border-dashed p-4 mb-4 text-center" style={{ borderColor: "#CBBF9C", background: "#FFFDF6" }}>
         <div className="font-bold text-sm mb-1">{t.uploadLabel}</div>
         <p className="text-xs opacity-60 mb-3">{t.uploadHint}</p>
+        <div className="rounded-lg border p-3 mb-3 text-start" style={{ borderColor: "#D9CFAF", background: "#FFFFFF" }}>
+          <label className="flex items-start gap-2 text-xs cursor-pointer" style={{ color: COLORS.ink }}>
+            <input
+              type="checkbox"
+              className="mt-0.5"
+              checked={redactionConfirmed}
+              onChange={(event) => {
+                const confirmed = event.target.checked;
+                setRedactionConfirmed(confirmed);
+                if (!confirmed) setFiles([]);
+              }}
+            />
+            <span>{t.redactionConfirm}</span>
+          </label>
+          <p className="text-[11px] mt-2 opacity-70">{t.redactionHint}</p>
+        </div>
         <input
           type="file"
           accept="application/pdf,image/*"
           multiple
           onChange={onFiles}
+          disabled={!redactionConfirmed}
           className="text-sm mx-auto"
           style={{ direction: "ltr" }}
         />

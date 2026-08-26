@@ -11,6 +11,22 @@ export const CHECKLIST_PROTOTYPE_QUESTIONS = [
     ],
   },
   {
+    id: "taxpayerPath",
+    kind: "multiple",
+    title: "Which high-level taxpayer paths describe you?",
+    urdu: "آپ کے لیے کون سے اعلیٰ سطح کے ٹیکس دہندہ راستے موزوں ہیں؟",
+    hint: "Select any paths that may apply. This only tailors preparation prompts; it does not determine filing obligations, tax treatment, or eligibility.",
+    options: [
+      ["salaried", "Salaried person or pensioner"],
+      ["freelancer", "Freelancer or independent worker"],
+      ["business_owner", "Business or shop owner"],
+      ["property_owner", "Property owner or landlord"],
+      ["investor", "Investor or savings holder"],
+      ["overseas_connection", "Overseas income, asset, or connection"],
+      ["not_sure", "I am not sure"],
+    ],
+  },
+  {
     id: "filingExperience",
     kind: "single",
     title: "Have you filed an FBR income-tax return before?",
@@ -173,7 +189,7 @@ function sanitiseAnswers(candidate) {
   return Object.fromEntries(Object.entries(candidate).flatMap(([questionId, value]) => {
     const allowed = VALID_ANSWER_VALUES[questionId];
     if (!allowed) return [];
-    if (questionId === "incomeCategories") {
+    if (["incomeCategories", "taxpayerPath"].includes(questionId)) {
       if (!Array.isArray(value)) return [];
       const values = [...new Set(value.filter((item) => typeof item === "string" && allowed.has(item)))];
       return values.length ? [[questionId, values]] : [];
@@ -257,6 +273,7 @@ function item(id, section, title, body, type = "gather") {
 
 export function getPrototypeChecklist(answers) {
   const categories = answers.incomeCategories || [];
+  const paths = answers.taxpayerPath || [];
   const items = [
     item("iris", "Before IRIS", "Open IRIS only when your information is ready", "Check the official filing guidance and current FBR notices before entering your return.", "review"),
   ];
@@ -267,6 +284,27 @@ export function getPrototypeChecklist(answers) {
 
   if (answers.filingExperience === "first_time" || answers.filingExperience === "not_sure") {
     items.push(item("access", "Before IRIS", "Review your IRIS access", "Confirm that you can use the official IRIS portal before you begin entering information.", "review"));
+  }
+  if (paths.includes("salaried") && !categories.includes("salary")) {
+    items.push(item("path-salaried", "Income records", "Confirm your salary or pension record path", "Gather the relevant salary, pension, and tax-deduction records for review. This is a preparation prompt, not a filing decision."));
+  }
+  if (paths.includes("freelancer") && !categories.includes("freelancer")) {
+    items.push(item("path-freelancer", "Income records", "Confirm your freelance or independent-work record path", "Gather high-level client-work, payment, and platform records for review. This checklist does not determine tax treatment."));
+  }
+  if (paths.includes("business_owner") && !categories.includes("business")) {
+    items.push(item("path-business", "Income records", "Confirm your business or shop record path", "Prepare a clear review set of sales, expenses, and supporting business records."));
+  }
+  if (paths.includes("property_owner") && !categories.includes("property")) {
+    items.push(item("path-property", "Income records", "Confirm your property record path", "Gather the relevant property-rent or sale records and supporting documents for review."));
+  }
+  if (paths.includes("investor") && !categories.includes("investments") && !categories.includes("bank_profit")) {
+    items.push(item("path-investor", "Investment records", "Confirm your investment or savings record path", "Prepare account or custody statements, transaction confirmations, income records, and any deduction certificates for review. This checklist does not determine tax treatment."));
+  }
+  if (paths.includes("overseas_connection")) {
+    items.push(item("path-overseas", "Special situations", "Get official or specialist guidance for an overseas connection", "Do not rely on this prototype to decide foreign-income, overseas-asset, or tax-residence treatment.", "seek_advice"));
+  }
+  if (paths.includes("not_sure")) {
+    items.push(item("path-uncertain", "Before you submit", "Confirm your taxpayer path", "Use official FBR guidance or a qualified adviser for facts you cannot confidently classify.", "seek_advice"));
   }
   if (categories.includes("salary")) {
     items.push(item("salary", "Income records", "Gather salary or pension records", "Keep the relevant salary, pension, and tax-deduction records available for review."));
@@ -307,7 +345,7 @@ export function getPrototypeChecklist(answers) {
   if (["some_missing", "not_started", "not_sure"].includes(answers.recordsReadiness)) {
     items.push(item("records", "Before you submit", "Resolve missing supporting records", "Pause and identify missing evidence before relying on any return information.", "review"));
   }
-  if (categories.includes("other") || Object.values(answers).some((value) => value === "not_sure")) {
+  if (categories.includes("other") || paths.includes("not_sure") || Object.values(answers).some((value) => value === "not_sure")) {
     items.push(item("uncertainty", "Before you submit", "Confirm uncertain items", "Use the official FBR guidance or a qualified adviser for facts you cannot confidently classify.", "seek_advice"));
   }
   return items;

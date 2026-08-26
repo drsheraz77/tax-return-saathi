@@ -12,6 +12,17 @@ describe("personalised filing checklist prototype", () => {
     expect(scopeItem?.body).toMatch(/do not use it to determine rules, rates, deadlines, or filing treatment/i);
   });
 
+  it("uses high-level taxpayer paths only to tailor preparation prompts without deciding treatment or eligibility", () => {
+    const questions = getPrototypeQuestions({});
+    const pathQuestion = questions.find((question) => question.id === "taxpayerPath");
+    expect(pathQuestion?.options.map(([value]) => value)).toEqual(["salaried", "freelancer", "business_owner", "property_owner", "investor", "overseas_connection", "not_sure"]);
+
+    const items = getPrototypeChecklist({ taxpayerPath: ["freelancer", "overseas_connection", "not_sure"] });
+    expect(items.map((entry) => entry.id)).toEqual(expect.arrayContaining(["path-freelancer", "path-overseas", "path-uncertain", "uncertainty"]));
+    expect(items.find((entry) => entry.id === "path-overseas")?.type).toBe("seek_advice");
+    expect(JSON.stringify(items)).not.toMatch(/CNIC|NTN|password|amount|tax rate|eligibility/i);
+  });
+
   it("keeps a small official-source set for process and legal verification without claiming personal tax outcomes", () => {
     const sources = getPrototypeSources();
     expect(sources.map((source) => source.id)).toEqual(["fbr-iris", "fbr-filing-guide", "fbr-laws-index"]);
@@ -82,7 +93,7 @@ describe("personalised filing checklist prototype", () => {
 
   it("serialises only allowed high-level answers and valid checklist progress marks", () => {
     const serialised = serialisePrototypeDraft({
-      answers: { taxYearScope: "ty_2026", filingExperience: "first_time", incomeCategories: ["business", "invalid"], cnic: "12345-0000000-0" },
+      answers: { taxYearScope: "ty_2026", taxpayerPath: ["business_owner", "invalid"], filingExperience: "first_time", incomeCategories: ["business", "invalid"], cnic: "12345-0000000-0" },
       itemStatus: { business: "Have it", iris: "completed", invented: "Need to find" },
       step: 2,
       showResults: false,
@@ -91,7 +102,7 @@ describe("personalised filing checklist prototype", () => {
     expect(draft).toMatchObject({
       version: 1,
       savedAt: 123456789,
-      answers: { taxYearScope: "ty_2026", filingExperience: "first_time", incomeCategories: ["business"] },
+      answers: { taxYearScope: "ty_2026", taxpayerPath: ["business_owner"], filingExperience: "first_time", incomeCategories: ["business"] },
       itemStatus: { business: "Have it" },
       step: 2,
       showResults: false,

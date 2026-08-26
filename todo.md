@@ -153,3 +153,8 @@
 - [x] Add official FBR source links and source-purpose labels to tailored checklist results, without representing them as determinations of a user’s tax position.
 - [x] Add a return-readiness handoff that summarises high-level checklist progress and directs unresolved or unsupported matters to official FBR guidance or a qualified adviser.
 - [x] Add focused unit coverage and verify the first audit batch for privacy boundaries, source destinations, Urdu-default rendering, responsive layout, tests, and production build before publication.
+- [x] Review the remaining audit recommendations against the current product and select the next non-duplicative, privacy-safe batch of two to three improvements.
+- [x] Add a non-sensitive taxpayer-path chooser to the tailored checklist, with preparation prompts for salaried people, freelancers, business owners, property owners, investors, overseas connections, and uncertain paths.
+- [x] Add a client-side pre-upload redaction check to the completed-return review so users actively confirm removal of restricted identifiers, credentials, and bank details before selecting a document.
+- [x] Add a clearly visible bilingual independent-platform and support-escalation boundary that distinguishes official FBR requirements from Tax Return Saathi preparation guidance.
+- [x] Add focused tests and verify the next audit batch’s privacy boundaries, bilingual interaction, responsive layout, full test suite, and production build before publication.

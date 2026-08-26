@@ -5,6 +5,7 @@ const responseValue = z.enum(["ready", "partly", "not_ready", "not_sure"]);
 export const checklistDraftPayloadSchema = z.object({
   answers: z.object({
     taxYearScope: z.enum(["ty_2026", "other_or_unsure"]).optional(),
+    taxpayerPath: z.array(z.enum(["salaried", "freelancer", "business_owner", "property_owner", "investor", "overseas_connection", "not_sure"])).max(7).optional(),
     filingExperience: z.enum(["first_time", "filed_before", "not_sure"]).optional(),
     incomeCategories: z.array(z.enum(["salary", "business", "property", "freelancer", "bank_profit", "investments", "other"])).max(7).optional(),
     businessRecords: responseValue.optional(),
@@ -19,6 +20,13 @@ export const checklistDraftPayloadSchema = z.object({
     "tax-year-scope": z.enum(["Have it", "Need to find", "Not sure"]).optional(),
     iris: z.enum(["Have it", "Need to find", "Not sure"]).optional(),
     access: z.enum(["Have it", "Need to find", "Not sure"]).optional(),
+    "path-salaried": z.enum(["Have it", "Need to find", "Not sure"]).optional(),
+    "path-freelancer": z.enum(["Have it", "Need to find", "Not sure"]).optional(),
+    "path-business": z.enum(["Have it", "Need to find", "Not sure"]).optional(),
+    "path-property": z.enum(["Have it", "Need to find", "Not sure"]).optional(),
+    "path-investor": z.enum(["Have it", "Need to find", "Not sure"]).optional(),
+    "path-overseas": z.enum(["Have it", "Need to find", "Not sure"]).optional(),
+    "path-uncertain": z.enum(["Have it", "Need to find", "Not sure"]).optional(),
     salary: z.enum(["Have it", "Need to find", "Not sure"]).optional(),
     business: z.enum(["Have it", "Need to find", "Not sure"]).optional(),
     "business-ready": z.enum(["Have it", "Need to find", "Not sure"]).optional(),
@@ -34,7 +42,7 @@ export const checklistDraftPayloadSchema = z.object({
     records: z.enum(["Have it", "Need to find", "Not sure"]).optional(),
     uncertainty: z.enum(["Have it", "Need to find", "Not sure"]).optional(),
   }).strict(),
-  step: z.number().int().min(0).max(9),
+  step: z.number().int().min(0).max(10),
   showResults: z.boolean(),
 });
 
