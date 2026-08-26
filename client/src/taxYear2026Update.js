@@ -142,6 +142,130 @@ export const REVIEWED_SOURCE_CHANGE_LOG = {
   ],
 };
 
+export const MANUAL_SOURCE_REVIEW_WORKFLOW = {
+  reviewedOn: "26 August 2026",
+  status: "scheduled-manual-review-guidance",
+  title: "Future manual reviewed-source workflow",
+  titleUrdu: "آئندہ دستی جائزہ شدہ سورس ورک فلو",
+  nextReviewDateIso: "2026-11-26",
+  nextReviewDisplayDate: "26 November 2026",
+  cadence: "quarterly-manual-review",
+  cadenceLabel: "Quarterly manual review of this fixed four-destination catalogue",
+  cadenceLabelUrdu: "اس مقررہ چار-ذرائع کیٹلاگ کا سہ ماہی دستی جائزہ",
+  limitation: "This is a dated accountability workflow for a limited app catalogue. It does not create a live FBR monitor, automatic change detector, complete legal update service, personal alert, or proof that a source has not changed.",
+  limitationUrdu: "یہ محدود ایپ کیٹلاگ کے لیے تاریخ شدہ جواب دہی کا ورک فلو ہے۔ یہ لائیو ایف بی آر مانیٹر، خودکار تبدیلی شناخت کنندہ، مکمل قانونی اپڈیٹ سروس، ذاتی الرٹ یا اس بات کا ثبوت نہیں بناتا کہ کوئی ذریعہ تبدیل نہیں ہوا۔",
+  steps: [
+    {
+      id: "open-fixed-destinations-directly",
+      label: "Open each fixed official destination directly on the scheduled review date.",
+      labelUrdu: "مقررہ جائزہ تاریخ پر ہر طے شدہ سرکاری ذریعہ براہِ راست کھولیں۔",
+    },
+    {
+      id: "check-catalogue-purpose-only",
+      label: "Check only whether this app's limited source label and purpose still point users to the intended official starting place.",
+      labelUrdu: "صرف یہ دیکھیں کہ کیا ایپ کا محدود سورس لیبل اور مقصد اب بھی صارفین کو مطلوبہ سرکاری ابتدائی جگہ تک لے جاتا ہے۔",
+    },
+    {
+      id: "record-app-side-review-event",
+      label: "Record a dated app-side review event or a narrowly observable public-page finding; do not infer a personal rule, deadline, tax treatment, or outcome.",
+      labelUrdu: "تاریخ شدہ ایپ کی طرف سے جائزہ واقعہ یا محدود قابلِ مشاہدہ عوامی صفحہ نوٹ ریکارڈ کریں؛ ذاتی قاعدہ، ڈیڈ لائن، ٹیکس ٹریٹمنٹ یا نتیجہ اخذ نہ کریں۔",
+    },
+    {
+      id: "escalate-uncertainty",
+      label: "For legal interpretation, a specific case, or unclear information, direct the user to FBR or a qualified professional instead of expanding this catalogue.",
+      labelUrdu: "قانونی تشریح، مخصوص کیس یا غیر واضح معلومات کے لیے اس کیٹلاگ کو بڑھانے کے بجائے صارف کو ایف بی آر یا اہل پیشہ ور کی طرف رہنمائی دیں۔",
+    },
+  ],
+  destinations: [
+    {
+      id: "filing-guidance",
+      title: "FBR filing guidance",
+      titleUrdu: "ایف بی آر فائلنگ رہنمائی",
+      sourceUrl: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71158",
+      sourceLabel: "Open FBR filing guidance",
+    },
+    {
+      id: "due-dates",
+      title: "FBR published due-date categories",
+      titleUrdu: "ایف بی آر شائع شدہ ڈیڈ لائن زمرے",
+      sourceUrl: "https://www.fbr.gov.pk/categ/income-tax-due-dates/51147/40846/81148",
+      sourceLabel: "Open FBR due dates",
+    },
+    {
+      id: "laws-index",
+      title: "FBR Acts, Rules, and Ordinances index",
+      titleUrdu: "ایف بی آر ایکٹس، رولز اور آرڈیننس انڈیکس",
+      sourceUrl: "https://www.fbr.gov.pk/act-rules-ordinances/131226",
+      sourceLabel: "Open FBR laws index",
+    },
+    {
+      id: "contact-route",
+      title: "FBR contact and support route",
+      titleUrdu: "ایف بی آر رابطہ اور معاونت کا راستہ",
+      sourceUrl: "https://www.fbr.gov.pk/contact-us/142252/173964",
+      sourceLabel: "Open FBR contact page",
+    },
+  ],
+};
+
+export const URDU_FIRST_ESCALATION_GUIDANCE_CARDS = [
+  {
+    id: "urgent-notice-audit-court",
+    title: "Official notice, audit, demand, court, or urgent issue",
+    titleUrdu: "سرکاری نوٹس، آڈٹ، ڈیمانڈ، عدالتی یا فوری مسئلہ",
+    guidance: "Use the official FBR contact route promptly and seek qualified help where your facts need assessment.",
+    guidanceUrdu: "فوراً سرکاری ایف بی آر رابطہ راستہ استعمال کریں اور جہاں حقائق کی جانچ درکار ہو اہل مدد لیں۔",
+    boundary: "This card does not identify a notice, calculate a deadline, prepare a reply, or predict an outcome. Do not enter notice details here.",
+    boundaryUrdu: "یہ کارڈ نوٹس کی شناخت، ڈیڈ لائن کا حساب، جواب کی تیاری یا نتیجے کی پیش گوئی نہیں کرتا۔ نوٹس کی تفصیل یہاں درج نہ کریں۔",
+    sourceUrl: "https://www.fbr.gov.pk/contact-us/142252/173964",
+    sourceLabel: "Open FBR contact and support",
+  },
+  {
+    id: "overseas-residency-cross-border",
+    title: "Overseas, residency, or cross-border connection",
+    titleUrdu: "بیرونِ ملک، رہائشی حیثیت یا سرحد پار تعلق",
+    guidance: "Use the official contact route or qualified help when your circumstances need interpretation.",
+    guidanceUrdu: "جب آپ کی صورتِ حال کی تشریح درکار ہو تو سرکاری رابطہ راستہ یا اہل مدد استعمال کریں۔",
+    boundary: "This card does not determine residence, source, filing status, eligibility, or tax treatment.",
+    boundaryUrdu: "یہ کارڈ رہائش، ماخذ، فائلنگ اسٹیٹس، اہلیت یا ٹیکس ٹریٹمنٹ طے نہیں کرتا۔",
+    sourceUrl: "https://www.fbr.gov.pk/contact-us/142252/173964",
+    sourceLabel: "Open FBR contact and support",
+  },
+  {
+    id: "business-self-employment-partnership",
+    title: "Business, self-employment, partnership, or changing work pattern",
+    titleUrdu: "کاروبار، خود روزگاری، شراکت داری یا بدلتی ہوئی کام کی صورت",
+    guidance: "Use the official contact route or qualified help for facts that require classification or interpretation.",
+    guidanceUrdu: "درجہ بندی یا تشریح کے محتاج حقائق کے لیے سرکاری رابطہ راستہ یا اہل مدد استعمال کریں۔",
+    boundary: "This card does not classify a business, decide an obligation, or prepare an official return.",
+    boundaryUrdu: "یہ کارڈ کاروبار کی درجہ بندی، ذمہ داری کا فیصلہ یا سرکاری ریٹرن تیار نہیں کرتا۔",
+    sourceUrl: "https://www.fbr.gov.pk/contact-us/142252/173964",
+    sourceLabel: "Open FBR contact and support",
+  },
+  {
+    id: "property-investment-assets",
+    title: "Property, investment, disposal, or a substantial change in assets or liabilities",
+    titleUrdu: "جائیداد، سرمایہ کاری، فروخت یا اثاثوں یا ذمہ داریوں میں نمایاں تبدیلی",
+    guidance: "Keep relevant private records and use the official contact route or qualified help for unresolved questions.",
+    guidanceUrdu: "متعلقہ نجی ریکارڈ رکھیں اور غیر حل شدہ سوالات کے لیے سرکاری رابطہ راستہ یا اہل مدد استعمال کریں۔",
+    boundary: "This card does not value, reconcile, classify, calculate, or assess any investment or asset information.",
+    boundaryUrdu: "یہ کارڈ کسی سرمایہ کاری یا اثاثہ معلومات کی قدر، مصالحت، درجہ بندی، حساب یا جانچ نہیں کرتا۔",
+    sourceUrl: "https://www.fbr.gov.pk/contact-us/142252/173964",
+    sourceLabel: "Open FBR contact and support",
+  },
+  {
+    id: "unclear-official-route",
+    title: "Unclear official route or information",
+    titleUrdu: "غیر واضح سرکاری راستہ یا معلومات",
+    guidance: "Pause before acting and use the official FBR contact route or qualified help to identify an appropriate next question.",
+    guidanceUrdu: "عمل سے پہلے رکیں اور مناسب اگلا سوال معلوم کرنے کے لیے سرکاری ایف بی آر رابطہ راستہ یا اہل مدد استعمال کریں۔",
+    boundary: "This card does not choose a filing route, determine eligibility, confirm completeness, or give legal or tax advice.",
+    boundaryUrdu: "یہ کارڈ فائلنگ راستہ منتخب، اہلیت طے، تکمیل کی تصدیق یا قانونی یا ٹیکس مشورہ نہیں دیتا۔",
+    sourceUrl: "https://www.fbr.gov.pk/contact-us/142252/173964",
+    sourceLabel: "Open FBR contact and support",
+  },
+];
+
 export function validateOfficialSourceUpdateCentre(centre = OFFICIAL_SOURCE_UPDATE_CENTRE) {
   return centre.reviewedOn &&
     centre.status === "reviewed-not-live" &&
@@ -191,4 +315,38 @@ export function validateReviewedSourceChangeLog(log = REVIEWED_SOURCE_CHANGE_LOG
         return false;
       }
     });
+}
+
+export function validateManualSourceReviewWorkflow(workflow = MANUAL_SOURCE_REVIEW_WORKFLOW) {
+  return workflow.reviewedOn &&
+    workflow.status === "scheduled-manual-review-guidance" &&
+    workflow.title &&
+    workflow.titleUrdu &&
+    /^\d{4}-\d{2}-\d{2}$/.test(workflow.nextReviewDateIso) &&
+    workflow.nextReviewDisplayDate &&
+    workflow.cadence === "quarterly-manual-review" &&
+    workflow.cadenceLabel &&
+    workflow.cadenceLabelUrdu &&
+    workflow.limitation &&
+    workflow.limitationUrdu &&
+    workflow.steps.length === 4 &&
+    workflow.steps.every((step) => step.id && step.label && step.labelUrdu) &&
+    workflow.destinations.length === 4 &&
+    workflow.destinations.every((destination) => {
+      try {
+        return destination.id && destination.title && destination.titleUrdu && destination.sourceLabel && new URL(destination.sourceUrl).hostname === "www.fbr.gov.pk";
+      } catch {
+        return false;
+      }
+    });
+}
+
+export function validateUrduFirstEscalationGuidanceCards(cards = URDU_FIRST_ESCALATION_GUIDANCE_CARDS) {
+  return cards.length === 5 && cards.every((card) => {
+    try {
+      return card.id && card.title && card.titleUrdu && card.guidance && card.guidanceUrdu && card.boundary && card.boundaryUrdu && card.sourceLabel && new URL(card.sourceUrl).hostname === "www.fbr.gov.pk";
+    } catch {
+      return false;
+    }
+  });
 }

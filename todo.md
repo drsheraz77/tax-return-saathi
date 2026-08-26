@@ -237,3 +237,7 @@
 - [x] Add a bilingual, manually maintained source-change log that records catalogue review changes, source additions, and source-status notes without claiming automatic monitoring or a live FBR feed.
 - [x] Add visible source-governance boundaries and official destination links for the expanded catalogue and change log without collecting visitor data or changing profile fields.
 - [x] Add focused tests and verify catalogue/change-log ordering, official-host validation, review boundaries, Urdu/English interaction, responsive layout, full suite, and production build before publication.
+- [x] Add a clearly dated future manual-review workflow that remains a guidance and accountability aid, not a live FBR-monitoring or personal update service.
+- [x] Add small Urdu-first guidance cards for bounded escalation categories, linked only to the approved FBR contact route or qualified professional guidance without collecting case details.
+- [x] Configure a periodic manual-review reminder limited to the four approved official FBR destinations, with no scraping, automatic source-change claim, or visitor-data processing.
+- [x] Add focused tests and verify the workflow, escalation-card boundaries, scheduled reminder scope, Urdu/English presentation, responsive layout, full suite, and production build before publication.

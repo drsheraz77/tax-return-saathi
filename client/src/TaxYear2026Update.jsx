@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FBR_NOTICE_ARCHIVE } from "./fbrNoticeArchive.js";
 import { FBR_NOTICE_PREPARATION_TYPES, FBR_NOTICE_SUPPORT_URL, getNoticeDocumentChecklist, getNoticePreparationSteps } from "./fbrNoticePreparation.js";
 import { getLearningPath, getPlanningReflection, getStarterKnowledgeTopics, TAX_KNOWLEDGE_FOUNDATION, TAX_LEARNING_PATHS, TAX_PLANNING_REFLECTIONS, TAX_PREPARATION_VISUAL_JOURNEY, TAX_SOURCE_TOPIC_BRIEFS } from "./taxKnowledgeFoundation.js";
-import { OFFICIAL_SOURCE_UPDATE_CENTRE, REVIEWED_SOURCE_CHANGE_LOG, TAX_YEAR_2026_SOURCES, TAX_YEAR_2026_UPDATE } from "./taxYear2026Update.js";
+import { MANUAL_SOURCE_REVIEW_WORKFLOW, OFFICIAL_SOURCE_UPDATE_CENTRE, REVIEWED_SOURCE_CHANGE_LOG, TAX_YEAR_2026_SOURCES, TAX_YEAR_2026_UPDATE, URDU_FIRST_ESCALATION_GUIDANCE_CARDS } from "./taxYear2026Update.js";
 
 const linkProps = {
   target: "_blank",
@@ -14,6 +14,8 @@ export default function TaxYear2026Update() {
   const [archiveOpen, setArchiveOpen] = useState(false);
   const [sourceUpdateCentreOpen, setSourceUpdateCentreOpen] = useState(false);
   const [sourceChangeLogOpen, setSourceChangeLogOpen] = useState(false);
+  const [manualSourceReviewWorkflowOpen, setManualSourceReviewWorkflowOpen] = useState(false);
+  const [escalationGuidanceCardsOpen, setEscalationGuidanceCardsOpen] = useState(false);
   const [noticeGuideOpen, setNoticeGuideOpen] = useState(false);
   const [noticeType, setNoticeType] = useState("unsure");
   const [noticeDocumentItems, setNoticeDocumentItems] = useState({});
@@ -213,6 +215,45 @@ export default function TaxYear2026Update() {
                     </li>
                   ))}
                 </ol>
+              </section>
+            )}
+            <button className="tax-year-update__archive-toggle" type="button" onClick={() => setManualSourceReviewWorkflowOpen((open) => !open)} aria-expanded={manualSourceReviewWorkflowOpen} aria-controls="manual-source-review-workflow">
+              <span lang="ur" dir="rtl">آئندہ دستی سورس جائزہ ورک فلو کھولیں</span> · {manualSourceReviewWorkflowOpen ? "Hide" : "Open"} future manual source-review workflow
+            </button>
+            {manualSourceReviewWorkflowOpen && (
+              <section id="manual-source-review-workflow" className="tax-year-update__source-map" aria-label="Future manual reviewed-source workflow">
+                <h3 className="tax-year-update__source-heading"><span lang="ur" dir="rtl">{MANUAL_SOURCE_REVIEW_WORKFLOW.titleUrdu}</span><br />{MANUAL_SOURCE_REVIEW_WORKFLOW.title}</h3>
+                <p className="tax-year-update__source-copy" lang="ur" dir="rtl"><strong>اگلا دستی جائزہ: <time dateTime={MANUAL_SOURCE_REVIEW_WORKFLOW.nextReviewDateIso}>{MANUAL_SOURCE_REVIEW_WORKFLOW.nextReviewDisplayDate}</time>۔</strong><br />{MANUAL_SOURCE_REVIEW_WORKFLOW.cadenceLabelUrdu}</p>
+                <p className="tax-year-update__source-copy"><strong>Next manual review: <time dateTime={MANUAL_SOURCE_REVIEW_WORKFLOW.nextReviewDateIso}>{MANUAL_SOURCE_REVIEW_WORKFLOW.nextReviewDisplayDate}</time>.</strong><br />{MANUAL_SOURCE_REVIEW_WORKFLOW.cadenceLabel}</p>
+                <p className="tax-year-update__source-copy" lang="ur" dir="rtl">{MANUAL_SOURCE_REVIEW_WORKFLOW.limitationUrdu}</p>
+                <p className="tax-year-update__source-copy">{MANUAL_SOURCE_REVIEW_WORKFLOW.limitation}</p>
+                <ol className="tax-year-update__source-list">
+                  {MANUAL_SOURCE_REVIEW_WORKFLOW.steps.map((step) => <li className="tax-year-update__source-item" key={step.id}><span className="tax-year-update__source-title"><span lang="ur" dir="rtl">{step.labelUrdu}</span><br />{step.label}</span></li>)}
+                </ol>
+                <span className="tax-year-update__connection-label"><span lang="ur" dir="rtl">صرف یہ چار طے شدہ سرکاری ذرائع</span> / Only these four fixed official destinations</span>
+                <ul className="tax-year-update__source-list">
+                  {MANUAL_SOURCE_REVIEW_WORKFLOW.destinations.map((destination) => <li className="tax-year-update__source-item" key={destination.id}><span className="tax-year-update__source-title"><span lang="ur" dir="rtl">{destination.titleUrdu}</span><br />{destination.title}</span><a className="tax-year-update__archive-link" href={destination.sourceUrl} {...linkProps}>{destination.sourceLabel} ↗</a></li>)}
+                </ul>
+              </section>
+            )}
+            <button className="tax-year-update__archive-toggle" type="button" onClick={() => setEscalationGuidanceCardsOpen((open) => !open)} aria-expanded={escalationGuidanceCardsOpen} aria-controls="urdu-first-escalation-guidance-cards">
+              <span lang="ur" dir="rtl">اردو-اوّل رہنمائی کارڈ کھولیں</span> · {escalationGuidanceCardsOpen ? "Hide" : "Open"} Urdu-first escalation guidance cards
+            </button>
+            {escalationGuidanceCardsOpen && (
+              <section id="urdu-first-escalation-guidance-cards" className="tax-year-update__source-map" aria-label="Urdu-first escalation guidance cards">
+                <h3 className="tax-year-update__source-heading"><span lang="ur" dir="rtl">غیر واضح یا پیچیدہ معاملے میں عمومی رہنمائی</span><br />General guidance for unclear or complex matters</h3>
+                <p className="tax-year-update__source-copy" lang="ur" dir="rtl">یہ کارڈ صرف عمومی اگلا قدم بتاتے ہیں۔ کوئی تفصیل، دستاویز، شناخت، رقم، پاس ورڈ یا نوٹس متن درج نہ کریں۔</p>
+                <p className="tax-year-update__source-copy">These cards show only a broad next step. Do not enter details, documents, identity, amounts, passwords, or notice text.</p>
+                <ul className="tax-year-update__source-list">
+                  {URDU_FIRST_ESCALATION_GUIDANCE_CARDS.map((card) => (
+                    <li className="tax-year-update__source-item" key={card.id}>
+                      <span className="tax-year-update__source-title"><span lang="ur" dir="rtl">{card.titleUrdu}</span><br />{card.title}</span>
+                      <p className="tax-year-update__source-purpose"><span lang="ur" dir="rtl">{card.guidanceUrdu}</span><br />{card.guidance}</p>
+                      <p className="tax-year-update__source-purpose"><strong lang="ur" dir="rtl">حد:</strong> <span lang="ur" dir="rtl">{card.boundaryUrdu}</span><br /><strong>Limit:</strong> {card.boundary}</p>
+                      <a className="tax-year-update__archive-link" href={card.sourceUrl} {...linkProps}>{card.sourceLabel} ↗</a>
+                    </li>
+                  ))}
+                </ul>
               </section>
             )}
             <div className="tax-year-update__links">

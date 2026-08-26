@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { FBR_NOTICE_ARCHIVE } from "../client/src/fbrNoticeArchive.js";
-import { OFFICIAL_SOURCE_UPDATE_CENTRE, REVIEWED_SOURCE_CHANGE_LOG, TAX_YEAR_2026_SOURCES, TAX_YEAR_2026_UPDATE, validateOfficialSourceUpdateCentre, validateReviewedSourceChangeLog } from "../client/src/taxYear2026Update.js";
+import { MANUAL_SOURCE_REVIEW_WORKFLOW, OFFICIAL_SOURCE_UPDATE_CENTRE, REVIEWED_SOURCE_CHANGE_LOG, TAX_YEAR_2026_SOURCES, TAX_YEAR_2026_UPDATE, URDU_FIRST_ESCALATION_GUIDANCE_CARDS, validateManualSourceReviewWorkflow, validateOfficialSourceUpdateCentre, validateReviewedSourceChangeLog, validateUrduFirstEscalationGuidanceCards } from "../client/src/taxYear2026Update.js";
 
 describe("Tax Year 2026 filing update", () => {
   it("uses the verified filing period and published due dates", () => {
@@ -38,6 +38,22 @@ describe("Tax Year 2026 filing update", () => {
     ]);
     expect(REVIEWED_SOURCE_CHANGE_LOG.entries.every((entry) => entry.titleUrdu && entry.summaryUrdu && entry.scopeUrdu && new URL(entry.sourceUrl).hostname === "www.fbr.gov.pk")).toBe(true);
     expect(REVIEWED_SOURCE_CHANGE_LOG.entries.map((entry) => entry.dateIso)).toEqual([...REVIEWED_SOURCE_CHANGE_LOG.entries.map((entry) => entry.dateIso)].sort().reverse());
+  });
+
+  it("keeps the future manual review workflow dated, quarterly, and limited to the four approved FBR destinations", () => {
+    expect(validateManualSourceReviewWorkflow()).toBe(true);
+    expect(MANUAL_SOURCE_REVIEW_WORKFLOW.status).toBe("scheduled-manual-review-guidance");
+    expect(MANUAL_SOURCE_REVIEW_WORKFLOW.nextReviewDateIso).toBe("2026-11-26");
+    expect(MANUAL_SOURCE_REVIEW_WORKFLOW.cadence).toBe("quarterly-manual-review");
+    expect(MANUAL_SOURCE_REVIEW_WORKFLOW.limitation).toMatch(/not create a live FBR monitor/i);
+    expect(MANUAL_SOURCE_REVIEW_WORKFLOW.destinations.map((destination) => destination.id)).toEqual(["filing-guidance", "due-dates", "laws-index", "contact-route"]);
+    expect(MANUAL_SOURCE_REVIEW_WORKFLOW.destinations.every((destination) => destination.titleUrdu && new URL(destination.sourceUrl).hostname === "www.fbr.gov.pk")).toBe(true);
+  });
+
+  it("keeps Urdu-first escalation guidance bounded to broad categories and the approved FBR contact route", () => {
+    expect(validateUrduFirstEscalationGuidanceCards()).toBe(true);
+    expect(URDU_FIRST_ESCALATION_GUIDANCE_CARDS.map((card) => card.id)).toEqual(["urgent-notice-audit-court", "overseas-residency-cross-border", "business-self-employment-partnership", "property-investment-assets", "unclear-official-route"]);
+    expect(URDU_FIRST_ESCALATION_GUIDANCE_CARDS.every((card) => card.titleUrdu && card.guidanceUrdu && card.boundaryUrdu && card.boundary.includes("does not") && card.sourceUrl === "https://www.fbr.gov.pk/contact-us/142252/173964")).toBe(true);
   });
 
   it("keeps the dated FBR notice archive ordered and clearly separates current from historical notices", () => {

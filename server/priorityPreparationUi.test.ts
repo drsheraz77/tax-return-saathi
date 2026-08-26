@@ -121,4 +121,15 @@ describe("priority preparation workflow wiring", () => {
     expect(taxYearPanel).toContain("REVIEWED_SOURCE_CHANGE_LOG.limitation");
     expect(taxYearPanel).toContain("entry.sourceLabel");
   });
+
+  it("renders a dated four-destination manual-review workflow and Urdu-first escalation cards without a monitoring or intake claim", () => {
+    expect(taxYearPanel).toContain("MANUAL_SOURCE_REVIEW_WORKFLOW");
+    expect(taxYearPanel).toContain("manual-source-review-workflow");
+    expect(taxYearPanel).toContain("Only these four fixed official destinations");
+    expect(taxYearPanel).toContain("MANUAL_SOURCE_REVIEW_WORKFLOW.limitation");
+    expect(taxYearPanel).toContain("URDU_FIRST_ESCALATION_GUIDANCE_CARDS");
+    expect(taxYearPanel).toContain("urdu-first-escalation-guidance-cards");
+    expect(taxYearPanel).toContain("Do not enter details, documents, identity, amounts, passwords, or notice text.");
+    expect(taxYearPanel).toContain("card.boundaryUrdu");
+  });
 });

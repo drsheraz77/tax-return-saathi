@@ -29,3 +29,9 @@ This source does **not** mean the app operates FBR support, confirms support ava
 The reviewed starter catalogue now includes one additional bounded record: **Official contact and escalation route**, linked to the official FBR contact page above. Its sole purpose is to direct a visitor with an unclear, urgent, notice, audit, demand, court, foreign, residency, or other complex matter toward an official route or qualified help; it is not app-operated case support.
 
 The accompanying source-change log records only dated **app-side catalogue events**: the support-route record addition and limited manual reviews of the filing-guidance, due-date, and laws-index destinations. It must not state or imply that FBR changed or did not change a source, detect changes automatically, provide a complete FBR change history, or provide a personal update service.
+
+## Future manual-review boundary: 26 August 2026
+
+The next displayed catalogue review date is **26 November 2026**. The associated quarterly review prompt is limited to the four destinations in this record: FBR filing guidance, FBR due-date categories, FBR’s Acts/Rules/Ordinances index, and FBR’s contact route. It is a reminder to perform a manual review; it neither scrapes sources nor writes to the website, records visitor information, or publishes an update automatically.
+
+Any future log entry must identify a dated app-side review event or an exact, narrowly observable public-page fact. If a reviewer encounters legal ambiguity, individual circumstances, deadline uncertainty, a notice, or a question outside these four page purposes, the correct action is to direct the visitor to FBR or qualified advice rather than expand the catalogue or make a determination.
