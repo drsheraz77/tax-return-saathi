@@ -4,6 +4,7 @@ const responseValue = z.enum(["ready", "partly", "not_ready", "not_sure"]);
 
 export const checklistDraftPayloadSchema = z.object({
   answers: z.object({
+    taxYearScope: z.enum(["ty_2026", "other_or_unsure"]).optional(),
     filingExperience: z.enum(["first_time", "filed_before", "not_sure"]).optional(),
     incomeCategories: z.array(z.enum(["salary", "business", "property", "freelancer", "bank_profit", "investments", "other"])).max(7).optional(),
     businessRecords: responseValue.optional(),
@@ -15,6 +16,7 @@ export const checklistDraftPayloadSchema = z.object({
     recordsReadiness: z.enum(["complete", "some_missing", "not_started", "not_sure"]).optional(),
   }).strict(),
   itemStatus: z.object({
+    "tax-year-scope": z.enum(["Have it", "Need to find", "Not sure"]).optional(),
     iris: z.enum(["Have it", "Need to find", "Not sure"]).optional(),
     access: z.enum(["Have it", "Need to find", "Not sure"]).optional(),
     salary: z.enum(["Have it", "Need to find", "Not sure"]).optional(),
@@ -32,7 +34,7 @@ export const checklistDraftPayloadSchema = z.object({
     records: z.enum(["Have it", "Need to find", "Not sure"]).optional(),
     uncertainty: z.enum(["Have it", "Need to find", "Not sure"]).optional(),
   }).strict(),
-  step: z.number().int().min(0).max(8),
+  step: z.number().int().min(0).max(9),
   showResults: z.boolean(),
 });
 

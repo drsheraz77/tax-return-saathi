@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { startLogin } from "./const";
 import { trpc } from "./lib/trpc";
-import { formatPrototypeDraftSavedAt, getPrototypeChecklist, getPrototypeDraftSavedAtIso, getPrototypeQuestions, loadPrototypeDraft, removePrototypeDraft, savePrototypeDraft } from "./personalisedChecklistPrototype.js";
+import { formatPrototypeDraftSavedAt, getPrototypeChecklist, getPrototypeDraftSavedAtIso, getPrototypeQuestions, getPrototypeSources, loadPrototypeDraft, removePrototypeDraft, savePrototypeDraft } from "./personalisedChecklistPrototype.js";
 
 const sectionOrder = ["Before IRIS", "Income records", "Investment records", "Tax deducted and records", "Special situations", "Before you submit"];
 
@@ -38,6 +38,15 @@ export default function PersonalisedChecklistPrototype() {
   const questions = useMemo(() => getPrototypeQuestions(answers), [answers]);
   const activeQuestion = questions[step];
   const checklist = useMemo(() => getPrototypeChecklist(answers), [answers]);
+  const officialSources = getPrototypeSources();
+  const readiness = useMemo(() => checklist.reduce((summary, entry) => {
+    const status = itemStatus[entry.id];
+    if (status === "Have it") summary.ready += 1;
+    else if (status === "Need to find") summary.needsFinding += 1;
+    else if (status === "Not sure") summary.notSure += 1;
+    else summary.unmarked += 1;
+    return summary;
+  }, { ready: 0, needsFinding: 0, notSure: 0, unmarked: 0 }), [checklist, itemStatus]);
   const isAnswered = activeQuestion?.kind === "multiple"
     ? (answers[activeQuestion.id] || []).length > 0
     : Boolean(answers[activeQuestion?.id]);
@@ -206,8 +215,18 @@ export default function PersonalisedChecklistPrototype() {
         .filing-prototype__status { display: flex; flex-wrap: wrap; gap: 6px; }
         .filing-prototype__status button { border: 1px solid #cfc59a; border-radius: 999px; background: transparent; color: #355245; cursor: pointer; padding: 5px 8px; font: 700 11px/1 Arial, sans-serif; }
         .filing-prototype__status button[aria-pressed="true"] { border-color: #0B3D2E; background: #0B3D2E; color: #fffdf2; }
+        .filing-prototype__handoff, .filing-prototype__sources { margin: 15px 0 0; border: 1px solid #ddd2a8; border-radius: 11px; background: #fffcf0; padding: 12px; }
+        .filing-prototype__handoff h4, .filing-prototype__sources h4 { margin: 0; color: #0B3D2E; font-size: 15px; line-height: 1.35; }
+        .filing-prototype__handoff p, .filing-prototype__sources-intro { margin: 6px 0 0; color: #535846; font-size: 12px; line-height: 1.45; }
+        .filing-prototype__metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin-top: 10px; }
+        .filing-prototype__metric { border: 1px solid #e2d9b8; border-radius: 8px; background: #fffef9; padding: 8px; color: #4e543e; font: 700 11px/1.3 Arial, sans-serif; }
+        .filing-prototype__metric strong { display: block; margin-bottom: 2px; color: #0B3D2E; font-size: 16px; }
+        .filing-prototype__source-list { display: grid; gap: 8px; margin: 10px 0 0; padding: 0; list-style: none; }
+        .filing-prototype__source { border-left: 3px solid #caa518; padding: 7px 0 7px 9px; }
+        .filing-prototype__source a { color: #075c48; font-size: 13px; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+        .filing-prototype__source span { display: block; margin-top: 3px; color: #5b5c49; font-size: 11px; line-height: 1.4; }
         .filing-prototype__disclaimer { margin: 16px 0 0; color: #605c43; font-size: 11px; line-height: 1.4; }
-        @media (max-width: 640px) { .filing-prototype { left: 12px; bottom: 67px; } .filing-prototype__panel { width: min(100vw - 24px, 535px); } .filing-prototype__actions { flex-wrap: wrap; } }
+        @media (max-width: 640px) { .filing-prototype { left: 12px; bottom: 67px; } .filing-prototype__panel { width: min(100vw - 24px, 535px); } .filing-prototype__actions { flex-wrap: wrap; } .filing-prototype__metrics { grid-template-columns: 1fr; } }
       `}</style>
 
       {isOpen && (
@@ -271,6 +290,31 @@ export default function PersonalisedChecklistPrototype() {
               <>
                 <h3 className="filing-prototype__result-heading">Your preparation preview</h3>
                 <p className="filing-prototype__result-intro">This is a local prototype. Review each prompt, then use official FBR guidance and a qualified adviser for information that is uncertain or complex.</p>
+                <section className="filing-prototype__handoff" aria-label="Return readiness handoff">
+                  <h4>Return-readiness handoff <span className="filing-prototype__urdu" lang="ur" dir="rtl">ریٹرن تیاری کا خلاصہ</span></h4>
+                  <p>These are preparation marks only. They do not confirm completeness, compliance, or what FBR will detect.</p>
+                  <p lang="ur" dir="rtl">یہ صرف تیاری کے نشانات ہیں۔ یہ تکمیل، تعمیل، یا ایف بی آر کی ممکنہ جانچ کی تصدیق نہیں کرتے۔</p>
+                  <div className="filing-prototype__metrics" aria-label="Checklist readiness summary">
+                    <span className="filing-prototype__metric"><strong>{readiness.ready}</strong>Marked ready</span>
+                    <span className="filing-prototype__metric"><strong>{readiness.needsFinding}</strong>Need to find</span>
+                    <span className="filing-prototype__metric"><strong>{readiness.notSure}</strong>Not sure</span>
+                    <span className="filing-prototype__metric"><strong>{readiness.unmarked}</strong>Not marked</span>
+                  </div>
+                  <p>{readiness.needsFinding || readiness.notSure || readiness.unmarked ? "Resolve missing, uncertain, or unmarked records before relying on return information. Use the official sources below or a qualified adviser for unresolved matters." : "All selected prompts are marked ready. Still verify current requirements and the return itself through official FBR guidance before filing."}</p>
+                </section>
+                <section className="filing-prototype__sources" aria-label="Official FBR sources for checklist verification">
+                  <h4>Verify with official FBR sources <span className="filing-prototype__urdu" lang="ur" dir="rtl">سرکاری ایف بی آر ذرائع سے تصدیق کریں</span></h4>
+                  <p className="filing-prototype__sources-intro">These links explain where to verify a process or legal source; they do not determine your individual tax position.</p>
+                  <ul className="filing-prototype__source-list">
+                    {officialSources.map((source) => (
+                      <li className="filing-prototype__source" key={source.id}>
+                        <a href={source.url} target="_blank" rel="noreferrer">{source.title} · <span lang="ur" dir="rtl">{source.titleUrdu}</span></a>
+                        <span>{source.purpose}</span>
+                        <span lang="ur" dir="rtl">{source.purposeUrdu}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
                 {sectionOrder.map((section) => {
                   const entries = checklist.filter((entry) => entry.section === section);
                   if (!entries.length) return null;

@@ -1,5 +1,16 @@
 export const CHECKLIST_PROTOTYPE_QUESTIONS = [
   {
+    id: "taxYearScope",
+    kind: "single",
+    title: "Which tax-year scope do you need help preparing for?",
+    urdu: "آپ کو کس ٹیکس سال کے لیے تیاری میں مدد چاہیے؟",
+    hint: "This checklist is designed as a Tax Year 2026 preparation aid. It does not decide rules, rates, deadlines, or filing treatment for another year.",
+    options: [
+      ["ty_2026", "Tax Year 2026 preparation"],
+      ["other_or_unsure", "Another tax year or I am not sure"],
+    ],
+  },
+  {
     id: "filingExperience",
     kind: "single",
     title: "Have you filed an FBR income-tax return before?",
@@ -125,6 +136,33 @@ export const CHECKLIST_PROTOTYPE_QUESTIONS = [
 export const PROTOTYPE_DRAFT_STORAGE_KEY = "tax-return-saathi:filing-checklist-draft:v1";
 export const PROTOTYPE_DRAFT_VERSION = 1;
 
+export const FBR_CHECKLIST_SOURCES = [
+  {
+    id: "fbr-iris",
+    title: "FBR IRIS",
+    titleUrdu: "ایف بی آر آئرس",
+    purpose: "Use the official portal for filing only after you have checked your records.",
+    purposeUrdu: "ریکارڈ چیک کرنے کے بعد ہی سرکاری پورٹل پر فائلنگ کریں۔",
+    url: "https://iris.fbr.gov.pk/",
+  },
+  {
+    id: "fbr-filing-guide",
+    title: "FBR filing guidance",
+    titleUrdu: "ایف بی آر فائلنگ رہنمائی",
+    purpose: "Verify filing steps, record-keeping, revision, and related official guidance.",
+    purposeUrdu: "فائلنگ کے مراحل، ریکارڈ رکھنے، نظرِ ثانی اور متعلقہ سرکاری رہنمائی کی تصدیق کریں۔",
+    url: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71158",
+  },
+  {
+    id: "fbr-laws-index",
+    title: "FBR Acts, Ordinances and Rules",
+    titleUrdu: "ایف بی آر قوانین، آرڈیننس اور قواعد",
+    purpose: "Use this official index to verify legal material when a matter is uncertain or complex.",
+    purposeUrdu: "غیر واضح یا پیچیدہ معاملے میں قانونی مواد کی تصدیق کے لیے یہ سرکاری فہرست استعمال کریں۔",
+    url: "https://www.fbr.gov.pk/act-rules-ordinances/131226",
+  },
+];
+
 const VALID_ANSWER_VALUES = Object.fromEntries(
   CHECKLIST_PROTOTYPE_QUESTIONS.map((question) => [question.id, new Set(question.options.map(([value]) => value))]),
 );
@@ -209,6 +247,10 @@ export function getPrototypeQuestions(answers) {
   return CHECKLIST_PROTOTYPE_QUESTIONS.filter((question) => !question.when || question.when(answers));
 }
 
+export function getPrototypeSources() {
+  return FBR_CHECKLIST_SOURCES;
+}
+
 function item(id, section, title, body, type = "gather") {
   return { id, section, title, body, type };
 }
@@ -218,6 +260,10 @@ export function getPrototypeChecklist(answers) {
   const items = [
     item("iris", "Before IRIS", "Open IRIS only when your information is ready", "Check the official filing guidance and current FBR notices before entering your return.", "review"),
   ];
+
+  if (answers.taxYearScope !== "ty_2026") {
+    items.unshift(item("tax-year-scope", "Before IRIS", "Confirm the correct tax-year scope", "This is a Tax Year 2026 preparation checklist. Do not use it to determine rules, rates, deadlines, or filing treatment for another or uncertain year. Verify the applicable year through official FBR guidance.", "seek_advice"));
+  }
 
   if (answers.filingExperience === "first_time" || answers.filingExperience === "not_sure") {
     items.push(item("access", "Before IRIS", "Review your IRIS access", "Confirm that you can use the official IRIS portal before you begin entering information.", "review"));

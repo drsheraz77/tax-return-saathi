@@ -148,3 +148,8 @@
 - [x] Add focused coverage and verify the revised review-first journey, responsive layout, safety boundaries, tests, and production build before publication.
 - [x] Set Urdu as the default interface language on first visit while retaining the English switch.
 - [x] Add focused coverage and verify the Urdu-default initial render, English switch, tests, and production build before publication.
+- [x] Audit the supplied product report against the current journeys, resource hub, and AI guidance to select a non-duplicative, privacy-safe batch of two to three improvements.
+- [x] Add a non-sensitive tax-year scope question to the existing tailored checklist, clearly distinguishing the Tax Year 2026 preparation flow from other or uncertain years.
+- [x] Add official FBR source links and source-purpose labels to tailored checklist results, without representing them as determinations of a user’s tax position.
+- [x] Add a return-readiness handoff that summarises high-level checklist progress and directs unresolved or unsupported matters to official FBR guidance or a qualified adviser.
+- [x] Add focused unit coverage and verify the first audit batch for privacy boundaries, source destinations, Urdu-default rendering, responsive layout, tests, and production build before publication.

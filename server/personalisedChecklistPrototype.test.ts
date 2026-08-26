@@ -1,7 +1,24 @@
 import { describe, expect, it } from "vitest";
-import { formatPrototypeDraftSavedAt, getPrototypeChecklist, getPrototypeDraftSavedAtIso, getPrototypeQuestions, loadPrototypeDraft, parsePrototypeDraft, PROTOTYPE_DRAFT_STORAGE_KEY, removePrototypeDraft, savePrototypeDraft, serialisePrototypeDraft } from "../client/src/personalisedChecklistPrototype.js";
+import { formatPrototypeDraftSavedAt, getPrototypeChecklist, getPrototypeDraftSavedAtIso, getPrototypeQuestions, getPrototypeSources, loadPrototypeDraft, parsePrototypeDraft, PROTOTYPE_DRAFT_STORAGE_KEY, removePrototypeDraft, savePrototypeDraft, serialisePrototypeDraft } from "../client/src/personalisedChecklistPrototype.js";
 
 describe("personalised filing checklist prototype", () => {
+  it("starts with a controlled tax-year scope and sends other or uncertain years to verification rather than a determination", () => {
+    const firstQuestion = getPrototypeQuestions({})[0];
+    expect(firstQuestion.id).toBe("taxYearScope");
+    expect(firstQuestion.options.map(([value]) => value)).toEqual(["ty_2026", "other_or_unsure"]);
+
+    const scopeItem = getPrototypeChecklist({ taxYearScope: "other_or_unsure" }).find((entry) => entry.id === "tax-year-scope");
+    expect(scopeItem).toMatchObject({ type: "seek_advice" });
+    expect(scopeItem?.body).toMatch(/do not use it to determine rules, rates, deadlines, or filing treatment/i);
+  });
+
+  it("keeps a small official-source set for process and legal verification without claiming personal tax outcomes", () => {
+    const sources = getPrototypeSources();
+    expect(sources.map((source) => source.id)).toEqual(["fbr-iris", "fbr-filing-guide", "fbr-laws-index"]);
+    expect(sources.every((source) => ["iris.fbr.gov.pk", "www.fbr.gov.pk"].includes(new URL(source.url).hostname))).toBe(true);
+    expect(JSON.stringify(sources)).not.toMatch(/CNIC|NTN|password|tax rate|refund amount/i);
+  });
+
   it("adds conditional business, property, freelancer, and investment-record questions only for selected categories", () => {
     expect(getPrototypeQuestions({ incomeCategories: ["salary"] }).map((question) => question.id)).not.toContain("businessRecords");
     expect(getPrototypeQuestions({ incomeCategories: ["salary"] }).map((question) => question.id)).not.toContain("freelancerRecords");
@@ -65,7 +82,7 @@ describe("personalised filing checklist prototype", () => {
 
   it("serialises only allowed high-level answers and valid checklist progress marks", () => {
     const serialised = serialisePrototypeDraft({
-      answers: { filingExperience: "first_time", incomeCategories: ["business", "invalid"], cnic: "12345-0000000-0" },
+      answers: { taxYearScope: "ty_2026", filingExperience: "first_time", incomeCategories: ["business", "invalid"], cnic: "12345-0000000-0" },
       itemStatus: { business: "Have it", iris: "completed", invented: "Need to find" },
       step: 2,
       showResults: false,
@@ -74,7 +91,7 @@ describe("personalised filing checklist prototype", () => {
     expect(draft).toMatchObject({
       version: 1,
       savedAt: 123456789,
-      answers: { filingExperience: "first_time", incomeCategories: ["business"] },
+      answers: { taxYearScope: "ty_2026", filingExperience: "first_time", incomeCategories: ["business"] },
       itemStatus: { business: "Have it" },
       step: 2,
       showResults: false,

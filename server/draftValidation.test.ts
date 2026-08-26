@@ -15,6 +15,7 @@ import { appRouter } from "./routers";
 
 const validDraft = {
   answers: {
+    taxYearScope: "ty_2026",
     filingExperience: "first_time",
     incomeCategories: ["investments"],
     investmentRecords: "partly",
@@ -41,6 +42,7 @@ describe("authenticated checklist draft and feedback safeguards", () => {
   it("accepts only controlled high-level draft values", () => {
     expect(checklistDraftPayloadSchema.parse(validDraft)).toEqual(validDraft);
     expect(() => checklistDraftPayloadSchema.parse({ ...validDraft, answers: { ...validDraft.answers, cnic: "12345-1234567-1" } })).toThrow();
+    expect(() => checklistDraftPayloadSchema.parse({ ...validDraft, answers: { ...validDraft.answers, taxYearScope: "tax_year_2027" } })).toThrow();
     expect(() => checklistDraftPayloadSchema.parse({ ...validDraft, itemStatus: { "bank-account-number": "Have it" } })).toThrow();
   });
 
