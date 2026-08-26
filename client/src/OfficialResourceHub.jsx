@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { FILING_READINESS_STEPS, FREELANCER_FAQ, FREELANCER_PRE_FILING_CHECKLIST, getFilingReadinessSummary, getOfficialResourceCategoryReview, IRIS_FAQ, OFFICIAL_RESOURCE_HUB, PRE_FILING_CHECKLIST, searchFreelancerFaq, searchIrisFaq } from "./officialResourceHub.js";
+import { FILING_READINESS_STEPS, FREELANCER_FAQ, FREELANCER_PRE_FILING_CHECKLIST, getFilingReadinessSummary, getOfficialResourceCategoryReview, getPreSubmissionErrorPreventionSummary, IRIS_FAQ, IRIS_NAVIGATION_WALKTHROUGH, OFFICIAL_RESOURCE_HUB, PRE_FILING_CHECKLIST, PRE_SUBMISSION_ERROR_PREVENTION_STEPS, searchFreelancerFaq, searchIrisFaq } from "./officialResourceHub.js";
 import { trpc } from "./lib/trpc";
 import { getWealthReadinessPrintRows, getWealthStatementReadinessSummary, WEALTH_READINESS_OPTIONS, WEALTH_STATEMENT_PREPARATION_STEPS } from "./wealthStatementPreparation.js";
 import { buildNonSensitiveReadinessSummary, getPreFilingTimelineSummary, PRE_FILING_TIMELINE_STEPS, TIMELINE_STATUS_OPTIONS } from "./preFilingTimelinePlanner.js";
@@ -14,6 +14,10 @@ export default function OfficialResourceHub() {
   const [showChecklist, setShowChecklist] = useState(false);
   const [showFreelancerChecklist, setShowFreelancerChecklist] = useState(false);
   const [checkedItems, setCheckedItems] = useState({});
+  const [irisWalkthroughOpen, setIrisWalkthroughOpen] = useState(false);
+  const [irisWalkthroughItems, setIrisWalkthroughItems] = useState({});
+  const [preSubmissionChecklistOpen, setPreSubmissionChecklistOpen] = useState(false);
+  const [preSubmissionItems, setPreSubmissionItems] = useState({});
   const [filingReadinessItems, setFilingReadinessItems] = useState({});
   const [wealthPreparationOpen, setWealthPreparationOpen] = useState(false);
   const [wealthReadinessItems, setWealthReadinessItems] = useState({});
@@ -27,6 +31,7 @@ export default function OfficialResourceHub() {
   const matchingFaq = useMemo(() => searchIrisFaq(faqQuery), [faqQuery]);
   const matchingFreelancerFaq = useMemo(() => searchFreelancerFaq(freelancerFaqQuery), [freelancerFaqQuery]);
   const filingReadiness = useMemo(() => getFilingReadinessSummary(filingReadinessItems), [filingReadinessItems]);
+  const preSubmissionReadiness = useMemo(() => getPreSubmissionErrorPreventionSummary(preSubmissionItems), [preSubmissionItems]);
   const wealthReadiness = useMemo(() => getWealthStatementReadinessSummary(wealthReadinessItems), [wealthReadinessItems]);
   const timelineReadiness = useMemo(() => getPreFilingTimelineSummary(timelineItems), [timelineItems]);
   const { data: accountUser, isLoading: isAccountLoading } = trpc.auth.me.useQuery();
@@ -245,6 +250,61 @@ export default function OfficialResourceHub() {
                 <p lang="ur" dir="rtl">اس ویب سائٹ کے لیے اوپر والا فیڈبیک فارم استعمال کریں؛ یہ انفرادی ٹیکس مشورہ یا جواب دینے کا ذریعہ نہیں ہے۔ سرکاری ٹیکس یا آئرس مدد کے لیے ایف بی آر ہیلپ لائن سے رابطہ کریں۔</p>
                 <a className="official-resource-hub__link" href="https://www.fbr.gov.pk/contact-us/142252/173964" {...linkProps}>Official FBR contact page ↗</a>
               </div>
+            </section>
+
+            <section className="official-resource-hub__tools" aria-labelledby="iris-navigation-title">
+              <h3 id="iris-navigation-title" className="official-resource-hub__tool-title">Guided IRIS navigation walkthrough<br /><span lang="ur" dir="rtl">آئرس نیویگیشن رہنمائی</span></h3>
+              <p className="official-resource-hub__tool-copy">A temporary, link-out orientation guide—not a reproduction of IRIS. Portal screens and requirements can change, so use the official links and do not enter credentials into this site.</p>
+              <p className="official-resource-hub__tool-copy" lang="ur" dir="rtl">یہ ایک عارضی، بیرونی لنکس والی رہنمائی ہے—آئرس کی نقل نہیں۔ پورٹل اسکرینیں اور شرائط بدل سکتی ہیں، اس لیے سرکاری لنکس استعمال کریں اور اس سائٹ میں اسناد درج نہ کریں۔</p>
+              <button className="official-resource-hub__print-toggle" type="button" onClick={() => setIrisWalkthroughOpen((open) => !open)} aria-expanded={irisWalkthroughOpen} aria-controls="iris-navigation-walkthrough">{irisWalkthroughOpen ? "Hide IRIS walkthrough" : "Open guided IRIS walkthrough"}</button>
+              {irisWalkthroughOpen && (
+                <section id="iris-navigation-walkthrough" className="official-resource-hub__print-sheet official-resource-hub__print-sheet--visible" aria-label="Guided official IRIS navigation walkthrough">
+                  <p className="official-resource-hub__print-meta" role="status"><strong>Temporary orientation marks: {Object.values(irisWalkthroughItems).filter(Boolean).length}/{IRIS_NAVIGATION_WALKTHROUGH.length}</strong><br /><span lang="ur" dir="rtl">عارضی رہنمائی کے نشانات: {Object.values(irisWalkthroughItems).filter(Boolean).length}/{IRIS_NAVIGATION_WALKTHROUGH.length}</span></p>
+                  <ol className="official-resource-hub__print-list">
+                    {IRIS_NAVIGATION_WALKTHROUGH.map((step, index) => (
+                      <li className="official-resource-hub__item" key={step.id}>
+                        <label className="official-resource-hub__check-label">
+                          <input type="checkbox" checked={Boolean(irisWalkthroughItems[step.id])} onChange={() => setIrisWalkthroughItems((current) => ({ ...current, [step.id]: !current[step.id] }))} />
+                          <span><strong>{index + 1}. {step.label}</strong><br /><span lang="ur" dir="rtl">{step.labelUrdu}</span></span>
+                        </label>
+                        <p className="official-resource-hub__item-description">{step.boundary}</p>
+                        <p className="official-resource-hub__item-description official-resource-hub__item-description--urdu" lang="ur" dir="rtl">{step.boundaryUrdu}</p>
+                        <a className="official-resource-hub__link" href={step.url} {...linkProps}>{step.sourceLabel} ↗</a>
+                      </li>
+                    ))}
+                  </ol>
+                  <button className="official-resource-hub__print-action" type="button" onClick={() => setIrisWalkthroughItems({})}>Clear temporary walkthrough marks / <span lang="ur" dir="rtl">عارضی رہنمائی کے نشانات صاف کریں</span></button>
+                  <p className="official-resource-hub__footer">This guide cannot log in, navigate inside IRIS, enter information, e-sign, submit a return, view a status, or confirm an acknowledgement. Only official FBR IRIS can do those things.</p>
+                </section>
+              )}
+            </section>
+
+            <section className="official-resource-hub__tools" aria-labelledby="pre-submission-prevention-title">
+              <h3 id="pre-submission-prevention-title" className="official-resource-hub__tool-title">Pre-submission error-prevention checklist<br /><span lang="ur" dir="rtl">جمع کرانے سے پہلے غلطی سے بچاؤ چیک لسٹ</span></h3>
+              <p className="official-resource-hub__tool-copy">Use these temporary “pause and recheck” prompts immediately before using an official IRIS submission action. They do not run FBR checks, assess legal completeness, calculate tax, or confirm acceptance.</p>
+              <p className="official-resource-hub__tool-copy" lang="ur" dir="rtl">سرکاری آئرس میں جمع کرانے کے عمل سے فوراً پہلے ان عارضی "رکیں اور دوبارہ دیکھیں" نکات کو استعمال کریں۔ یہ ایف بی آر چیکس نہیں چلاتے، قانونی تکمیل نہیں جانچتے، ٹیکس نہیں نکالتے اور قبولیت کی تصدیق نہیں کرتے۔</p>
+              <button className="official-resource-hub__print-toggle" type="button" onClick={() => setPreSubmissionChecklistOpen((open) => !open)} aria-expanded={preSubmissionChecklistOpen} aria-controls="pre-submission-error-prevention">{preSubmissionChecklistOpen ? "Hide error-prevention checklist" : "Open error-prevention checklist"}</button>
+              {preSubmissionChecklistOpen && (
+                <section id="pre-submission-error-prevention" className="official-resource-hub__print-sheet official-resource-hub__print-sheet--visible" aria-label="Temporary pre-submission error-prevention checklist">
+                  <p className="official-resource-hub__print-meta" role="status"><strong>{preSubmissionReadiness.label} · {preSubmissionReadiness.completed}/{preSubmissionReadiness.total}</strong><br /><span lang="ur" dir="rtl">{preSubmissionReadiness.labelUrdu}</span></p>
+                  <ul className="official-resource-hub__print-list">
+                    {PRE_SUBMISSION_ERROR_PREVENTION_STEPS.map((item) => (
+                      <li key={item.id}>
+                        <label className="official-resource-hub__check-label">
+                          <input type="checkbox" checked={Boolean(preSubmissionItems[item.id])} onChange={() => setPreSubmissionItems((current) => ({ ...current, [item.id]: !current[item.id] }))} />
+                          <span>{item.label}<br /><span lang="ur" dir="rtl">{item.labelUrdu}</span></span>
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                  <a className="official-resource-hub__link" href="https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71158" {...linkProps}>Recheck current FBR filing guidance ↗</a>
+                  <br />
+                  <a className="official-resource-hub__link" href="https://www.fbr.gov.pk/categ/income-tax-due-dates/51147/40846/81148" {...linkProps}>Recheck FBR due-date information ↗</a>
+                  <br />
+                  <button className="official-resource-hub__print-action" type="button" onClick={() => setPreSubmissionItems({})}>Clear temporary review marks / <span lang="ur" dir="rtl">عارضی جائزہ کے نشانات صاف کریں</span></button>
+                  <p className="official-resource-hub__footer">These marks disappear when the page is refreshed and are not written to browser storage, your account, or the app database. Marking every item does not confirm that a return is complete, correct, accepted, or free of later questions.</p>
+                </section>
+              )}
             </section>
 
             <section className="official-resource-hub__tools" aria-labelledby="iris-faq-title">

@@ -176,3 +176,7 @@
 - [x] Add bilingual guided redaction examples beside the completed-return review gate, clarifying what to remove without receiving a document or claiming redaction is complete.
 - [x] Add a downloadable non-sensitive readiness summary that exports only controlled completion states and privacy/scope reminders, with no financial, identity, document, or credential fields.
 - [x] Add focused tests and verify timeline, redaction, download, privacy boundaries, bilingual interaction, responsive layout, full suite, and production build before publication.
+- [x] Add a preparation-only guided IRIS navigation walkthrough with official destination links and no claim to access, submit, or verify a user’s IRIS account.
+- [x] Add a local-only pre-submission error-prevention checklist based on controlled review actions, without calculating tax, retaining answers, or confirming FBR acceptance.
+- [x] Add a bilingual official-source update centre that displays the limited, reviewed source set and directs users to FBR for current live notices, deadlines, and changes.
+- [x] Add focused tests and verify navigation, error prevention, source-update boundaries, bilingual interaction, responsive layout, full suite, and production build before publication.

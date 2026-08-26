@@ -6,8 +6,11 @@ import {
   FILING_READINESS_STEPS,
   getFilingReadinessSummary,
   getOfficialResourceCategoryReview,
+  getPreSubmissionErrorPreventionSummary,
   OFFICIAL_RESOURCE_HUB,
   PRE_FILING_CHECKLIST,
+  PRE_SUBMISSION_ERROR_PREVENTION_STEPS,
+  IRIS_NAVIGATION_WALKTHROUGH,
   searchFreelancerFaq,
   searchIrisFaq,
   validateOfficialResourceHub,
@@ -71,6 +74,21 @@ describe("official resource hub", () => {
     expect(getFilingReadinessSummary()).toMatchObject({ completed: 0, total: 4, status: "not-started", label: "Not started" });
     expect(getFilingReadinessSummary({ "year-and-route": true, "records-in-hand": true })).toMatchObject({ completed: 2, status: "in-progress" });
     expect(getFilingReadinessSummary(Object.fromEntries(FILING_READINESS_STEPS.map((item) => [item.id, true])))).toMatchObject({ completed: 4, status: "steps-marked", label: "Preparation steps marked" });
+  });
+
+  it("provides bilingual official-link IRIS orientation without representing the portal or accepting credentials", () => {
+    expect(validateResourceTools()).toBe(true);
+    expect(IRIS_NAVIGATION_WALKTHROUGH).toHaveLength(5);
+    expect(IRIS_NAVIGATION_WALKTHROUGH.every((item) => item.labelUrdu && item.boundaryUrdu && item.url.includes("fbr.gov.pk"))).toBe(true);
+    expect(IRIS_NAVIGATION_WALKTHROUGH.map((item) => item.boundary).join(" ")).toMatch(/does not open, control, or reproduce|Do not enter passwords|cannot submit/i);
+  });
+
+  it("keeps error-prevention as temporary review marks rather than a filing decision", () => {
+    expect(PRE_SUBMISSION_ERROR_PREVENTION_STEPS).toHaveLength(6);
+    expect(PRE_SUBMISSION_ERROR_PREVENTION_STEPS.every((item) => item.label && item.labelUrdu)).toBe(true);
+    expect(getPreSubmissionErrorPreventionSummary()).toMatchObject({ completed: 0, total: 6, status: "not-started", label: "Not started" });
+    expect(getPreSubmissionErrorPreventionSummary({ "pre-submit-year": true, "pre-submit-support": true })).toMatchObject({ completed: 2, status: "in-progress" });
+    expect(getPreSubmissionErrorPreventionSummary(Object.fromEntries(PRE_SUBMISSION_ERROR_PREVENTION_STEPS.map((item) => [item.id, true])))).toMatchObject({ completed: 6, status: "review-marks-complete", label: "Review marks complete" });
   });
 
   it("derives a dated, limited review scope for each official resource category", () => {

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FBR_NOTICE_ARCHIVE } from "./fbrNoticeArchive.js";
 import { FBR_NOTICE_PREPARATION_TYPES, FBR_NOTICE_SUPPORT_URL, getNoticeDocumentChecklist, getNoticePreparationSteps } from "./fbrNoticePreparation.js";
 import { TAX_KNOWLEDGE_FOUNDATION } from "./taxKnowledgeFoundation.js";
-import { TAX_YEAR_2026_SOURCES, TAX_YEAR_2026_UPDATE } from "./taxYear2026Update.js";
+import { OFFICIAL_SOURCE_UPDATE_CENTRE, TAX_YEAR_2026_SOURCES, TAX_YEAR_2026_UPDATE } from "./taxYear2026Update.js";
 
 const linkProps = {
   target: "_blank",
@@ -12,6 +12,7 @@ const linkProps = {
 export default function TaxYear2026Update() {
   const [isOpen, setIsOpen] = useState(false);
   const [archiveOpen, setArchiveOpen] = useState(false);
+  const [sourceUpdateCentreOpen, setSourceUpdateCentreOpen] = useState(false);
   const [noticeGuideOpen, setNoticeGuideOpen] = useState(false);
   const [noticeType, setNoticeType] = useState("unsure");
   const [noticeDocumentItems, setNoticeDocumentItems] = useState({});
@@ -96,6 +97,26 @@ export default function TaxYear2026Update() {
                 ))}
               </ul>
             </section>
+            <button className="tax-year-update__archive-toggle" type="button" onClick={() => setSourceUpdateCentreOpen((open) => !open)} aria-expanded={sourceUpdateCentreOpen} aria-controls="official-source-update-centre">
+              {sourceUpdateCentreOpen ? "Hide" : "Open"} reviewed official-source update centre · <span lang="ur" dir="rtl">جائزہ شدہ سرکاری ذرائع اپڈیٹ سینٹر</span>
+            </button>
+            {sourceUpdateCentreOpen && (
+              <section id="official-source-update-centre" className="tax-year-update__source-map" aria-label="Reviewed official-source update centre">
+                <h3 className="tax-year-update__source-heading">{OFFICIAL_SOURCE_UPDATE_CENTRE.title}<br /><span lang="ur" dir="rtl">{OFFICIAL_SOURCE_UPDATE_CENTRE.titleUrdu}</span></h3>
+                <p className="tax-year-update__source-copy"><strong>Reviewed {OFFICIAL_SOURCE_UPDATE_CENTRE.reviewedOn} · reviewed guidance, not a live FBR feed.</strong><br />{OFFICIAL_SOURCE_UPDATE_CENTRE.limitation}</p>
+                <p className="tax-year-update__source-copy" lang="ur" dir="rtl"><strong>جائزہ: {OFFICIAL_SOURCE_UPDATE_CENTRE.reviewedOn} · جائزہ شدہ رہنمائی، لائیو ایف بی آر فیڈ نہیں۔</strong><br />{OFFICIAL_SOURCE_UPDATE_CENTRE.limitationUrdu}</p>
+                <ul className="tax-year-update__source-list">
+                  {OFFICIAL_SOURCE_UPDATE_CENTRE.sources.map((source) => (
+                    <li className="tax-year-update__source-item" key={source.id}>
+                      <span className="tax-year-update__source-title">{source.title}<br /><span lang="ur" dir="rtl">{source.titleUrdu}</span></span>
+                      <p className="tax-year-update__source-purpose">{source.purpose}<br /><span lang="ur" dir="rtl">{source.purposeUrdu}</span></p>
+                      <a className="tax-year-update__archive-link" href={source.sourceUrl} {...linkProps}>{source.sourceLabel} ↗</a>
+                    </li>
+                  ))}
+                </ul>
+                <a className="tax-year-update__archive-link" href={OFFICIAL_SOURCE_UPDATE_CENTRE.currentFbrUpdatesUrl} {...linkProps}>Check FBR’s current website directly ↗</a>
+              </section>
+            )}
             <div className="tax-year-update__links">
               <a href={TAX_YEAR_2026_UPDATE.irisUrl} {...linkProps}>Open FBR IRIS</a>
               <a href={TAX_YEAR_2026_SOURCES.fbrDueDates} {...linkProps}>FBR due dates</a>

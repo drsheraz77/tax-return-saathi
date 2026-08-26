@@ -33,4 +33,17 @@ describe("priority preparation workflow wiring", () => {
     expect(resourceHub).toContain("tax-return-saathi-readiness-summary.txt");
     expect(resourceHub).toContain("contains no figures, names, CNICs, account details, documents, or credentials");
   });
+
+  it("renders preparation-only IRIS orientation, temporary error prevention, and a reviewed-not-live source update centre", () => {
+    expect(resourceHub).toContain("iris-navigation-walkthrough");
+    expect(resourceHub).toContain("IRIS_NAVIGATION_WALKTHROUGH");
+    expect(resourceHub).toContain("cannot log in, navigate inside IRIS, enter information, e-sign, submit a return");
+    expect(resourceHub).toContain("pre-submission-error-prevention");
+    expect(resourceHub).toContain("PRE_SUBMISSION_ERROR_PREVENTION_STEPS");
+    expect(resourceHub).toContain("do not run FBR checks, assess legal completeness, calculate tax, or confirm acceptance");
+    expect(resourceHub).toContain("not written to browser storage, your account, or the app database");
+    expect(taxYearPanel).toContain("official-source-update-centre");
+    expect(taxYearPanel).toContain("OFFICIAL_SOURCE_UPDATE_CENTRE");
+    expect(taxYearPanel).toContain("reviewed guidance, not a live FBR feed");
+  });
 });

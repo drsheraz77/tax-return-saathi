@@ -275,6 +275,100 @@ export function getFilingReadinessSummary(checked = {}, steps = FILING_READINESS
   };
 }
 
+export const IRIS_NAVIGATION_WALKTHROUGH = [
+  {
+    id: "official-start",
+    label: "Start from the official FBR filing guidance, then use its official IRIS link.",
+    labelUrdu: "ایف بی آر کی سرکاری فائلنگ رہنمائی سے آغاز کریں، پھر اس کے سرکاری آئرس لنک کو استعمال کریں۔",
+    boundary: "This is an orientation link only; Tax Return Saathi does not open, control, or reproduce the IRIS portal.",
+    boundaryUrdu: "یہ صرف رہنمائی کا لنک ہے؛ ٹیکس ریٹرن ساتھی آئرس پورٹل نہیں کھولتا، کنٹرول کرتا یا اس کی نقل بناتا۔",
+    url: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71158",
+    sourceLabel: "Open FBR filing guidance",
+  },
+  {
+    id: "access-route",
+    label: "Use only the official IRIS sign-in or official recovery route that matches your access situation.",
+    labelUrdu: "اپنی رسائی کی صورتِ حال کے مطابق صرف سرکاری آئرس سائن اِن یا سرکاری ریکوری راستہ استعمال کریں۔",
+    boundary: "Do not enter passwords, OTPs, CNICs, or account details into this site.",
+    boundaryUrdu: "اس سائٹ میں پاس ورڈ، او ٹی پی، سی این آئی سی یا اکاؤنٹ کی تفصیلات درج نہ کریں۔",
+    url: "https://iris.fbr.gov.pk/public/txplogin.xhtml",
+    sourceLabel: "Open official FBR IRIS",
+  },
+  {
+    id: "review-current-guidance",
+    label: "Before acting in IRIS, review the current official FBR filing-help topics that apply to your preparation.",
+    labelUrdu: "آئرس میں عمل سے پہلے اپنی تیاری سے متعلق موجودہ سرکاری ایف بی آر فائلنگ مدد کے موضوعات دیکھیں۔",
+    boundary: "Portal labels, screens, and requirements can change; verify them directly in the official service.",
+    boundaryUrdu: "پورٹل کے لیبل، اسکرینیں اور شرائط بدل سکتی ہیں؛ انہیں براہِ راست سرکاری سروس میں دیکھیں۔",
+    url: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71159",
+    sourceLabel: "Open FBR filing help",
+  },
+  {
+    id: "private-review",
+    label: "Use your own private records to review entries and keep supporting records available where needed.",
+    labelUrdu: "اندراجات کا جائزہ لینے کے لیے اپنے نجی ریکارڈ استعمال کریں اور جہاں ضرورت ہو معاون ریکارڈ دستیاب رکھیں۔",
+    boundary: "This step does not ask for, receive, save, or validate your figures, records, or documents.",
+    boundaryUrdu: "یہ مرحلہ آپ کے اعداد، ریکارڈ یا دستاویزات نہیں مانگتا، وصول کرتا، محفوظ کرتا یا ان کی توثیق نہیں کرتا۔",
+    url: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71158",
+    sourceLabel: "Review FBR record-keeping guidance",
+  },
+  {
+    id: "official-confirmation",
+    label: "Use the official IRIS process to review any portal validation, e-signing, acknowledgement, and saved official copy steps that apply.",
+    labelUrdu: "قابلِ اطلاق پورٹل توثیق، ای سائن، اقرار نامہ اور محفوظ سرکاری نقل کے مراحل کے لیے سرکاری آئرس عمل استعمال کریں۔",
+    boundary: "Only FBR IRIS can show its current submission and acknowledgement status; this site cannot submit or confirm either.",
+    boundaryUrdu: "صرف ایف بی آر آئرس اپنی موجودہ جمع کرانے اور اقرار نامہ کی حالت دکھا سکتا ہے؛ یہ سائٹ نہ جمع کرا سکتی ہے نہ تصدیق کر سکتی ہے۔",
+    url: "https://iris.fbr.gov.pk/public/txplogin.xhtml",
+    sourceLabel: "Return to official FBR IRIS",
+  },
+];
+
+export const PRE_SUBMISSION_ERROR_PREVENTION_STEPS = [
+  {
+    id: "pre-submit-year",
+    label: "Pause and check that you are using the tax year and official filing route you intended to use.",
+    labelUrdu: "رک کر دیکھیں کہ آپ وہی ٹیکس سال اور سرکاری فائلنگ راستہ استعمال کر رہے ہیں جس کا آپ کا ارادہ تھا۔",
+  },
+  {
+    id: "pre-submit-support",
+    label: "Pause and check that you can support entries with your own private records before relying on them.",
+    labelUrdu: "رک کر دیکھیں کہ جن اندراجات پر آپ انحصار کر رہے ہیں، ان کے لیے آپ کے پاس اپنے نجی ریکارڈ موجود ہیں۔",
+  },
+  {
+    id: "pre-submit-completeness",
+    label: "Pause and recheck relevant sections, including any applicable return or wealth-statement information, in the official workflow.",
+    labelUrdu: "سرکاری ورک فلو میں متعلقہ حصے، بشمول قابلِ اطلاق ریٹرن یا ویلتھ اسٹیٹمنٹ معلومات، دوبارہ دیکھنے کے لیے رکیں۔",
+  },
+  {
+    id: "pre-submit-current-guidance",
+    label: "Pause and compare the current official FBR guidance and due-date information; do not rely on an old screen, message, or assumption.",
+    labelUrdu: "رک کر موجودہ سرکاری ایف بی آر رہنمائی اور تاریخوں کی معلومات دیکھیں؛ پرانی اسکرین، پیغام یا اندازے پر انحصار نہ کریں۔",
+  },
+  {
+    id: "pre-submit-portal-review",
+    label: "In official IRIS, read the portal’s current review or validation messages yourself before selecting a submission action.",
+    labelUrdu: "سرکاری آئرس میں جمع کرانے کے عمل سے پہلے پورٹل کے موجودہ جائزہ یا توثیقی پیغامات خود پڑھیں۔",
+  },
+  {
+    id: "pre-submit-confirmation-copy",
+    label: "After any official submission, use IRIS to check its acknowledgement or saved-copy route and keep your own private copy where appropriate.",
+    labelUrdu: "کسی بھی سرکاری جمع کرانے کے بعد آئرس میں اس کا اقرار نامہ یا محفوظ نقل کا راستہ دیکھیں اور جہاں مناسب ہو اپنی نجی نقل رکھیں۔",
+  },
+];
+
+export function getPreSubmissionErrorPreventionSummary(checked = {}, steps = PRE_SUBMISSION_ERROR_PREVENTION_STEPS) {
+  const completed = steps.filter((item) => checked[item.id]).length;
+  const total = steps.length;
+  const status = completed === 0 ? "not-started" : completed === total ? "review-marks-complete" : "in-progress";
+  return {
+    completed,
+    total,
+    status,
+    label: status === "not-started" ? "Not started" : status === "review-marks-complete" ? "Review marks complete" : "Review in progress",
+    labelUrdu: status === "not-started" ? "ابھی شروع نہیں کیا" : status === "review-marks-complete" ? "جائزہ کے نشانات مکمل ہیں" : "جائزہ جاری ہے",
+  };
+}
+
 export const PRE_FILING_CHECKLIST = [
   { id: "iris-access", label: "Confirm that you can access your official IRIS account or the official recovery route.", labelUrdu: "تصدیق کریں کہ آپ اپنے سرکاری آئرس اکاؤنٹ یا سرکاری ریکوری راستے تک رسائی رکھتے ہیں۔" },
   { id: "registration-details", label: "Review your registration, contact, and bank-account details for accuracy before starting.", labelUrdu: "شروع کرنے سے پہلے اپنی رجسٹریشن، رابطہ اور بینک اکاؤنٹ کی معلومات کی درستگی دیکھیں۔" },
@@ -380,7 +474,7 @@ export function getOfficialResourceCategoryReview(section) {
   };
 }
 
-export function validateResourceTools(faq = IRIS_FAQ, checklist = PRE_FILING_CHECKLIST, freelancerFaq = FREELANCER_FAQ, freelancerChecklist = FREELANCER_PRE_FILING_CHECKLIST) {
+export function validateResourceTools(faq = IRIS_FAQ, checklist = PRE_FILING_CHECKLIST, freelancerFaq = FREELANCER_FAQ, freelancerChecklist = FREELANCER_PRE_FILING_CHECKLIST, walkthrough = IRIS_NAVIGATION_WALKTHROUGH, errorPrevention = PRE_SUBMISSION_ERROR_PREVENTION_STEPS) {
   const isValidFaq = (items) => items.every((item) => {
     try {
       return item.id && item.question && item.questionUrdu && item.answer && item.answerUrdu && item.keywords.length > 0 && OFFICIAL_HOSTS.has(new URL(item.url).hostname);
@@ -389,5 +483,12 @@ export function validateResourceTools(faq = IRIS_FAQ, checklist = PRE_FILING_CHE
     }
   });
   const isValidChecklist = (items) => items.every((item) => item.id && item.label && item.labelUrdu);
-  return isValidFaq(faq) && isValidChecklist(checklist) && isValidFaq(freelancerFaq) && isValidChecklist(freelancerChecklist);
+  const isValidWalkthrough = (items) => items.every((item) => {
+    try {
+      return item.id && item.label && item.labelUrdu && item.boundary && item.boundaryUrdu && item.sourceLabel && OFFICIAL_HOSTS.has(new URL(item.url).hostname);
+    } catch {
+      return false;
+    }
+  });
+  return isValidFaq(faq) && isValidChecklist(checklist) && isValidFaq(freelancerFaq) && isValidChecklist(freelancerChecklist) && isValidWalkthrough(walkthrough) && isValidChecklist(errorPrevention);
 }
