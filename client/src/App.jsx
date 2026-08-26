@@ -2858,6 +2858,9 @@ export default function TaxReturnSaathi() {
         <p className="max-w-3xl mx-auto text-xs" style={{ color: "#6B5A17" }}>
           ⚠ {t.disclaimer}
         </p>
+        <p id="pilot-testing-notice" className="max-w-3xl mx-auto text-xs mt-1" style={{ color: "#4d513c" }}>
+          {lang === "ur" ? "آزمائشی ورژن: یہ آزاد تعلیمی اور تیاری کی خدمت فی الحال پائلٹ ٹیسٹنگ میں ہے؛ یہ ایف بی آر کی سروس نہیں، ریٹرن جمع نہیں کرتی، اور کسی ذاتی نتیجے کی تصدیق نہیں کرتی۔" : "Pilot testing: this independent education and preparation service is being tested; it is not an FBR service, does not submit returns, and does not confirm personal outcomes."}
+        </p>
       </div>
 
       {/* Tabs */}
@@ -2908,9 +2911,9 @@ export default function TaxReturnSaathi() {
       <footer className="max-w-3xl mx-auto px-4 pb-8 text-center text-xs opacity-50">
         <p>iris.fbr.gov.pk · FBR Helpline 051-111-772-772</p>
         <p className="mt-1">
-          <button onClick={() => { setShowPrivacy(true); window.scrollTo(0, 0); }} className="underline" style={{ color: "inherit" }}>
+          <a href="/privacy" className="underline" style={{ color: "inherit" }}>
             {t.privacyLink}
-          </button>
+          </a>
           {" · "}
           <a href="https://www.fbr.gov.pk/act-rules-ordinances/131226" target="_blank" rel="noreferrer" className="underline">
             {lang === "ur" ? "سرکاری قوانین و قواعد (ایف بی آر)" : "Official Acts, Ordinances & Rules (FBR)"}

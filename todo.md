@@ -243,3 +243,8 @@
 - [x] Add focused tests and verify the workflow, escalation-card boundaries, scheduled reminder scope, Urdu/English presentation, responsive layout, full suite, and production build before publication.
 - [x] Add a compact bilingual last-manual-review badge using the existing reviewed source-governance date without implying live FBR monitoring or automatic verification.
 - [x] Add focused badge coverage and verify accessible desktop/mobile rendering, the explicit manual/non-live boundary, full tests, and production build before publication.
+- [x] Add a clear Urdu/English pilot-testing notice that explains the service remains independent, educational, preparation-only, and subject to improvement without implying FBR affiliation or outcomes.
+- [x] Add a standalone public privacy-policy page that accurately describes the current account preferences, drafts, feedback, local browser features, retention, deletion, contact route, and non-collection boundaries.
+- [x] Add an EU/EEA/UK privacy consent interface that offers equivalent accept and decline choices for optional non-essential processing, stores only the locally needed consent choice, and does not assert legal certification.
+- [x] Produce a source-cited Google AdSense policy-readiness assessment that distinguishes verified site safeguards, needed account-side configuration, content or disclosure gaps, and the absence of any approval guarantee.
+- [x] Add focused tests and verify pilot/privacy/consent accessibility, refusal and persistence behaviour, no advertising or analytics execution before consent, Urdu/English presentation, responsive layout, full suite, and production build before publication.
