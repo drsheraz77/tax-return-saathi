@@ -119,6 +119,11 @@ export default function OfficialResourceHub() {
         .official-resource-hub__item-description, .official-resource-hub__faq-answer { margin: 6px 0; color: #4d513c; font-size: 12px; }
         .official-resource-hub__item-description--urdu { margin-top: -2px; }
         .official-resource-hub__link { color: #075c48; font-size: 12px; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+        .official-resource-hub__link:focus-visible { outline: 3px solid rgba(202,165,24,.48); outline-offset: 3px; border-radius: 3px; }
+        .official-resource-hub__quick-nav { display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 12px; padding: 10px; border: 1px solid #d9c975; border-radius: 10px; background: #f7f1d9; }
+        .official-resource-hub__quick-nav-title { flex-basis: 100%; color: #304d43; font-size: 11px; font-weight: 700; }
+        .official-resource-hub__quick-link { border: 1px solid #a89242; border-radius: 999px; background: #fffdf5; color: #075c48; padding: 5px 8px; font: 700 11px/1.2 inherit; text-decoration: none; }
+        .official-resource-hub__quick-link:hover, .official-resource-hub__quick-link:focus-visible { background: #e9dfb7; outline: 3px solid rgba(202,165,24,.36); outline-offset: 2px; }
         .official-resource-hub__tools { border-top: 1px solid #e5dbb3; padding-top: 13px; }
         .official-resource-hub__tool-title { margin: 0 0 6px; color: #0B3D2E; font-size: 15px; }
         .official-resource-hub__tool-copy { margin: 0 0 9px; color: #595844; font-size: 12px; }
@@ -158,6 +163,7 @@ export default function OfficialResourceHub() {
         .official-resource-hub__confirm h5 { margin: 0 0 5px; color: #6e311e; font-size: 13px; }
         .official-resource-hub__confirm p { margin: 5px 0; }
         @media (max-width: 520px) { .official-resource-hub { left: 12px; bottom: 126px; } .official-resource-hub__panel { max-height: calc(100vh - 156px); } .official-resource-hub__toggle { font-size: 13px; } }
+        @media (prefers-reduced-motion: reduce) { .official-resource-hub *, .official-resource-hub *::before, .official-resource-hub *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }
         @media print { body * { visibility: hidden !important; } .official-resource-hub__print-sheet, .official-resource-hub__print-sheet * { visibility: visible !important; } .official-resource-hub__print-sheet { display: block !important; position: fixed; inset: 0; width: auto; margin: 0; border: 0; border-radius: 0; padding: 20px; background: #fff; color: #000; } .official-resource-hub__print-action { display: none !important; } }
       `}</style>
 
@@ -175,6 +181,13 @@ export default function OfficialResourceHub() {
             <p className="official-resource-hub__boundary" lang="ur" dir="rtl"><strong>صرف تعلیمی معاونت۔</strong> یہ حصہ سرکاری سروسز کے لنکس اور تیاری میں مدد دیتا ہے؛ یہ کاروبار رجسٹر، ریٹرن جمع یا آپ کی ٹیکس پوزیشن طے نہیں کرتا۔</p>
             <p className="official-resource-hub__boundary"><strong>Investment education only.</strong> The investments section does not recommend a product, estimate returns, or decide what is suitable for you.</p>
             <p className="official-resource-hub__boundary" lang="ur" dir="rtl"><strong>صرف سرمایہ کاری کی معلومات۔</strong> سرمایہ کاری والا حصہ کسی پراڈکٹ کی سفارش، منافع کا اندازہ یا آپ کے لیے موزونیت کا فیصلہ نہیں کرتا۔</p>
+            <nav className="official-resource-hub__quick-nav" aria-label="Resource hub quick navigation">
+              <span className="official-resource-hub__quick-nav-title">Quick navigation · <span lang="ur" dir="rtl">فوری نیویگیشن</span></span>
+              <a className="official-resource-hub__quick-link" href="#official-resource-filing" onClick={() => setExpandedSection("filing")}>Official filing sources</a>
+              <a className="official-resource-hub__quick-link" href="#pre-submission-error-prevention-title">Pre-submission check</a>
+              <a className="official-resource-hub__quick-link" href="#source-aware-question-planner-title">Source-aware questions</a>
+              <a className="official-resource-hub__quick-link" href="#support-title">Privacy & official help</a>
+            </nav>
             <section className="official-resource-hub__support-card" aria-label="Official source freshness and verification scope">
               <h4>Official source check · reviewed {OFFICIAL_RESOURCE_HUB.reviewedOn}<br /><span lang="ur" dir="rtl">سرکاری ذرائع کا جائزہ · {OFFICIAL_RESOURCE_HUB.reviewedOn}</span></h4>
               <p>These links are checked as official starting points for preparation. They do not confirm current eligibility, deadlines, amounts, portal acceptance, or your tax position.</p>
@@ -183,10 +196,10 @@ export default function OfficialResourceHub() {
             </section>
             {OFFICIAL_RESOURCE_HUB.sections.map((section) => {
               const isExpanded = expandedSection === section.id;
-              const panelId = `official-resource-${section.id}`;
+              const panelId = `official-resource-${section.id}-content`;
               const categoryReview = getOfficialResourceCategoryReview(section);
               return (
-                <section className="official-resource-hub__accordion" key={section.id}>
+                <section id={`official-resource-${section.id}`} className="official-resource-hub__accordion" key={section.id}>
                   <button className="official-resource-hub__section-toggle" type="button" onClick={() => setExpandedSection((current) => current === section.id ? "" : section.id)} aria-expanded={isExpanded} aria-controls={panelId}>
                     <span>{section.title}<br /><span lang="ur" dir="rtl">{section.titleUrdu}</span></span>
                     <span className="official-resource-hub__chevron" aria-hidden="true">{isExpanded ? "−" : "+"}</span>

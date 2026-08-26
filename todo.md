@@ -198,5 +198,10 @@
 - [x] Add a visual, educational calculation-explanation map that describes the review sequence without changing the authored calculator, requesting amounts, or presenting a legal tax result.
 - [x] Add a temporary AI-answer evaluation checklist that teaches visitors to check tax year, official source, uncertainty, and privacy before relying on an educational answer.
 - [x] Add focused tests and verify the structured-guidance, visual-explanation, and evaluation boundaries, bilingual interaction, responsive layout, full suite, and production build before publishing this phase.
+- [x] Add keyboard-accessible bilingual quick navigation within the supplemental resource hub so visitors can reach official sources, preparation tools, and privacy help without relying on visual scanning.
+- [x] Improve focus visibility and reduced-motion handling for the supplemental guidance controls without altering the authored tax interface or its calculation logic.
+- [x] Defer-load supplemental guidance panels from the main entry point to reduce initial JavaScript work while preserving a stable loading fallback and all existing content routes.
+- [x] Add a bounded public-discovery metadata enhancement that accurately describes the independent educational service, Urdu/English availability, and official-source limitations without claiming FBR affiliation.
+- [x] Add focused tests and verify keyboard navigation wiring, accessibility safeguards, deferred guidance loading, metadata boundaries, responsive layout, full suite, and production build before publishing this phase.
 - [ ] Complete the subsequent low-data guidance, structured AI, navigation, accessibility, performance, and public-discovery batches with testing and checkpoints after each batch.
 - [ ] Prepare separate security, consent, retention, legal-basis, and human-review requirements for any deferred sensitive-data or personalised-decision capability.

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, TRPCClientError } from "@trpc/client";
@@ -7,13 +7,18 @@ import App from "./App.jsx";
 import { trpc } from "./lib/trpc";
 import { COOKIE_NAME, UNAUTHED_ERR_MSG } from "@shared/const";
 import { startLogin } from "./const";
-import OfficialResourceHub from "./OfficialResourceHub.jsx";
-import PersonalisedChecklistPrototype from "./PersonalisedChecklistPrototype.jsx";
-import TaxYear2026Update from "./TaxYear2026Update.jsx";
+
+const OfficialResourceHub = React.lazy(() => import("./OfficialResourceHub.jsx"));
+const PersonalisedChecklistPrototype = React.lazy(() => import("./PersonalisedChecklistPrototype.jsx"));
+const TaxYear2026Update = React.lazy(() => import("./TaxYear2026Update.jsx"));
 
 document.title = "Tax Return Saathi | Pakistan FBR Tax Assistant";
 
 const queryClient = new QueryClient();
+
+function SupplementalMotionPreferences() {
+  return <style>{`@media (prefers-reduced-motion: reduce) { .official-resource-hub *, .tax-year-update *, .filing-prototype *, .official-resource-hub *::before, .tax-year-update *::before, .filing-prototype *::before, .official-resource-hub *::after, .tax-year-update *::after, .filing-prototype *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }`}</style>;
+}
 
 function redirectToLoginIfUnauthorized(error) {
   if (!(error instanceof TRPCClientError) || error.message !== UNAUTHED_ERR_MSG) return;
@@ -52,10 +57,13 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
+        <SupplementalMotionPreferences />
         <App />
-        <PersonalisedChecklistPrototype />
-        <TaxYear2026Update />
-        <OfficialResourceHub />
+        <Suspense fallback={<span className="supplemental-panel-loading" role="status">Loading preparation tools…</span>}>
+          <PersonalisedChecklistPrototype />
+          <TaxYear2026Update />
+          <OfficialResourceHub />
+        </Suspense>
       </QueryClientProvider>
     </trpc.Provider>
   </React.StrictMode>
