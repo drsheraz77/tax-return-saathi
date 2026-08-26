@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { TAX_KNOWLEDGE_FOUNDATION } from "../client/src/taxKnowledgeFoundation.js";
+import { getLearningPath, getStarterKnowledgeTopics, TAX_KNOWLEDGE_FOUNDATION, TAX_LEARNING_PATHS } from "../client/src/taxKnowledgeFoundation.js";
 
 describe("reviewed Tax Year 2026 starter knowledge catalogue", () => {
   it("keeps a reviewed version, citation label, and non-determination boundary", () => {
@@ -20,5 +20,22 @@ describe("reviewed Tax Year 2026 starter knowledge catalogue", () => {
       expect(topic.scopeUrdu).toBeTruthy();
       expect(topic.preparationLinks.length).toBeGreaterThan(0);
     }
+  });
+
+  it("filters only the in-memory reviewed records without broadening the catalogue", () => {
+    expect(getStarterKnowledgeTopics("IRIS").map((topic) => topic.id)).toEqual(["iris-access"]);
+    expect(getStarterKnowledgeTopics("records").map((topic) => topic.id)).toEqual(["return-completion-records"]);
+    expect(getStarterKnowledgeTopics("no match")).toEqual([]);
+    expect(getStarterKnowledgeTopics()).toBe(TAX_KNOWLEDGE_FOUNDATION.topics);
+  });
+
+  it("keeps learning paths broad, source-bound, and non-determinative", () => {
+    expect(TAX_LEARNING_PATHS).toHaveLength(4);
+    for (const path of TAX_LEARNING_PATHS) {
+      expect(TAX_KNOWLEDGE_FOUNDATION.topics.some((topic) => topic.id === path.topicId)).toBe(true);
+      expect(path.boundary).toBeTruthy();
+      expect(path.boundaryUrdu).toBeTruthy();
+    }
+    expect(getLearningPath("not-a-path").id).toBe("iris-start");
   });
 });

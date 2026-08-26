@@ -190,5 +190,9 @@
 - [x] Add a versioned, bilingual official-source knowledge catalogue for a bounded set of high-demand tax-preparation topics, each with official destination, review date, limited scope, and no individual determination.
 - [x] Add reusable bilingual citation and review cards that make the official source, review date, and limits visible in educational guidance without representing a live legal database.
 - [x] Add first topic-learning entries that connect existing preparation tools to the bounded knowledge records without storing user financial or identity data.
+- [x] Add a temporary, bilingual knowledge-topic finder that filters the reviewed starter catalogue locally and never sends a search query or visitor data to a server.
+- [x] Add a low-data guided learning path that connects broad preparation goals to reviewed official sources and existing preparation tools without deciding a taxpayer’s treatment or filing route.
+- [x] Add reusable bilingual educational topic cards with a source, reviewed-on marker, scope boundary, and related preparation action to begin the searchable content architecture.
+- [x] Add focused tests and verify local-only topic discovery, learning-path limits, bilingual interaction, responsive layout, full suite, and production build before publishing this phase.
 - [ ] Complete the subsequent low-data guidance, structured AI, navigation, accessibility, performance, and public-discovery batches with testing and checkpoints after each batch.
 - [ ] Prepare separate security, consent, retention, legal-basis, and human-review requirements for any deferred sensitive-data or personalised-decision capability.

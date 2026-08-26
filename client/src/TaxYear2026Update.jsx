@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FBR_NOTICE_ARCHIVE } from "./fbrNoticeArchive.js";
 import { FBR_NOTICE_PREPARATION_TYPES, FBR_NOTICE_SUPPORT_URL, getNoticeDocumentChecklist, getNoticePreparationSteps } from "./fbrNoticePreparation.js";
-import { TAX_KNOWLEDGE_FOUNDATION } from "./taxKnowledgeFoundation.js";
+import { getLearningPath, getStarterKnowledgeTopics, TAX_KNOWLEDGE_FOUNDATION, TAX_LEARNING_PATHS } from "./taxKnowledgeFoundation.js";
 import { OFFICIAL_SOURCE_UPDATE_CENTRE, TAX_YEAR_2026_SOURCES, TAX_YEAR_2026_UPDATE } from "./taxYear2026Update.js";
 
 const linkProps = {
@@ -16,6 +16,11 @@ export default function TaxYear2026Update() {
   const [noticeGuideOpen, setNoticeGuideOpen] = useState(false);
   const [noticeType, setNoticeType] = useState("unsure");
   const [noticeDocumentItems, setNoticeDocumentItems] = useState({});
+  const [knowledgeQuery, setKnowledgeQuery] = useState("");
+  const [learningPathId, setLearningPathId] = useState(TAX_LEARNING_PATHS[0].id);
+  const filteredKnowledgeTopics = getStarterKnowledgeTopics(knowledgeQuery);
+  const activeLearningPath = getLearningPath(learningPathId);
+  const activeLearningTopic = TAX_KNOWLEDGE_FOUNDATION.topics.find((topic) => topic.id === activeLearningPath.topicId);
 
   return (
     <aside className="tax-year-update" aria-label="Verified Tax Year 2026 filing updates">
@@ -63,6 +68,12 @@ export default function TaxYear2026Update() {
         .tax-year-update__connection-label { display: block; margin-top: 7px; color: #665d40; font-size: 11px; font-weight: 700; }
         .tax-year-update__connection-list { display: flex; flex-wrap: wrap; gap: 5px; margin: 4px 0 2px; padding: 0; list-style: none; }
         .tax-year-update__connection { border: 1px solid #d8ceaa; border-radius: 999px; background: #f7f1d9; color: #365446; padding: 3px 6px; font-size: 10px; }
+        .tax-year-update__finder-label { display: block; margin: 9px 0 4px; color: #173b31; font-size: 12px; font-weight: 700; }
+        .tax-year-update__finder-input { box-sizing: border-box; width: 100%; border: 1px solid #b7ab79; border-radius: 8px; background: #fffef9; color: #173b31; padding: 8px; font: 13px/1.3 inherit; }
+        .tax-year-update__finder-input:focus-visible { outline: 3px solid rgba(202,165,24,.36); outline-offset: 2px; }
+        .tax-year-update__empty { margin: 8px 0 0; color: #5d5a46; font-size: 12px; }
+        .tax-year-update__learning-card { margin-top: 11px; border: 1px solid #cfc189; border-radius: 9px; background: #f7f1d9; padding: 9px; }
+        .tax-year-update__learning-card p { margin: 5px 0; color: #4d513c; font-size: 12px; }
         .tax-year-update__select { box-sizing: border-box; width: 100%; margin: 4px 0 10px; border: 1px solid #b7ab79; border-radius: 8px; background: #fffef9; color: #173b31; padding: 8px; font: 13px/1.3 inherit; }
         .tax-year-update__select:focus-visible { outline: 3px solid rgba(202,165,24,.36); outline-offset: 2px; }
         @media (max-width: 520px) { .tax-year-update { right: 12px; bottom: 12px; } .tax-year-update__facts { grid-template-columns: 1fr; } .tax-year-update__fact--wide { grid-column: auto; } }
@@ -91,8 +102,11 @@ export default function TaxYear2026Update() {
               <h3 className="tax-year-update__source-heading">{TAX_KNOWLEDGE_FOUNDATION.version}<br /><span lang="ur" dir="rtl">ٹیکس سال 2026 جائزہ شدہ ابتدائی معلوماتی کیٹلاگ</span></h3>
               <p className="tax-year-update__source-copy">Reviewed {TAX_KNOWLEDGE_FOUNDATION.reviewedOn}. {TAX_KNOWLEDGE_FOUNDATION.limitation}</p>
               <p className="tax-year-update__source-copy" lang="ur" dir="rtl">جائزہ: {TAX_KNOWLEDGE_FOUNDATION.reviewedOn}۔ {TAX_KNOWLEDGE_FOUNDATION.limitationUrdu}</p>
+              <label className="tax-year-update__finder-label" htmlFor="reviewed-knowledge-topic-finder">Find a reviewed topic locally / <span lang="ur" dir="rtl">مقامی طور پر جائزہ شدہ موضوع تلاش کریں</span></label>
+              <input id="reviewed-knowledge-topic-finder" className="tax-year-update__finder-input" value={knowledgeQuery} onChange={(event) => setKnowledgeQuery(event.target.value)} placeholder="e.g. IRIS, records, due dates / آئرس، ریکارڈ، تاریخ" />
+              <p className="tax-year-update__source-copy">This finder runs only in this page. Your search is not sent to a server or saved. <span lang="ur" dir="rtl">یہ فائنڈر صرف اسی صفحے میں چلتا ہے۔ آپ کی تلاش سرور کو نہیں بھیجی اور نہ محفوظ کی جاتی ہے۔</span></p>
               <ul className="tax-year-update__source-list">
-                {TAX_KNOWLEDGE_FOUNDATION.topics.map((topic) => (
+                {filteredKnowledgeTopics.map((topic) => (
                   <li className="tax-year-update__source-item" key={topic.id}>
                     <span className="tax-year-update__source-title">{topic.title}<br /><span lang="ur" dir="rtl">{topic.titleUrdu}</span></span>
                     <p className="tax-year-update__source-purpose">{topic.purpose}<br /><span lang="ur" dir="rtl">{topic.purposeUrdu}</span></p>
@@ -106,6 +120,18 @@ export default function TaxYear2026Update() {
                   </li>
                 ))}
               </ul>
+              {filteredKnowledgeTopics.length === 0 && <p className="tax-year-update__empty">No reviewed topic matched that search. Clear the text or check FBR directly. <span lang="ur" dir="rtl">اس تلاش سے کوئی جائزہ شدہ موضوع نہیں ملا۔ متن صاف کریں یا براہِ راست ایف بی آر دیکھیں۔</span></p>}
+              <section id="low-data-learning-path" className="tax-year-update__learning-card" aria-label="Low-data guided learning path">
+                <h4 className="tax-year-update__source-heading">Choose a broad learning goal / <span lang="ur" dir="rtl">عمومی سیکھنے کا مقصد منتخب کریں</span></h4>
+                <p>Select only an educational goal. This does not ask for figures, identity, documents, or an account status. <span lang="ur" dir="rtl">صرف تعلیمی مقصد منتخب کریں۔ یہ اعداد، شناخت، دستاویزات یا اکاؤنٹ اسٹیٹس نہیں مانگتا۔</span></p>
+                <select className="tax-year-update__select" aria-label="Choose a broad learning goal" value={learningPathId} onChange={(event) => setLearningPathId(event.target.value)}>
+                  {TAX_LEARNING_PATHS.map((path) => <option key={path.id} value={path.id}>{path.title} — {path.titleUrdu}</option>)}
+                </select>
+                <span className="tax-year-update__source-title">1. {activeLearningTopic.title}<br /><span lang="ur" dir="rtl">1۔ {activeLearningTopic.titleUrdu}</span></span>
+                <a className="tax-year-update__archive-link" href={activeLearningTopic.sourceUrl} {...linkProps}>{activeLearningTopic.sourceLabel} ↗</a>
+                <p><strong>2. Preparation action:</strong> {activeLearningPath.preparationAction}<br /><span lang="ur" dir="rtl"><strong>2۔ تیاری عمل:</strong> {activeLearningPath.preparationActionUrdu}</span></p>
+                <p><strong>3. Limit:</strong> {activeLearningPath.boundary}<br /><span lang="ur" dir="rtl"><strong>3۔ حد:</strong> {activeLearningPath.boundaryUrdu}</span></p>
+              </section>
             </section>
             <button className="tax-year-update__archive-toggle" type="button" onClick={() => setSourceUpdateCentreOpen((open) => !open)} aria-expanded={sourceUpdateCentreOpen} aria-controls="official-source-update-centre">
               {sourceUpdateCentreOpen ? "Hide" : "Open"} reviewed official-source update centre · <span lang="ur" dir="rtl">جائزہ شدہ سرکاری ذرائع اپڈیٹ سینٹر</span>

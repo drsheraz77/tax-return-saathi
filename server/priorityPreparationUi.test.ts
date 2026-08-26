@@ -12,6 +12,10 @@ describe("priority preparation workflow wiring", () => {
     expect(taxYearPanel).toContain("reviewed-tax-knowledge-catalogue");
     expect(taxYearPanel).toContain("TAX_KNOWLEDGE_FOUNDATION.citationLabel");
     expect(taxYearPanel).toContain("Use alongside existing preparation tools");
+    expect(taxYearPanel).toContain("reviewed-knowledge-topic-finder");
+    expect(taxYearPanel).toContain("Your search is not sent to a server or saved");
+    expect(taxYearPanel).toContain("low-data-learning-path");
+    expect(taxYearPanel).toContain("does not ask for figures, identity, documents, or an account status");
     expect(taxYearPanel).toContain("fbr-notice-preparation-guide");
     expect(taxYearPanel).toContain("FBR_NOTICE_PREPARATION_TYPES");
     expect(taxYearPanel).toContain("does not identify a notice, calculate a deadline");

@@ -72,3 +72,64 @@ export const TAX_KNOWLEDGE_FOUNDATION = {
     },
   ],
 };
+
+export const TAX_LEARNING_PATHS = [
+  {
+    id: "iris-start",
+    title: "I want to start with official IRIS access",
+    titleUrdu: "میں سرکاری آئرس رسائی سے شروع کرنا چاہتا/چاہتی ہوں",
+    topicId: "iris-access",
+    preparationAction: "Use the guided IRIS orientation and the tailored preparation checklist before opening IRIS.",
+    preparationActionUrdu: "آئرس کھولنے سے پہلے آئرس رہنمائی اور ذاتی تیاری چیک لسٹ استعمال کریں۔",
+    boundary: "This path does not open IRIS, create an account, or decide whether you can file.",
+    boundaryUrdu: "یہ راستہ آئرس نہیں کھولتا، اکاؤنٹ نہیں بناتا اور نہ ہی یہ فیصلہ کرتا ہے کہ آپ فائل کر سکتے ہیں۔",
+  },
+  {
+    id: "return-preparation",
+    title: "I want to prepare a return and private records",
+    titleUrdu: "میں ریٹرن اور نجی ریکارڈ کی تیاری کرنا چاہتا/چاہتی ہوں",
+    topicId: "return-completion-records",
+    preparationAction: "Use the pre-submission error-prevention and post-submission continuity checklists as temporary prompts.",
+    preparationActionUrdu: "عارضی یاددہانی کے طور پر جمع کرانے سے پہلے غلطی سے بچاؤ اور جمع کرانے کے بعد تسلسل چیک لسٹس استعمال کریں۔",
+    boundary: "This path does not verify records, calculate tax, or confirm what FBR will accept.",
+    boundaryUrdu: "یہ راستہ ریکارڈ کی تصدیق، ٹیکس کا حساب یا ایف بی آر کی قبولیت کی تصدیق نہیں کرتا۔",
+  },
+  {
+    id: "published-date-check",
+    title: "I want to check a published filing-date category",
+    titleUrdu: "میں شائع شدہ فائلنگ تاریخ کی قسم دیکھنا چاہتا/چاہتی ہوں",
+    topicId: "due-dates",
+    preparationAction: "Use the reviewed source update centre and temporary pre-filing timeline to prepare questions for FBR.",
+    preparationActionUrdu: "ایف بی آر کے لیے سوالات تیار کرنے کو جائزہ شدہ سورس اپڈیٹ سینٹر اور عارضی پری فائلنگ ٹائم لائن استعمال کریں۔",
+    boundary: "This path does not calculate a personal deadline, extension, or late-filing result.",
+    boundaryUrdu: "یہ راستہ ذاتی ڈیڈ لائن، توسیع یا تاخیر سے فائلنگ کا نتیجہ نہیں نکالتا۔",
+  },
+  {
+    id: "complex-question",
+    title: "I have a complex or unclear tax question",
+    titleUrdu: "میرا ٹیکس کا سوال پیچیدہ یا غیر واضح ہے",
+    topicId: "laws-index",
+    preparationAction: "Use the complex-situation navigator to select only a broad category, then check the official source or seek qualified advice.",
+    preparationActionUrdu: "صرف عمومی زمرہ منتخب کرنے کے لیے پیچیدہ صورتحال نیویگیٹر استعمال کریں، پھر سرکاری ذریعہ دیکھیں یا اہل مشورہ لیں۔",
+    boundary: "This path does not interpret law, determine treatment, or replace qualified advice.",
+    boundaryUrdu: "یہ راستہ قانون کی تشریح، ٹریٹمنٹ کا تعین یا اہل مشورے کا متبادل نہیں۔",
+  },
+];
+
+export function getStarterKnowledgeTopics(query = "") {
+  const normalizedQuery = String(query).trim().toLocaleLowerCase();
+  if (!normalizedQuery) return TAX_KNOWLEDGE_FOUNDATION.topics;
+
+  return TAX_KNOWLEDGE_FOUNDATION.topics.filter((topic) => [
+    topic.title,
+    topic.titleUrdu,
+    topic.purpose,
+    topic.purposeUrdu,
+    topic.scope,
+    topic.scopeUrdu,
+  ].join(" ").toLocaleLowerCase().includes(normalizedQuery));
+}
+
+export function getLearningPath(pathId) {
+  return TAX_LEARNING_PATHS.find((path) => path.id === pathId) ?? TAX_LEARNING_PATHS[0];
+}
