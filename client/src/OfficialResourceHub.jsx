@@ -139,6 +139,8 @@ export default function OfficialResourceHub() {
         .official-resource-hub__industry-checklist h3 { margin: 0 0 6px; color: #0B3D2E; font-size: 14px; }
         .official-resource-hub__industry-escalation { margin-top: 12px; border: 1px solid #cfad71; border-left: 4px solid #a6512d; border-radius: 10px; background: #fff7ed; padding: 11px; }
         .official-resource-hub__industry-escalation h3 { margin: 0 0 6px; color: #6a321c; font-size: 14px; }
+        .official-resource-hub__industry-support-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 9px; margin-top: 7px; }
+        .official-resource-hub__industry-support-review { color: #625f4e; font-size: 11px; line-height: 1.45; }
         .official-resource-hub__link { color: #075c48; font-size: 12px; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
         .official-resource-hub__link:focus-visible { outline: 3px solid rgba(202,165,24,.48); outline-offset: 3px; border-radius: 3px; }
         .official-resource-hub__quick-nav { display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 12px; padding: 10px; border: 1px solid #d9c975; border-radius: 10px; background: #f7f1d9; }
@@ -277,7 +279,10 @@ export default function OfficialResourceHub() {
                           <h3 id="large-business-qualified-escalation-title">{LARGE_BUSINESS_QUALIFIED_ESCALATION.title}<br /><span lang="ur" dir="rtl">{LARGE_BUSINESS_QUALIFIED_ESCALATION.titleUrdu}</span></h3>
                           <p className="official-resource-hub__tool-copy">{LARGE_BUSINESS_QUALIFIED_ESCALATION.description}</p>
                           <p className="official-resource-hub__tool-copy" lang="ur" dir="rtl">{LARGE_BUSINESS_QUALIFIED_ESCALATION.descriptionUrdu}</p>
-                          <a className="official-resource-hub__link" href={LARGE_BUSINESS_QUALIFIED_ESCALATION.url} {...linkProps}>{LARGE_BUSINESS_QUALIFIED_ESCALATION.sourceLabel} ↗</a>
+                          <div className="official-resource-hub__industry-support-meta">
+                            <a className="official-resource-hub__link" href={LARGE_BUSINESS_QUALIFIED_ESCALATION.url} {...linkProps}>{LARGE_BUSINESS_QUALIFIED_ESCALATION.sourceLabel} ↗</a>
+                            <span className="official-resource-hub__industry-support-review">{LARGE_BUSINESS_QUALIFIED_ESCALATION.supportReviewNote}<br /><span lang="ur" dir="rtl">{LARGE_BUSINESS_QUALIFIED_ESCALATION.supportReviewNoteUrdu}</span></span>
+                          </div>
                           <p className="official-resource-hub__footer">{LARGE_BUSINESS_QUALIFIED_ESCALATION.boundary}</p>
                           <p className="official-resource-hub__footer" lang="ur" dir="rtl">{LARGE_BUSINESS_QUALIFIED_ESCALATION.boundaryUrdu}</p>
                         </section>

@@ -174,5 +174,8 @@ describe("priority preparation workflow wiring", () => {
     expect(resourceHub).toContain("LARGE_BUSINESS_QUALIFIED_ESCALATION.description");
     expect(resourceHub).toContain("LARGE_BUSINESS_QUALIFIED_ESCALATION.boundary");
     expect(resourceHub).toContain("LARGE_BUSINESS_QUALIFIED_ESCALATION.url");
+    expect(resourceHub).toContain("official-resource-hub__industry-support-meta");
+    expect(resourceHub).toContain("LARGE_BUSINESS_QUALIFIED_ESCALATION.supportReviewNote");
+    expect(resourceHub).toContain("LARGE_BUSINESS_QUALIFIED_ESCALATION.supportReviewNoteUrdu");
   });
 });

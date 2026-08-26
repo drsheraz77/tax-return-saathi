@@ -82,8 +82,11 @@ describe("official resource hub", () => {
       sourceLabel: "Open FBR contact and support",
     });
     expect(new URL(LARGE_BUSINESS_QUALIFIED_ESCALATION.url).hostname).toBe("www.fbr.gov.pk");
+    expect(LARGE_BUSINESS_QUALIFIED_ESCALATION.reviewedOn).toBe("26 August 2026");
+    expect(LARGE_BUSINESS_QUALIFIED_ESCALATION.reviewedOnIso).toBe("2026-08-26");
     expect(LARGE_BUSINESS_QUALIFIED_ESCALATION.titleUrdu).toBeTruthy();
     expect(LARGE_BUSINESS_QUALIFIED_ESCALATION.descriptionUrdu).toBeTruthy();
+    expect(`${LARGE_BUSINESS_QUALIFIED_ESCALATION.supportReviewNote} ${LARGE_BUSINESS_QUALIFIED_ESCALATION.supportReviewNoteUrdu}`).toMatch(/last manually reviewed|not a live|دستی جائزہ/i);
     expect(`${LARGE_BUSINESS_QUALIFIED_ESCALATION.description} ${LARGE_BUSINESS_QUALIFIED_ESCALATION.boundary}`).toMatch(/Do not submit case details|does not interpret law|does not.*decide.*tax treatment|does not.*predict/i);
   });
 

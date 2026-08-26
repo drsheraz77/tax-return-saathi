@@ -727,6 +727,8 @@ export const LARGE_BUSINESS_INTERNAL_ROLE_CHECKLIST = [
 
 export const LARGE_BUSINESS_QUALIFIED_ESCALATION = {
   id: "large-business-qualified-escalation",
+  reviewedOn: "26 August 2026",
+  reviewedOnIso: "2026-08-26",
   title: "Complex industry question? Pause and seek qualified clarification",
   titleUrdu: "پیچیدہ صنعتی سوال؟ رکیں اور اہل وضاحت حاصل کریں",
   description: "For a complex or unclear company, industrial-operation, registration, record, filing, notice, audit, demand, court, cross-border, or time-sensitive question, use the official FBR support route and consider a suitably qualified tax or legal professional. Do not submit case details, records, figures, passwords, notices, or identity information through this site.",
@@ -735,6 +737,8 @@ export const LARGE_BUSINESS_QUALIFIED_ESCALATION = {
   boundaryUrdu: "یہ تیاری کارڈ قانون کی تشریح، ادارے کی درجہ بندی، ٹیکس ٹریٹمنٹ یا ڈیڈ لائن کا فیصلہ، جواب کی تیاری، کسی پیشہ ور کی سفارش یا ایف بی آر کے نتیجے کی پیش گوئی نہیں کرتا۔",
   url: "https://www.fbr.gov.pk/contact-us/142252/173964",
   sourceLabel: "Open FBR contact and support",
+  supportReviewNote: "FBR contact route last manually reviewed: 26 August 2026 · manual record, not a live contact-status check.",
+  supportReviewNoteUrdu: "ایف بی آر رابطہ راستے کا آخری دستی جائزہ: 26 اگست 2026 · دستی ریکارڈ ہے، رابطہ اسٹیٹس کی براہِ راست جانچ نہیں۔",
 };
 
 export function filterLargeBusinessIndustryResources(filterId = "all", hub = OFFICIAL_RESOURCE_HUB) {

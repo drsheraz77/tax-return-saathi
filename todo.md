@@ -264,3 +264,5 @@
 - [x] Add focused model/UI tests and verify checklist/privacy boundaries, date badge, filter behaviour, Urdu/English presentation, responsive layout, full suite, and production build before publication.
 - [x] Add a bilingual qualified-escalation card for complex Large Business / Industry questions, linked only to the approved FBR support route and qualified professional guidance without requesting case details or providing individual tax or legal advice.
 - [x] Add focused coverage and verify escalation wording, official-link boundary, Urdu/English presentation, responsive layout, full suite, and production build before publication.
+- [x] Add a compact bilingual manual review-date note beside the qualified industry escalation card’s approved FBR support link, using the existing review source without suggesting a live check.
+- [x] Add focused coverage and verify the support-link date note, manual/non-live boundary, Urdu/English presentation, responsive layout, full suite, and production build before publication.
