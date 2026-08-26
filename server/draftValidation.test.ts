@@ -5,6 +5,7 @@ const dbMocks = vi.hoisted(() => ({
   getChecklistDraftForUser: vi.fn(),
   saveChecklistDraftForUser: vi.fn(),
   deleteChecklistDraftForUser: vi.fn(),
+  getTaxpayerProfileForUser: vi.fn(),
   createFeedbackSubmission: vi.fn(),
 }));
 
@@ -67,9 +68,10 @@ describe("authenticated checklist draft and feedback safeguards", () => {
 
   it("summarizes and deletes only the authenticated user's account-held draft after an explicit confirmation value", async () => {
     dbMocks.getChecklistDraftForUser.mockResolvedValue({ payload: JSON.stringify(validDraft), updatedAt: new Date() });
+    dbMocks.getTaxpayerProfileForUser.mockResolvedValue(undefined);
     dbMocks.deleteChecklistDraftForUser.mockResolvedValue(undefined);
     const caller = appRouter.createCaller(authedContext as any);
-    await expect(caller.privacy.summary()).resolves.toEqual({ hasChecklistDraft: true, feedbackIsAnonymous: true });
+    await expect(caller.privacy.summary()).resolves.toEqual({ hasChecklistDraft: true, hasTaxpayerProfile: false, feedbackIsAnonymous: true });
     await expect(caller.privacy.deleteAccountHeldData({ confirmation: "DELETE_MY_DRAFT_DATA" })).resolves.toEqual({ success: true });
     expect(dbMocks.getChecklistDraftForUser).toHaveBeenCalledWith(42);
     expect(dbMocks.deleteChecklistDraftForUser).toHaveBeenCalledWith(42);

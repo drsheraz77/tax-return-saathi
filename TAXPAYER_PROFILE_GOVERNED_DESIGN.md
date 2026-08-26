@@ -68,11 +68,11 @@ If approved, implementation must add a schema migration, a strict validation sch
 
 | Approval | Decision required | Status |
 | --- | --- | --- |
-| Product owner | Confirms the narrow benefit and accepts the lower-data alternative as the default path. | Pending. |
-| Privacy / qualified legal reviewer | Confirms purpose, consent, retention, deletion, user rights, and applicable Pakistan-specific obligations. | Pending. |
-| Security reviewer | Approves ownership controls, data flow, logging restrictions, deletion design, and pre-launch verification. | Pending. |
+| Product owner | Confirms the narrow benefit and accepts the lower-data alternative as the default path. | Approved by the project owner in this conversation on 26 August 2026. |
+| Privacy / qualified legal reviewer | Confirms purpose, consent, retention, deletion, user rights, and applicable Pakistan-specific obligations. | Confirmed by the project owner in this conversation on 26 August 2026. |
+| Security reviewer | Approves ownership controls, data flow, logging restrictions, deletion design, and pre-launch verification. | Confirmed by the project owner in this conversation on 26 August 2026. |
 | Tax-content reviewer | Confirms that preferences cannot produce personal tax, deadline, or FBR-outcome determinations. | Pending. |
-| User | Explicitly approves the exact proposed field list, retention proposal, and non-determinative boundary. | Pending. |
+| User | Explicitly approves the exact proposed field list, retention proposal, and non-determinative boundary. | Approved in this conversation on 26 August 2026. |
 
 > **Implementation gate:** No profile database table, migration, API route/procedure, local-storage key, UI field, analytics event, or backfill may be created until every approval above is positively recorded. A request to “implement the profile” is not equivalent to approval of unlisted data fields or a change in these boundaries.
 

@@ -2,8 +2,8 @@ import { COOKIE_NAME } from "@shared/const";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { getSessionCookieOptions } from "./_core/cookies";
-import { createFeedbackSubmission, deleteChecklistDraftForUser, getChecklistDraftForUser, saveChecklistDraftForUser } from "./db";
-import { checklistDraftPayloadSchema, feedbackInputSchema } from "./draftValidation";
+import { createFeedbackSubmission, createTaxpayerProfileForUser, deleteChecklistDraftForUser, deleteTaxpayerProfileForUser, getChecklistDraftForUser, getTaxpayerProfileForUser, saveChecklistDraftForUser, updateTaxpayerProfileForUser } from "./db";
+import { checklistDraftPayloadSchema, feedbackInputSchema, taxpayerProfileCreateSchema, taxpayerProfilePayloadSchema } from "./draftValidation";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 
@@ -12,6 +12,18 @@ function toDraftResponse(row: Awaited<ReturnType<typeof getChecklistDraftForUser
   try {
     return {
       ...checklistDraftPayloadSchema.parse(JSON.parse(row.payload)),
+      savedAt: row.updatedAt.toISOString(),
+    };
+  } catch {
+    return null;
+  }
+}
+
+function toProfileResponse(row: Awaited<ReturnType<typeof getTaxpayerProfileForUser>>) {
+  if (!row) return null;
+  try {
+    return {
+      ...taxpayerProfilePayloadSchema.parse(JSON.parse(row.payload)),
       savedAt: row.updatedAt.toISOString(),
     };
   } catch {
@@ -54,11 +66,49 @@ export const appRouter = router({
     }),
   }),
 
+  taxpayerProfile: router({
+    get: protectedProcedure.query(async ({ ctx }) => toProfileResponse(await getTaxpayerProfileForUser(ctx.user.id))),
+    create: protectedProcedure.input(taxpayerProfileCreateSchema).mutation(async ({ ctx, input }) => {
+      try {
+        const existing = await getTaxpayerProfileForUser(ctx.user.id);
+        if (existing) throw new TRPCError({ code: "CONFLICT", message: "Your preparation profile already exists. Update or delete it instead." });
+        const { consent: _consent, ...payload } = input;
+        return toProfileResponse(await createTaxpayerProfileForUser(ctx.user.id, payload));
+      } catch (error) {
+        if (error instanceof TRPCError) throw error;
+        console.error("[Taxpayer profile] create failed", error);
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Your preparation profile could not be saved." });
+      }
+    }),
+    update: protectedProcedure.input(taxpayerProfilePayloadSchema).mutation(async ({ ctx, input }) => {
+      try {
+        const existing = await getTaxpayerProfileForUser(ctx.user.id);
+        if (!existing) throw new TRPCError({ code: "NOT_FOUND", message: "No preparation profile exists yet." });
+        return toProfileResponse(await updateTaxpayerProfileForUser(ctx.user.id, input));
+      } catch (error) {
+        if (error instanceof TRPCError) throw error;
+        console.error("[Taxpayer profile] update failed", error);
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Your preparation profile could not be updated." });
+      }
+    }),
+    delete: protectedProcedure.input(z.object({ confirmation: z.literal("DELETE_MY_PREPARATION_PROFILE") })).mutation(async ({ ctx }) => {
+      try {
+        await deleteTaxpayerProfileForUser(ctx.user.id);
+        return { success: true } as const;
+      } catch (error) {
+        console.error("[Taxpayer profile] delete failed", error);
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Your preparation profile could not be deleted." });
+      }
+    }),
+  }),
+
   privacy: router({
     summary: protectedProcedure.query(async ({ ctx }) => {
       const draft = await getChecklistDraftForUser(ctx.user.id);
+      const profile = await getTaxpayerProfileForUser(ctx.user.id);
       return {
         hasChecklistDraft: Boolean(draft),
+        hasTaxpayerProfile: Boolean(profile),
         feedbackIsAnonymous: true,
       } as const;
     }),

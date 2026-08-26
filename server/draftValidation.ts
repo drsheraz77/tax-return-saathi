@@ -48,6 +48,28 @@ export const checklistDraftPayloadSchema = z.object({
 
 export type ChecklistDraftPayload = z.infer<typeof checklistDraftPayloadSchema>;
 
+const profilePreparationPath = z.enum(["salaried", "freelancer", "business_owner", "property_owner", "investor", "overseas_connection", "not_sure"]);
+
+/**
+ * Approved, enum-only preference payload. This is not a taxpayer record and
+ * deliberately cannot accept identifiers, amounts, documents, credentials,
+ * free text, filing status, notices, legal conclusions, or outcomes.
+ */
+export const taxpayerProfilePayloadSchema = z.object({
+  version: z.literal(1),
+  preferredLanguage: z.enum(["ur", "en"]).optional(),
+  taxYearContext: z.enum(["ty_2026", "other_or_unsure"]).optional(),
+  preparationPaths: z.array(profilePreparationPath).max(7).optional(),
+  filingFamiliarity: z.enum(["first_time", "filed_before", "not_sure"]).optional(),
+  resourceOrder: z.enum(["guided", "review_first", "source_first"]).optional(),
+}).strict().refine(
+  (value) => Object.keys(value).some((key) => key !== "version"),
+  "Choose at least one optional preparation preference before saving a profile.",
+);
+
+export const taxpayerProfileCreateSchema = taxpayerProfilePayloadSchema.safeExtend({ consent: z.literal(true) }).strict();
+export type TaxpayerProfilePayload = z.infer<typeof taxpayerProfilePayloadSchema>;
+
 const sensitiveFeedbackPattern = /\b(cnic|ntn|password|passcode|iban|account\s*(?:number|no\.?|details)|bank\s*details|card\s*(?:number|details)|passport)\b|\b\d{5}-?\d{7}-?\d\b/i;
 
 export const feedbackInputSchema = z.object({

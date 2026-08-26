@@ -1,7 +1,7 @@
 import { eq, lt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { checklistDrafts, feedbackRetentionSchedules, feedbackSubmissions, InsertUser, users } from "../drizzle/schema";
-import type { ChecklistDraftPayload, FeedbackInput } from "./draftValidation";
+import { checklistDrafts, feedbackRetentionSchedules, feedbackSubmissions, InsertUser, taxpayerProfiles, users } from "../drizzle/schema";
+import type { ChecklistDraftPayload, FeedbackInput, TaxpayerProfilePayload } from "./draftValidation";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -110,6 +110,33 @@ export async function deleteChecklistDraftForUser(userId: number) {
   const db = await getDb();
   if (!db) throw new Error("Database is unavailable");
   await db.delete(checklistDrafts).where(eq(checklistDrafts.userId, userId));
+}
+
+export async function getTaxpayerProfileForUser(userId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(taxpayerProfiles).where(eq(taxpayerProfiles.userId, userId)).limit(1);
+  return result[0];
+}
+
+export async function createTaxpayerProfileForUser(userId: number, payload: TaxpayerProfilePayload) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable");
+  await db.insert(taxpayerProfiles).values({ userId, payload: JSON.stringify(payload) });
+  return getTaxpayerProfileForUser(userId);
+}
+
+export async function updateTaxpayerProfileForUser(userId: number, payload: TaxpayerProfilePayload) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable");
+  await db.update(taxpayerProfiles).set({ payload: JSON.stringify(payload), updatedAt: new Date() }).where(eq(taxpayerProfiles.userId, userId));
+  return getTaxpayerProfileForUser(userId);
+}
+
+export async function deleteTaxpayerProfileForUser(userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable");
+  await db.delete(taxpayerProfiles).where(eq(taxpayerProfiles.userId, userId));
 }
 
 export async function createFeedbackSubmission(input: FeedbackInput) {

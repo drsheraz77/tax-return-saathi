@@ -39,6 +39,19 @@ export const checklistDrafts = mysqlTable("checklistDrafts", {
 }, (table) => [uniqueIndex("checklistDrafts_userId_unique").on(table.userId)]);
 
 /**
+ * An optional, account-owned preparation-preferences profile. Its versioned
+ * payload is strictly validated server-side and intentionally excludes every
+ * identity, financial, document, credential, filing, and outcome field.
+ */
+export const taxpayerProfiles = mysqlTable("taxpayerProfiles", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  payload: text("payload").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => [uniqueIndex("taxpayerProfiles_userId_unique").on(table.userId)]);
+
+/**
  * Voluntary product feedback. It is intentionally not associated with a user
  * account and must not contain tax, identity, account, or credential details.
  */
@@ -63,5 +76,6 @@ export const feedbackRetentionSchedules = mysqlTable("feedbackRetentionSchedules
 }, (table) => [uniqueIndex("feedbackRetentionSchedules_taskUid_unique").on(table.scheduleCronTaskUid)]);
 
 export type ChecklistDraft = typeof checklistDrafts.$inferSelect;
+export type TaxpayerProfile = typeof taxpayerProfiles.$inferSelect;
 export type FeedbackSubmission = typeof feedbackSubmissions.$inferSelect;
 export type FeedbackRetentionSchedule = typeof feedbackRetentionSchedules.$inferSelect;

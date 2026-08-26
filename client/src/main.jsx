@@ -11,13 +11,14 @@ import { startLogin } from "./const";
 const OfficialResourceHub = React.lazy(() => import("./OfficialResourceHub.jsx"));
 const PersonalisedChecklistPrototype = React.lazy(() => import("./PersonalisedChecklistPrototype.jsx"));
 const TaxYear2026Update = React.lazy(() => import("./TaxYear2026Update.jsx"));
+const TaxpayerPreparationProfile = React.lazy(() => import("./TaxpayerPreparationProfile.jsx"));
 
 document.title = "Tax Return Saathi | Pakistan FBR Tax Assistant";
 
 const queryClient = new QueryClient();
 
 function SupplementalMotionPreferences() {
-  return <style>{`@media (prefers-reduced-motion: reduce) { .official-resource-hub *, .tax-year-update *, .filing-prototype *, .official-resource-hub *::before, .tax-year-update *::before, .filing-prototype *::before, .official-resource-hub *::after, .tax-year-update *::after, .filing-prototype *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }`}</style>;
+  return <style>{`@media (prefers-reduced-motion: reduce) { .official-resource-hub *, .tax-year-update *, .filing-prototype *, .taxpayer-profile *, .official-resource-hub *::before, .tax-year-update *::before, .filing-prototype *::before, .taxpayer-profile *::before, .official-resource-hub *::after, .tax-year-update *::after, .filing-prototype *::after, .taxpayer-profile *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }`}</style>;
 }
 
 function redirectToLoginIfUnauthorized(error) {
@@ -63,6 +64,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <PersonalisedChecklistPrototype />
           <TaxYear2026Update />
           <OfficialResourceHub />
+          <TaxpayerPreparationProfile />
         </Suspense>
       </QueryClientProvider>
     </trpc.Provider>

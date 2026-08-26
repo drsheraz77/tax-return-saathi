@@ -5,6 +5,8 @@ import { describe, expect, it } from "vitest";
 const projectRoot = resolve(__dirname, "..");
 const taxYearPanel = readFileSync(resolve(projectRoot, "client/src/TaxYear2026Update.jsx"), "utf8");
 const resourceHub = readFileSync(resolve(projectRoot, "client/src/OfficialResourceHub.jsx"), "utf8");
+const taxpayerProfile = readFileSync(resolve(projectRoot, "client/src/TaxpayerPreparationProfile.jsx"), "utf8");
+const appEntry = readFileSync(resolve(projectRoot, "client/src/main.jsx"), "utf8");
 
 describe("priority preparation workflow wiring", () => {
   it("renders the limited source foundation and structured FBR-notice preparation guide", () => {
@@ -78,5 +80,16 @@ describe("priority preparation workflow wiring", () => {
     expect(resourceHub).toContain("AI_ANSWER_EVALUATION_STEPS");
     expect(resourceHub).toContain("does not grade an answer, verify sources, or replace an official check");
     expect(resourceHub).toContain("not saved to browser storage, your account, or the app database");
+  });
+
+  it("renders an optional governed taxpayer-preferences panel with consent, separate deletion, and no tax outcome claim", () => {
+    expect(appEntry).toContain('React.lazy(() => import("./TaxpayerPreparationProfile.jsx"))');
+    expect(taxpayerProfile).toContain("Optional account preference · not an FBR profile");
+    expect(taxpayerProfile).toContain("only five controlled preparation preferences");
+    expect(taxpayerProfile).toContain("does not ask for CNIC, NTN, amounts, bank details, documents, passwords, OTPs, IRIS access, filing status, notices, or outcomes");
+    expect(taxpayerProfile).toContain("I choose to save only these optional preparation preferences to my account");
+    expect(taxpayerProfile).toContain("DELETE_MY_PREPARATION_PROFILE");
+    expect(taxpayerProfile).toContain("Your separate checklist draft was not deleted");
+    expect(taxpayerProfile).toContain("cannot determine your tax, deadline, filing, or result");
   });
 });

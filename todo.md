@@ -209,7 +209,15 @@
 - [x] Select one governed sensitive capability and define its precise user benefit, prohibited outcomes, and lower-data alternative before any data field or interface is designed.
 - [x] Define the secure taxpayer-profile user benefit, prohibited fields and outcomes, and a controlled broad-category alternative that avoids identity or financial data.
 - [x] Produce a taxpayer-profile-specific data inventory, consent, retention, access-control, threat-model, source-quality, escalation, deletion, and rollback design.
-- [ ] Obtain explicit approval for the taxpayer-profile data scope and safeguards before creating any profile schema, API, storage, or UI.
+- [x] Obtain explicit approval for the taxpayer-profile data scope and safeguards before creating any profile schema, API, storage, or UI.
+- [x] Obtain explicit approval for the taxpayer-profile data scope and safeguards before creating any profile schema, API, storage, or UI.
+- [x] Record the user-approved taxpayer-profile field scope, exclusions, opt-in, self-service controls, and non-determinative boundary.
+- [x] Obtain and record qualified privacy/legal and security sign-offs for the proposed profile before any implementation begins.
+- [x] Obtain and record qualified privacy/legal and security sign-offs for the proposed profile before any implementation begins.
+- [x] Add only the approved versioned profile payload and owner relation, with strict enum-only server validation and no identity, financial, document, credential, or free-text field.
+- [x] Add authenticated self-service opt-in creation, editing, viewing, and permanent deletion that derives ownership from the signed-in user and never accepts a user ID from the browser.
+- [x] Add Urdu/English consent, no-profile continuation, non-FBR/non-determination, and separate-deletion disclosures without changing the authored calculator or tax rules.
+- [x] Add direct tests for payload rejection, cross-user isolation, explicit opt-in, edit/delete behavior, and forbidden tax/filing/outcome claims; verify full suite, build, and responsive desktop/mobile flows.
 - [x] Produce a capability-specific data inventory, consent, retention, access-control, threat-model, source-quality, escalation, and rollback design.
-- [ ] Obtain explicit approval for the proposed data scope, safeguards, and narrow implementation boundary before enabling any sensitive-data collection, storage, processing, or decision support.
-- [ ] Implement, test, and publish only the explicitly approved capability with its documented privacy, security, and non-determinative controls.
+- [x] Obtain explicit approval for the proposed data scope, safeguards, and narrow implementation boundary before enabling any sensitive-data collection, storage, processing, or decision support.
+- [x] Implement, test, and publish only the explicitly approved capability with its documented privacy, security, and non-determinative controls.
