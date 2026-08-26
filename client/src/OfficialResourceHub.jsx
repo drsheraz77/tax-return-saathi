@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { FILING_READINESS_STEPS, FREELANCER_FAQ, FREELANCER_PRE_FILING_CHECKLIST, getFilingReadinessSummary, getOfficialResourceCategoryReview, getPreSubmissionErrorPreventionSummary, IRIS_FAQ, IRIS_NAVIGATION_WALKTHROUGH, OFFICIAL_RESOURCE_HUB, PRE_FILING_CHECKLIST, PRE_SUBMISSION_ERROR_PREVENTION_STEPS, searchFreelancerFaq, searchIrisFaq } from "./officialResourceHub.js";
+import { COMPLEX_SITUATION_PREPARATION_PATHS, FILING_READINESS_STEPS, FREELANCER_FAQ, FREELANCER_PRE_FILING_CHECKLIST, getFilingReadinessSummary, getOfficialResourceCategoryReview, getPreSubmissionErrorPreventionSummary, getTemporaryGuidanceSummary, IRIS_FAQ, IRIS_NAVIGATION_WALKTHROUGH, OFFICIAL_RESOURCE_HUB, POST_SUBMISSION_CONTINUITY_STEPS, PRE_FILING_CHECKLIST, PRE_SUBMISSION_ERROR_PREVENTION_STEPS, RETURN_WEALTH_RELATIONSHIP_STEPS, searchFreelancerFaq, searchIrisFaq } from "./officialResourceHub.js";
 import { trpc } from "./lib/trpc";
 import { getWealthReadinessPrintRows, getWealthStatementReadinessSummary, WEALTH_READINESS_OPTIONS, WEALTH_STATEMENT_PREPARATION_STEPS } from "./wealthStatementPreparation.js";
 import { buildNonSensitiveReadinessSummary, getPreFilingTimelineSummary, PRE_FILING_TIMELINE_STEPS, TIMELINE_STATUS_OPTIONS } from "./preFilingTimelinePlanner.js";
@@ -18,6 +18,12 @@ export default function OfficialResourceHub() {
   const [irisWalkthroughItems, setIrisWalkthroughItems] = useState({});
   const [preSubmissionChecklistOpen, setPreSubmissionChecklistOpen] = useState(false);
   const [preSubmissionItems, setPreSubmissionItems] = useState({});
+  const [complexSituationOpen, setComplexSituationOpen] = useState(false);
+  const [complexSituationItems, setComplexSituationItems] = useState({});
+  const [returnWealthOpen, setReturnWealthOpen] = useState(false);
+  const [returnWealthItems, setReturnWealthItems] = useState({});
+  const [postSubmissionOpen, setPostSubmissionOpen] = useState(false);
+  const [postSubmissionItems, setPostSubmissionItems] = useState({});
   const [filingReadinessItems, setFilingReadinessItems] = useState({});
   const [wealthPreparationOpen, setWealthPreparationOpen] = useState(false);
   const [wealthReadinessItems, setWealthReadinessItems] = useState({});
@@ -32,6 +38,9 @@ export default function OfficialResourceHub() {
   const matchingFreelancerFaq = useMemo(() => searchFreelancerFaq(freelancerFaqQuery), [freelancerFaqQuery]);
   const filingReadiness = useMemo(() => getFilingReadinessSummary(filingReadinessItems), [filingReadinessItems]);
   const preSubmissionReadiness = useMemo(() => getPreSubmissionErrorPreventionSummary(preSubmissionItems), [preSubmissionItems]);
+  const complexSituationReadiness = useMemo(() => getTemporaryGuidanceSummary(complexSituationItems, COMPLEX_SITUATION_PREPARATION_PATHS), [complexSituationItems]);
+  const returnWealthReadiness = useMemo(() => getTemporaryGuidanceSummary(returnWealthItems, RETURN_WEALTH_RELATIONSHIP_STEPS), [returnWealthItems]);
+  const postSubmissionReadiness = useMemo(() => getTemporaryGuidanceSummary(postSubmissionItems, POST_SUBMISSION_CONTINUITY_STEPS), [postSubmissionItems]);
   const wealthReadiness = useMemo(() => getWealthStatementReadinessSummary(wealthReadinessItems), [wealthReadinessItems]);
   const timelineReadiness = useMemo(() => getPreFilingTimelineSummary(timelineItems), [timelineItems]);
   const { data: accountUser, isLoading: isAccountLoading } = trpc.auth.me.useQuery();
@@ -303,6 +312,81 @@ export default function OfficialResourceHub() {
                   <br />
                   <button className="official-resource-hub__print-action" type="button" onClick={() => setPreSubmissionItems({})}>Clear temporary review marks / <span lang="ur" dir="rtl">عارضی جائزہ کے نشانات صاف کریں</span></button>
                   <p className="official-resource-hub__footer">These marks disappear when the page is refreshed and are not written to browser storage, your account, or the app database. Marking every item does not confirm that a return is complete, correct, accepted, or free of later questions.</p>
+                </section>
+              )}
+            </section>
+
+            <section className="official-resource-hub__tools" aria-labelledby="complex-situation-navigator-title">
+              <h3 id="complex-situation-navigator-title" className="official-resource-hub__tool-title">Complex-situation preparation navigator<br /><span lang="ur" dir="rtl">پیچیدہ صورتِ حال تیاری رہنما</span></h3>
+              <p className="official-resource-hub__tool-copy">Choose only broad situation labels to identify where you may need an official check or qualified clarification. Do not enter facts, dates, figures, notice text, account details, or documents.</p>
+              <p className="official-resource-hub__tool-copy" lang="ur" dir="rtl">سرکاری جانچ یا اہل وضاحت کی ضرورت والی صورت شناخت کرنے کے لیے صرف عمومی صورتحال کے لیبل منتخب کریں۔ حقائق، تاریخیں، اعداد، نوٹس متن، اکاؤنٹ تفصیلات یا دستاویزات درج نہ کریں۔</p>
+              <button className="official-resource-hub__print-toggle" type="button" onClick={() => setComplexSituationOpen((open) => !open)} aria-expanded={complexSituationOpen} aria-controls="complex-situation-preparation-navigator">{complexSituationOpen ? "Hide complex-situation navigator" : "Open complex-situation navigator"}</button>
+              {complexSituationOpen && (
+                <section id="complex-situation-preparation-navigator" className="official-resource-hub__print-sheet official-resource-hub__print-sheet--visible" aria-label="Temporary complex-situation preparation navigator">
+                  <p className="official-resource-hub__print-meta" role="status"><strong>{complexSituationReadiness.label} · {complexSituationReadiness.completed}/{complexSituationReadiness.total}</strong><br /><span lang="ur" dir="rtl">{complexSituationReadiness.labelUrdu}</span></p>
+                  <ul className="official-resource-hub__print-list">
+                    {COMPLEX_SITUATION_PREPARATION_PATHS.map((path) => (
+                      <li className="official-resource-hub__item" key={path.id}>
+                        <label className="official-resource-hub__check-label"><input type="checkbox" checked={Boolean(complexSituationItems[path.id])} onChange={() => setComplexSituationItems((current) => ({ ...current, [path.id]: !current[path.id] }))} /><span><strong>{path.label}</strong><br /><span lang="ur" dir="rtl">{path.labelUrdu}</span></span></label>
+                        <p className="official-resource-hub__item-description">{path.boundary}</p>
+                        <p className="official-resource-hub__item-description official-resource-hub__item-description--urdu" lang="ur" dir="rtl">{path.boundaryUrdu}</p>
+                        <a className="official-resource-hub__link" href={path.url} {...linkProps}>{path.sourceLabel} ↗</a>
+                      </li>
+                    ))}
+                  </ul>
+                  <button className="official-resource-hub__print-action" type="button" onClick={() => setComplexSituationItems({})}>Clear temporary situation marks / <span lang="ur" dir="rtl">عارضی صورتحال نشانات صاف کریں</span></button>
+                  <p className="official-resource-hub__footer">These temporary marks are not saved and do not determine a tax treatment, filing route, eligibility, deadline, notice response, or outcome.</p>
+                </section>
+              )}
+            </section>
+
+            <section className="official-resource-hub__tools" aria-labelledby="return-wealth-relationship-title">
+              <h3 id="return-wealth-relationship-title" className="official-resource-hub__tool-title">Return & wealth-statement preparation relationship<br /><span lang="ur" dir="rtl">ریٹرن اور ویلتھ اسٹیٹمنٹ تیاری تعلق</span></h3>
+              <p className="official-resource-hub__tool-copy">A local orientation for keeping your preparation organised. It is not a wealth statement, reconciliation, calculator, validation, or legal-completeness check.</p>
+              <p className="official-resource-hub__tool-copy" lang="ur" dir="rtl">اپنی تیاری منظم رکھنے کے لیے مقامی رہنمائی۔ یہ ویلتھ اسٹیٹمنٹ، مصالحت، کیلکولیٹر، توثیق یا قانونی تکمیل جانچ نہیں ہے۔</p>
+              <button className="official-resource-hub__print-toggle" type="button" onClick={() => setReturnWealthOpen((open) => !open)} aria-expanded={returnWealthOpen} aria-controls="return-wealth-relationship-guide">{returnWealthOpen ? "Hide return & wealth guide" : "Open return & wealth guide"}</button>
+              {returnWealthOpen && (
+                <section id="return-wealth-relationship-guide" className="official-resource-hub__print-sheet official-resource-hub__print-sheet--visible" aria-label="Temporary return and wealth-statement preparation relationship guide">
+                  <p className="official-resource-hub__print-meta" role="status"><strong>{returnWealthReadiness.label} · {returnWealthReadiness.completed}/{returnWealthReadiness.total}</strong><br /><span lang="ur" dir="rtl">{returnWealthReadiness.labelUrdu}</span></p>
+                  <ul className="official-resource-hub__print-list">
+                    {RETURN_WEALTH_RELATIONSHIP_STEPS.map((step) => (
+                      <li className="official-resource-hub__item" key={step.id}>
+                        <label className="official-resource-hub__check-label"><input type="checkbox" checked={Boolean(returnWealthItems[step.id])} onChange={() => setReturnWealthItems((current) => ({ ...current, [step.id]: !current[step.id] }))} /><span><strong>{step.label}</strong><br /><span lang="ur" dir="rtl">{step.labelUrdu}</span></span></label>
+                        <p className="official-resource-hub__item-description">{step.boundary}</p>
+                        <p className="official-resource-hub__item-description official-resource-hub__item-description--urdu" lang="ur" dir="rtl">{step.boundaryUrdu}</p>
+                      </li>
+                    ))}
+                  </ul>
+                  <a className="official-resource-hub__link" href="https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71158" {...linkProps}>Check current FBR filing guidance ↗</a>
+                  <br />
+                  <a className="official-resource-hub__link" href="https://www.fbr.gov.pk/act-rules-ordinances/131226" {...linkProps}>Check FBR Acts, Rules & Ordinances index ↗</a>
+                  <br />
+                  <button className="official-resource-hub__print-action" type="button" onClick={() => setReturnWealthItems({})}>Clear temporary relationship marks / <span lang="ur" dir="rtl">عارضی تعلق نشانات صاف کریں</span></button>
+                  <p className="official-resource-hub__footer">These marks disappear when the page is refreshed and are not written to browser storage, your account, or the app database. They do not reconcile entries or confirm that any official form is complete.</p>
+                </section>
+              )}
+            </section>
+
+            <section className="official-resource-hub__tools" aria-labelledby="post-submission-continuity-title">
+              <h3 id="post-submission-continuity-title" className="official-resource-hub__tool-title">Post-submission continuity checklist<br /><span lang="ur" dir="rtl">جمع کرانے کے بعد تسلسل چیک لسٹ</span></h3>
+              <p className="official-resource-hub__tool-copy">Use this temporary reminder after an official action. It does not track a return, send alerts, keep copies, or say that FBR has accepted anything.</p>
+              <p className="official-resource-hub__tool-copy" lang="ur" dir="rtl">سرکاری عمل کے بعد یہ عارضی یاد دہانی استعمال کریں۔ یہ ریٹرن ٹریک نہیں کرتی، الرٹس نہیں بھیجتی، نقول نہیں رکھتی اور نہ ہی کہتی ہے کہ ایف بی آر نے کچھ قبول کیا ہے۔</p>
+              <button className="official-resource-hub__print-toggle" type="button" onClick={() => setPostSubmissionOpen((open) => !open)} aria-expanded={postSubmissionOpen} aria-controls="post-submission-continuity-checklist">{postSubmissionOpen ? "Hide post-submission checklist" : "Open post-submission checklist"}</button>
+              {postSubmissionOpen && (
+                <section id="post-submission-continuity-checklist" className="official-resource-hub__print-sheet official-resource-hub__print-sheet--visible" aria-label="Temporary post-submission continuity checklist">
+                  <p className="official-resource-hub__print-meta" role="status"><strong>{postSubmissionReadiness.label} · {postSubmissionReadiness.completed}/{postSubmissionReadiness.total}</strong><br /><span lang="ur" dir="rtl">{postSubmissionReadiness.labelUrdu}</span></p>
+                  <ul className="official-resource-hub__print-list">
+                    {POST_SUBMISSION_CONTINUITY_STEPS.map((step) => (
+                      <li className="official-resource-hub__item" key={step.id}>
+                        <label className="official-resource-hub__check-label"><input type="checkbox" checked={Boolean(postSubmissionItems[step.id])} onChange={() => setPostSubmissionItems((current) => ({ ...current, [step.id]: !current[step.id] }))} /><span><strong>{step.label}</strong><br /><span lang="ur" dir="rtl">{step.labelUrdu}</span></span></label>
+                        <p className="official-resource-hub__item-description">{step.boundary}</p>
+                        <p className="official-resource-hub__item-description official-resource-hub__item-description--urdu" lang="ur" dir="rtl">{step.boundaryUrdu}</p>
+                        <a className="official-resource-hub__link" href={step.url} {...linkProps}>{step.sourceLabel} ↗</a>
+                      </li>
+                    ))}
+                  </ul>
+                  <button className="official-resource-hub__print-action" type="button" onClick={() => setPostSubmissionItems({})}>Clear temporary continuity marks / <span lang="ur" dir="rtl">عارضی تسلسل نشانات صاف کریں</span></button>
+                  <p className="official-resource-hub__footer">These marks disappear when the page is refreshed and are not written to browser storage, your account, or the app database. They do not confirm submission, acknowledgement, acceptance, or a future FBR outcome.</p>
                 </section>
               )}
             </section>

@@ -4,12 +4,16 @@ import {
   FREELANCER_FAQ,
   FREELANCER_PRE_FILING_CHECKLIST,
   FILING_READINESS_STEPS,
+  COMPLEX_SITUATION_PREPARATION_PATHS,
   getFilingReadinessSummary,
   getOfficialResourceCategoryReview,
   getPreSubmissionErrorPreventionSummary,
+  getTemporaryGuidanceSummary,
   OFFICIAL_RESOURCE_HUB,
+  POST_SUBMISSION_CONTINUITY_STEPS,
   PRE_FILING_CHECKLIST,
   PRE_SUBMISSION_ERROR_PREVENTION_STEPS,
+  RETURN_WEALTH_RELATIONSHIP_STEPS,
   IRIS_NAVIGATION_WALKTHROUGH,
   searchFreelancerFaq,
   searchIrisFaq,
@@ -89,6 +93,28 @@ describe("official resource hub", () => {
     expect(getPreSubmissionErrorPreventionSummary()).toMatchObject({ completed: 0, total: 6, status: "not-started", label: "Not started" });
     expect(getPreSubmissionErrorPreventionSummary({ "pre-submit-year": true, "pre-submit-support": true })).toMatchObject({ completed: 2, status: "in-progress" });
     expect(getPreSubmissionErrorPreventionSummary(Object.fromEntries(PRE_SUBMISSION_ERROR_PREVENTION_STEPS.map((item) => [item.id, true])))).toMatchObject({ completed: 6, status: "review-marks-complete", label: "Review marks complete" });
+  });
+
+  it("routes broad complex situations to official or qualified follow-up without determining treatment", () => {
+    expect(validateResourceTools()).toBe(true);
+    expect(COMPLEX_SITUATION_PREPARATION_PATHS).toHaveLength(5);
+    expect(COMPLEX_SITUATION_PREPARATION_PATHS.every((item) => item.labelUrdu && item.boundaryUrdu && item.url.includes("fbr.gov.pk"))).toBe(true);
+    expect(COMPLEX_SITUATION_PREPARATION_PATHS.map((item) => item.boundary).join(" ")).toMatch(/does not determine|does not classify|does not value|cannot decide/i);
+    expect(getTemporaryGuidanceSummary({ "overseas-residency": true }, COMPLEX_SITUATION_PREPARATION_PATHS)).toMatchObject({ completed: 1, total: 5, status: "in-progress" });
+  });
+
+  it("keeps return-and-wealth relationship education non-sensitive and non-reconciliatory", () => {
+    expect(RETURN_WEALTH_RELATIONSHIP_STEPS).toHaveLength(4);
+    expect(RETURN_WEALTH_RELATIONSHIP_STEPS.every((item) => item.labelUrdu && item.boundaryUrdu)).toBe(true);
+    expect(RETURN_WEALTH_RELATIONSHIP_STEPS.map((item) => item.boundary).join(" ")).toMatch(/does not decide|Do not enter figures|cannot reconcile/i);
+    expect(getTemporaryGuidanceSummary(Object.fromEntries(RETURN_WEALTH_RELATIONSHIP_STEPS.map((item) => [item.id, true])), RETURN_WEALTH_RELATIONSHIP_STEPS)).toMatchObject({ completed: 4, total: 4, status: "all-marked", label: "Temporary marks complete" });
+  });
+
+  it("keeps post-submission continuity as an official-channel reminder rather than return tracking", () => {
+    expect(POST_SUBMISSION_CONTINUITY_STEPS).toHaveLength(4);
+    expect(POST_SUBMISSION_CONTINUITY_STEPS.every((item) => item.labelUrdu && item.boundaryUrdu && item.url.includes("fbr.gov.pk"))).toBe(true);
+    expect(POST_SUBMISSION_CONTINUITY_STEPS.map((item) => item.boundary).join(" ")).toMatch(/cannot see a submission|Do not upload|does not monitor|cannot draft/i);
+    expect(getTemporaryGuidanceSummary()).toMatchObject({ completed: 0, total: 0, status: "not-started", label: "Not started" });
   });
 
   it("derives a dated, limited review scope for each official resource category", () => {

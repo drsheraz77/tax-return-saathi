@@ -46,4 +46,17 @@ describe("priority preparation workflow wiring", () => {
     expect(taxYearPanel).toContain("OFFICIAL_SOURCE_UPDATE_CENTRE");
     expect(taxYearPanel).toContain("reviewed guidance, not a live FBR feed");
   });
+
+  it("renders the next bounded complex, return-wealth, and post-submission preparation guidance", () => {
+    expect(resourceHub).toContain("complex-situation-preparation-navigator");
+    expect(resourceHub).toContain("COMPLEX_SITUATION_PREPARATION_PATHS");
+    expect(resourceHub).toContain("These temporary marks are not saved and do not determine a tax treatment, filing route, eligibility, deadline, notice response, or outcome");
+    expect(resourceHub).toContain("return-wealth-relationship-guide");
+    expect(resourceHub).toContain("RETURN_WEALTH_RELATIONSHIP_STEPS");
+    expect(resourceHub).toContain("is not a wealth statement, reconciliation, calculator, validation, or legal-completeness check");
+    expect(resourceHub).toContain("post-submission-continuity-checklist");
+    expect(resourceHub).toContain("POST_SUBMISSION_CONTINUITY_STEPS");
+    expect(resourceHub).toContain("does not track a return, send alerts, keep copies, or say that FBR has accepted anything");
+    expect(resourceHub).toContain("not written to browser storage, your account, or the app database");
+  });
 });

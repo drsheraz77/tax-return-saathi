@@ -369,6 +369,137 @@ export function getPreSubmissionErrorPreventionSummary(checked = {}, steps = PRE
   };
 }
 
+export const COMPLEX_SITUATION_PREPARATION_PATHS = [
+  {
+    id: "overseas-residency",
+    label: "Overseas, residency, or cross-border connection",
+    labelUrdu: "بیرونِ ملک، رہائشی حیثیت یا سرحد پار تعلق",
+    boundary: "Select this only as a broad preparation flag. This site does not determine residence, source, filing status, or tax treatment.",
+    boundaryUrdu: "اسے صرف عمومی تیاری نشان کے طور پر منتخب کریں۔ یہ سائٹ رہائش، ماخذ، فائلنگ اسٹیٹس یا ٹیکس ٹریٹمنٹ طے نہیں کرتی۔",
+    url: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71159",
+    sourceLabel: "Review FBR filing help",
+  },
+  {
+    id: "business-self-employment",
+    label: "Business, self-employment, partnership, or changing work pattern",
+    labelUrdu: "کاروبار، خود روزگاری، شراکت داری یا بدلتی ہوئی کام کی صورت",
+    boundary: "Use current official guidance and qualified help where your facts need interpretation; this navigator does not classify a business or decide an obligation.",
+    boundaryUrdu: "جہاں حقائق کی تشریح درکار ہو موجودہ سرکاری رہنمائی اور اہل مدد استعمال کریں؛ یہ رہنما کاروبار کی درجہ بندی یا ذمہ داری کا فیصلہ نہیں کرتا۔",
+    url: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71159",
+    sourceLabel: "Review FBR filing help",
+  },
+  {
+    id: "property-investment",
+    label: "Property, investment, disposal, or a substantial change in assets or liabilities",
+    labelUrdu: "جائیداد، سرمایہ کاری، فروخت یا اثاثوں یا ذمہ داریوں میں نمایاں تبدیلی",
+    boundary: "Keep relevant private records and seek official or qualified clarification where needed. This site does not value, reconcile, classify, or calculate anything.",
+    boundaryUrdu: "متعلقہ نجی ریکارڈ رکھیں اور جہاں ضرورت ہو سرکاری یا اہل وضاحت لیں۔ یہ سائٹ کسی چیز کی قدر، مصالحت، درجہ بندی یا حساب نہیں کرتی۔",
+    url: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71158",
+    sourceLabel: "Review FBR filing guidance",
+  },
+  {
+    id: "notice-deadline-urgent",
+    label: "Official notice, unclear message, demand, audit, court matter, or time-sensitive issue",
+    labelUrdu: "سرکاری نوٹس، غیر واضح پیغام، ڈیمانڈ، آڈٹ، عدالتی معاملہ یا فوری نوعیت کا مسئلہ",
+    boundary: "Do not rely on this site to identify the matter, calculate a deadline, draft a response, or predict an outcome. Use official FBR support or a qualified professional promptly.",
+    boundaryUrdu: "معاملہ پہچاننے، آخری تاریخ نکالنے، جواب تیار کرنے یا نتیجہ بتانے کے لیے اس سائٹ پر انحصار نہ کریں۔ فوراً سرکاری ایف بی آر مدد یا اہل پیشہ ور استعمال کریں۔",
+    url: "https://www.fbr.gov.pk/contact-us/142252/173964",
+    sourceLabel: "Open FBR contact and support",
+  },
+  {
+    id: "uncertain-route",
+    label: "You are unsure which official route or information applies",
+    labelUrdu: "آپ غیر یقینی ہیں کہ کون سا سرکاری راستہ یا معلومات قابلِ اطلاق ہیں",
+    boundary: "Pause before filing. This navigator cannot decide the right route, eligibility, or legal completeness for you.",
+    boundaryUrdu: "فائلنگ سے پہلے رکیں۔ یہ رہنما آپ کے لیے درست راستہ، اہلیت یا قانونی تکمیل طے نہیں کر سکتا۔",
+    url: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71159",
+    sourceLabel: "Review FBR filing help",
+  },
+];
+
+export const RETURN_WEALTH_RELATIONSHIP_STEPS = [
+  {
+    id: "relationship-scope",
+    label: "Treat return and wealth-statement preparation as related official workflow areas, not as one automatic result.",
+    labelUrdu: "ریٹرن اور ویلتھ اسٹیٹمنٹ کی تیاری کو ایک دوسرے سے متعلق سرکاری ورک فلو حصے سمجھیں، ایک خودکار نتیجہ نہیں۔",
+    boundary: "This is an educational orientation only; it does not decide whether either area applies to you.",
+    boundaryUrdu: "یہ صرف تعلیمی رہنمائی ہے؛ یہ طے نہیں کرتی کہ کوئی بھی حصہ آپ پر لاگو ہے یا نہیں۔",
+  },
+  {
+    id: "relationship-private-records",
+    label: "Use your own private records to organise information before reviewing the official workflow.",
+    labelUrdu: "سرکاری ورک فلو دیکھنے سے پہلے معلومات ترتیب دینے کے لیے اپنے نجی ریکارڈ استعمال کریں۔",
+    boundary: "Do not enter figures, assets, liabilities, documents, CNICs, account details, or passwords into this tool.",
+    boundaryUrdu: "اس ٹول میں اعداد، اثاثے، ذمہ داریاں، دستاویزات، سی این آئی سی، اکاؤنٹ تفصیلات یا پاس ورڈ درج نہ کریں۔",
+  },
+  {
+    id: "relationship-private-review",
+    label: "Privately pause if information appears inconsistent, incomplete, or uncertain before relying on it in an official form.",
+    labelUrdu: "اگر سرکاری فارم میں استعمال سے پہلے معلومات غیر مطابقت، نامکمل یا غیر یقینی لگیں تو نجی طور پر رکیں۔",
+    boundary: "This tool cannot reconcile entries, identify a discrepancy, validate records, or confirm completeness.",
+    boundaryUrdu: "یہ ٹول اندراجات کی مصالحت، تضاد کی شناخت، ریکارڈ کی توثیق یا تکمیل کی تصدیق نہیں کر سکتا۔",
+  },
+  {
+    id: "relationship-official-check",
+    label: "Check the current official FBR workflow and seek qualified clarification when your facts require interpretation.",
+    labelUrdu: "موجودہ سرکاری ایف بی آر ورک فلو دیکھیں اور جہاں حقائق کی تشریح درکار ہو اہل وضاحت لیں۔",
+    boundary: "Only the official process and appropriate professional advice can address your specific circumstances.",
+    boundaryUrdu: "صرف سرکاری عمل اور مناسب پیشہ ورانہ مشورہ آپ کی مخصوص صورتِ حال سے متعلق رہنمائی دے سکتا ہے۔",
+  },
+];
+
+export const POST_SUBMISSION_CONTINUITY_STEPS = [
+  {
+    id: "continuity-official-acknowledgement",
+    label: "Use official IRIS to review any current acknowledgement or saved-copy route after an official submission action.",
+    labelUrdu: "سرکاری جمع کرانے کے عمل کے بعد کسی بھی موجودہ اقرار نامہ یا محفوظ نقل کے راستے کے لیے سرکاری آئرس استعمال کریں۔",
+    boundary: "This site cannot see a submission, acknowledgement, portal status, or acceptance.",
+    boundaryUrdu: "یہ سائٹ جمع کرانا، اقرار نامہ، پورٹل اسٹیٹس یا قبولیت نہیں دیکھ سکتی۔",
+    url: "https://iris.fbr.gov.pk/public/txplogin.xhtml",
+    sourceLabel: "Open official FBR IRIS",
+  },
+  {
+    id: "continuity-private-records",
+    label: "Keep your own private copy of what you submitted and the supporting records you used, in line with current official guidance.",
+    labelUrdu: "موجودہ سرکاری رہنمائی کے مطابق جو آپ نے جمع کرایا اور جن معاون ریکارڈ پر انحصار کیا ان کی اپنی نجی نقل رکھیں۔",
+    boundary: "Do not upload, paste, or store copies in Tax Return Saathi.",
+    boundaryUrdu: "ٹیکس ریٹرن ساتھی میں نقول اپ لوڈ، پیسٹ یا محفوظ نہ کریں۔",
+    url: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71159",
+    sourceLabel: "Review FBR filing help",
+  },
+  {
+    id: "continuity-official-follow-up",
+    label: "Use official FBR channels for any portal message or follow-up that you receive.",
+    labelUrdu: "موصول ہونے والے کسی بھی پورٹل پیغام یا فالو اپ کے لیے سرکاری ایف بی آر ذرائع استعمال کریں۔",
+    boundary: "This site does not monitor your account, send reminders, interpret messages, or predict what happens next.",
+    boundaryUrdu: "یہ سائٹ آپ کے اکاؤنٹ کی نگرانی، یاد دہانی، پیغام کی تشریح یا اگلے نتیجے کی پیش گوئی نہیں کرتی۔",
+    url: "https://www.fbr.gov.pk/contact-us/142252/173964",
+    sourceLabel: "Open FBR contact and support",
+  },
+  {
+    id: "continuity-escalate",
+    label: "For an unclear, urgent, disputed, audit, demand, or court-related matter, seek official or qualified help promptly.",
+    labelUrdu: "غیر واضح، فوری، متنازع، آڈٹ، ڈیمانڈ یا عدالتی معاملے میں فوراً سرکاری یا اہل مدد لیں۔",
+    boundary: "Tax Return Saathi is not a substitute for legal or tax advice and cannot draft a response or assess an outcome.",
+    boundaryUrdu: "ٹیکس ریٹرن ساتھی قانونی یا ٹیکس مشورے کا متبادل نہیں اور نہ جواب تیار کر سکتا ہے نہ نتیجہ جانچ سکتا ہے۔",
+    url: "https://www.fbr.gov.pk/contact-us/142252/173964",
+    sourceLabel: "Open FBR contact and support",
+  },
+];
+
+export function getTemporaryGuidanceSummary(checked = {}, steps = []) {
+  const completed = steps.filter((item) => checked[item.id]).length;
+  const total = steps.length;
+  const status = completed === 0 ? "not-started" : completed === total ? "all-marked" : "in-progress";
+  return {
+    completed,
+    total,
+    status,
+    label: status === "not-started" ? "Not started" : status === "all-marked" ? "Temporary marks complete" : "Temporary review in progress",
+    labelUrdu: status === "not-started" ? "ابھی شروع نہیں کیا" : status === "all-marked" ? "عارضی نشانات مکمل ہیں" : "عارضی جائزہ جاری ہے",
+  };
+}
+
 export const PRE_FILING_CHECKLIST = [
   { id: "iris-access", label: "Confirm that you can access your official IRIS account or the official recovery route.", labelUrdu: "تصدیق کریں کہ آپ اپنے سرکاری آئرس اکاؤنٹ یا سرکاری ریکوری راستے تک رسائی رکھتے ہیں۔" },
   { id: "registration-details", label: "Review your registration, contact, and bank-account details for accuracy before starting.", labelUrdu: "شروع کرنے سے پہلے اپنی رجسٹریشن، رابطہ اور بینک اکاؤنٹ کی معلومات کی درستگی دیکھیں۔" },
@@ -474,7 +605,7 @@ export function getOfficialResourceCategoryReview(section) {
   };
 }
 
-export function validateResourceTools(faq = IRIS_FAQ, checklist = PRE_FILING_CHECKLIST, freelancerFaq = FREELANCER_FAQ, freelancerChecklist = FREELANCER_PRE_FILING_CHECKLIST, walkthrough = IRIS_NAVIGATION_WALKTHROUGH, errorPrevention = PRE_SUBMISSION_ERROR_PREVENTION_STEPS) {
+export function validateResourceTools(faq = IRIS_FAQ, checklist = PRE_FILING_CHECKLIST, freelancerFaq = FREELANCER_FAQ, freelancerChecklist = FREELANCER_PRE_FILING_CHECKLIST, walkthrough = IRIS_NAVIGATION_WALKTHROUGH, errorPrevention = PRE_SUBMISSION_ERROR_PREVENTION_STEPS, complexPaths = COMPLEX_SITUATION_PREPARATION_PATHS, wealthRelationship = RETURN_WEALTH_RELATIONSHIP_STEPS, continuitySteps = POST_SUBMISSION_CONTINUITY_STEPS) {
   const isValidFaq = (items) => items.every((item) => {
     try {
       return item.id && item.question && item.questionUrdu && item.answer && item.answerUrdu && item.keywords.length > 0 && OFFICIAL_HOSTS.has(new URL(item.url).hostname);
@@ -490,5 +621,13 @@ export function validateResourceTools(faq = IRIS_FAQ, checklist = PRE_FILING_CHE
       return false;
     }
   });
-  return isValidFaq(faq) && isValidChecklist(checklist) && isValidFaq(freelancerFaq) && isValidChecklist(freelancerChecklist) && isValidWalkthrough(walkthrough) && isValidChecklist(errorPrevention);
+  const isValidOfficialRoute = (items) => items.every((item) => {
+    try {
+      return item.id && item.label && item.labelUrdu && item.boundary && item.boundaryUrdu && item.sourceLabel && OFFICIAL_HOSTS.has(new URL(item.url).hostname);
+    } catch {
+      return false;
+    }
+  });
+  const isValidRelationshipGuide = (items) => items.every((item) => item.id && item.label && item.labelUrdu && item.boundary && item.boundaryUrdu);
+  return isValidFaq(faq) && isValidChecklist(checklist) && isValidFaq(freelancerFaq) && isValidChecklist(freelancerChecklist) && isValidWalkthrough(walkthrough) && isValidChecklist(errorPrevention) && isValidOfficialRoute(complexPaths) && isValidRelationshipGuide(wealthRelationship) && isValidOfficialRoute(continuitySteps);
 }

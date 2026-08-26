@@ -180,3 +180,7 @@
 - [x] Add a local-only pre-submission error-prevention checklist based on controlled review actions, without calculating tax, retaining answers, or confirming FBR acceptance.
 - [x] Add a bilingual official-source update centre that displays the limited, reviewed source set and directs users to FBR for current live notices, deadlines, and changes.
 - [x] Add focused tests and verify navigation, error prevention, source-update boundaries, bilingual interaction, responsive layout, full suite, and production build before publication.
+- [x] Add a bilingual complex-situation preparation navigator that uses only controlled broad categories and directs unresolved, overseas, business, property, investment, or notice matters to official FBR guidance or a qualified professional without determining treatment.
+- [x] Add a privacy-safe return-and-wealth-statement relationship explainer with local-only readiness marks and no financial figures, assets, liabilities, identifiers, documents, or legal-completeness determination.
+- [x] Add a bilingual post-submission continuity checklist covering official acknowledgement, private record retention, and official follow-up routes without tracking a return, sending reminders, or asserting FBR acceptance.
+- [x] Add focused tests and verify the new escalations, privacy boundaries, bilingual interaction, responsive layout, full suite, and production build before publication.
