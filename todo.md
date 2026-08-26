@@ -203,5 +203,5 @@
 - [x] Defer-load supplemental guidance panels from the main entry point to reduce initial JavaScript work while preserving a stable loading fallback and all existing content routes.
 - [x] Add a bounded public-discovery metadata enhancement that accurately describes the independent educational service, Urdu/English availability, and official-source limitations without claiming FBR affiliation.
 - [x] Add focused tests and verify keyboard navigation wiring, accessibility safeguards, deferred guidance loading, metadata boundaries, responsive layout, full suite, and production build before publishing this phase.
-- [ ] Complete the subsequent low-data guidance, structured AI, navigation, accessibility, performance, and public-discovery batches with testing and checkpoints after each batch.
-- [ ] Prepare separate security, consent, retention, legal-basis, and human-review requirements for any deferred sensitive-data or personalised-decision capability.
+- [x] Complete the subsequent low-data guidance, structured AI, navigation, accessibility, performance, and public-discovery batches with testing and checkpoints after each batch.
+- [x] Prepare separate security, consent, retention, legal-basis, and human-review requirements for any deferred sensitive-data or personalised-decision capability.
