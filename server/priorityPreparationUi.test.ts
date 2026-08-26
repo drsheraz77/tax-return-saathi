@@ -92,4 +92,13 @@ describe("priority preparation workflow wiring", () => {
     expect(taxpayerProfile).toContain("Your separate checklist draft was not deleted");
     expect(taxpayerProfile).toContain("cannot determine your tax, deadline, filing, or result");
   });
+
+  it("renders an existing-preferences dashboard, public first-time route, and transparent preference-use boundary without new profile fields", () => {
+    expect(taxpayerProfile).toContain("profile-preparation-route");
+    expect(taxpayerProfile).toContain("first-time-preparation-route");
+    expect(taxpayerProfile).toContain("FIRST_TIME_PREPARATION_ROUTE");
+    expect(taxpayerProfile).toContain("buildProfilePreparationDashboard");
+    expect(taxpayerProfile).toContain("Why these resources?");
+    expect(taxpayerProfile).toContain("does not profile behaviour, infer financial or identity data, or share your preferences");
+  });
 });

@@ -221,3 +221,8 @@
 - [x] Produce a capability-specific data inventory, consent, retention, access-control, threat-model, source-quality, escalation, and rollback design.
 - [x] Obtain explicit approval for the proposed data scope, safeguards, and narrow implementation boundary before enabling any sensitive-data collection, storage, processing, or decision support.
 - [x] Implement, test, and publish only the explicitly approved capability with its documented privacy, security, and non-determinative controls.
+- [x] Review the remaining partial audit groups after the governed taxpayer-profile release and select the next three safe, non-duplicative user-facing improvements.
+- [x] Add a bilingual account preparation dashboard that uses only the approved profile preferences to organise existing educational tools and official sources, without any tax, filing, deadline, or FBR-outcome determination.
+- [x] Add a first-time-filer preparation route that remains usable without a profile, uses only reviewed official links and broad local actions, and does not request or store tax or identity data.
+- [x] Add a transparent “why these resources” explanation that shows the limited preference-to-resource mapping and lets users continue, edit, or delete their preferences without behavioural profiling.
+- [x] Add focused tests and verify profile-dashboard ownership, no-profile fallback, non-determinative boundaries, Urdu/English interaction, responsive layout, full suite, and production build before publication.
