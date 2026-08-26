@@ -132,4 +132,12 @@ describe("priority preparation workflow wiring", () => {
     expect(taxYearPanel).toContain("Do not enter details, documents, identity, amounts, passwords, or notice text.");
     expect(taxYearPanel).toContain("card.boundaryUrdu");
   });
+
+  it("shows a compact Urdu-first last-manual-review badge derived from the reviewed log without a live-update claim", () => {
+    expect(taxYearPanel).toContain("last-manual-source-review-badge");
+    expect(taxYearPanel).toContain("آخری دستی سورس جائزہ");
+    expect(taxYearPanel).toContain("REVIEWED_SOURCE_CHANGE_LOG.entries[0].dateIso");
+    expect(taxYearPanel).toContain("Last manual source review");
+    expect(taxYearPanel).toContain("Manual catalogue review — not live updates.");
+  });
 });

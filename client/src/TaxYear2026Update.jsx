@@ -49,6 +49,10 @@ export default function TaxYear2026Update() {
         .tax-year-update__label { display: block; color: #665d40; font-size: 11px; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; }
         .tax-year-update__value { display: block; margin-top: 2px; color: #0B3D2E; font-size: 14px; font-weight: 700; }
         .tax-year-update__note { border-left: 3px solid #caa518; padding-left: 10px; color: #4d513c; font-size: 12px; }
+        .tax-year-update__manual-review-badge { display: flex; flex-wrap: wrap; align-items: center; gap: 5px 8px; margin: 11px 0 12px; border: 1px solid #cfc189; border-radius: 999px; background: #f7f1d9; color: #173b31; padding: 7px 10px; font-size: 11px; line-height: 1.35; }
+        .tax-year-update__manual-review-badge strong { color: #0B3D2E; }
+        .tax-year-update__manual-review-date { border-radius: 999px; background: #0B3D2E; color: #fffdf2; padding: 2px 6px; font-weight: 700; }
+        .tax-year-update__manual-review-boundary { color: #5d5a46; }
         .tax-year-update__links { display: flex; flex-wrap: wrap; gap: 8px 12px; margin-top: 12px; font-size: 12px; }
         .tax-year-update__links a { color: #075c48; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
         .tax-year-update__archive-toggle { width: 100%; margin-top: 14px; border: 1px solid #d1bd69; border-radius: 9px; background: #f7f1d9; color: #0B3D2E; cursor: pointer; padding: 9px 10px; text-align: left; font: 700 13px/1.3 inherit; }
@@ -108,6 +112,12 @@ export default function TaxYear2026Update() {
               <div className="tax-year-update__fact tax-year-update__fact--wide"><span className="tax-year-update__label">Special tax-year companies</span><span className="tax-year-update__value">Due {TAX_YEAR_2026_UPDATE.specialTaxYearCompanyDueDate}</span></div>
             </div>
             <p className="tax-year-update__note">These are the published due dates, not a statement that any extension has been granted. Check FBR’s current notice before filing and keep your supporting records.</p>
+            <aside id="last-manual-source-review-badge" className="tax-year-update__manual-review-badge" aria-label="Last manual source review">
+              <strong lang="ur" dir="rtl">آخری دستی سورس جائزہ</strong>
+              <time className="tax-year-update__manual-review-date" dateTime={REVIEWED_SOURCE_CHANGE_LOG.entries[0].dateIso}>{REVIEWED_SOURCE_CHANGE_LOG.entries[0].displayDate}</time>
+              <span>Last manual source review</span>
+              <span className="tax-year-update__manual-review-boundary">Manual catalogue review — not live updates.</span>
+            </aside>
             <section id="reviewed-tax-knowledge-catalogue" className="tax-year-update__source-map" aria-label="Reviewed Tax Year 2026 starter knowledge catalogue">
               <h3 className="tax-year-update__source-heading">{TAX_KNOWLEDGE_FOUNDATION.version}<br /><span lang="ur" dir="rtl">ٹیکس سال 2026 جائزہ شدہ ابتدائی معلوماتی کیٹلاگ</span></h3>
               <p className="tax-year-update__source-copy">Reviewed {TAX_KNOWLEDGE_FOUNDATION.reviewedOn}. {TAX_KNOWLEDGE_FOUNDATION.limitation}</p>

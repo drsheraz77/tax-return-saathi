@@ -241,3 +241,5 @@
 - [x] Add small Urdu-first guidance cards for bounded escalation categories, linked only to the approved FBR contact route or qualified professional guidance without collecting case details.
 - [x] Configure a periodic manual-review reminder limited to the four approved official FBR destinations, with no scraping, automatic source-change claim, or visitor-data processing.
 - [x] Add focused tests and verify the workflow, escalation-card boundaries, scheduled reminder scope, Urdu/English presentation, responsive layout, full suite, and production build before publication.
+- [x] Add a compact bilingual last-manual-review badge using the existing reviewed source-governance date without implying live FBR monitoring or automatic verification.
+- [x] Add focused badge coverage and verify accessible desktop/mobile rendering, the explicit manual/non-live boundary, full tests, and production build before publication.
