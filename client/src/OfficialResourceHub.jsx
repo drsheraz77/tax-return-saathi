@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { FREELANCER_FAQ, FREELANCER_PRE_FILING_CHECKLIST, IRIS_FAQ, OFFICIAL_RESOURCE_HUB, PRE_FILING_CHECKLIST, searchFreelancerFaq, searchIrisFaq } from "./officialResourceHub.js";
+import { FILING_READINESS_STEPS, FREELANCER_FAQ, FREELANCER_PRE_FILING_CHECKLIST, getFilingReadinessSummary, IRIS_FAQ, OFFICIAL_RESOURCE_HUB, PRE_FILING_CHECKLIST, searchFreelancerFaq, searchIrisFaq } from "./officialResourceHub.js";
 import { trpc } from "./lib/trpc";
 
 const linkProps = { target: "_blank", rel: "noreferrer" };
@@ -12,6 +12,7 @@ export default function OfficialResourceHub() {
   const [showChecklist, setShowChecklist] = useState(false);
   const [showFreelancerChecklist, setShowFreelancerChecklist] = useState(false);
   const [checkedItems, setCheckedItems] = useState({});
+  const [filingReadinessItems, setFilingReadinessItems] = useState({});
   const [feedbackCategory, setFeedbackCategory] = useState("general");
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [feedbackNotice, setFeedbackNotice] = useState("");
@@ -20,6 +21,7 @@ export default function OfficialResourceHub() {
   const [privacyNotice, setPrivacyNotice] = useState("");
   const matchingFaq = useMemo(() => searchIrisFaq(faqQuery), [faqQuery]);
   const matchingFreelancerFaq = useMemo(() => searchFreelancerFaq(freelancerFaqQuery), [freelancerFaqQuery]);
+  const filingReadiness = useMemo(() => getFilingReadinessSummary(filingReadinessItems), [filingReadinessItems]);
   const { data: accountUser, isLoading: isAccountLoading } = trpc.auth.me.useQuery();
   const privacyUtils = trpc.useUtils();
   const accountPrivacyQuery = trpc.privacy.summary.useQuery(undefined, { enabled: Boolean(accountUser), retry: false });
@@ -129,6 +131,12 @@ export default function OfficialResourceHub() {
             <p className="official-resource-hub__boundary" lang="ur" dir="rtl"><strong>صرف تعلیمی معاونت۔</strong> یہ حصہ سرکاری سروسز کے لنکس اور تیاری میں مدد دیتا ہے؛ یہ کاروبار رجسٹر، ریٹرن جمع یا آپ کی ٹیکس پوزیشن طے نہیں کرتا۔</p>
             <p className="official-resource-hub__boundary"><strong>Investment education only.</strong> The investments section does not recommend a product, estimate returns, or decide what is suitable for you.</p>
             <p className="official-resource-hub__boundary" lang="ur" dir="rtl"><strong>صرف سرمایہ کاری کی معلومات۔</strong> سرمایہ کاری والا حصہ کسی پراڈکٹ کی سفارش، منافع کا اندازہ یا آپ کے لیے موزونیت کا فیصلہ نہیں کرتا۔</p>
+            <section className="official-resource-hub__support-card" aria-label="Official source freshness and verification scope">
+              <h4>Official source check · reviewed {OFFICIAL_RESOURCE_HUB.reviewedOn}<br /><span lang="ur" dir="rtl">سرکاری ذرائع کا جائزہ · {OFFICIAL_RESOURCE_HUB.reviewedOn}</span></h4>
+              <p>These links are checked as official starting points for preparation. They do not confirm current eligibility, deadlines, amounts, portal acceptance, or your tax position.</p>
+              <p lang="ur" dir="rtl">یہ لنکس تیاری کے لیے سرکاری ابتدائی ذرائع کے طور پر دیکھے گئے ہیں۔ یہ موجودہ اہلیت، تاریخوں، رقوم، پورٹل قبولیت یا آپ کی ٹیکس پوزیشن کی تصدیق نہیں کرتے۔</p>
+              <a className="official-resource-hub__link" href="https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71158" {...linkProps}>Verify current FBR filing guidance ↗</a>
+            </section>
             {OFFICIAL_RESOURCE_HUB.sections.map((section) => {
               const isExpanded = expandedSection === section.id;
               const panelId = `official-resource-${section.id}`;
@@ -300,6 +308,24 @@ export default function OfficialResourceHub() {
                   <button className="official-resource-hub__print-action" type="button" onClick={() => window.print()}>Print checklist</button>
                 </section>
               )}
+            </section>
+
+            <section className="official-resource-hub__tools" aria-labelledby="filing-readiness-title">
+              <h3 id="filing-readiness-title" className="official-resource-hub__tool-title">Local filing-readiness board<br /><span lang="ur" dir="rtl">مقامی فائلنگ تیاری بورڈ</span></h3>
+              <p className="official-resource-hub__tool-copy">Temporary, on-screen preparation marks only. Nothing is saved to your browser or account, and this board does not assess a return or FBR filing status.</p>
+              <p className="official-resource-hub__tool-copy" lang="ur" dir="rtl">یہ صرف عارضی، آن اسکرین تیاری کے نشانات ہیں۔ کچھ بھی آپ کے براؤزر یا اکاؤنٹ میں محفوظ نہیں ہوتا، اور یہ بورڈ ریٹرن یا ایف بی آر فائلنگ اسٹیٹس کا جائزہ نہیں لیتا۔</p>
+              <p className="official-resource-hub__print-meta" role="status"><strong>{filingReadiness.label} · {filingReadiness.completed}/{filingReadiness.total}</strong><br /><span lang="ur" dir="rtl">{filingReadiness.labelUrdu}</span></p>
+              <ul className="official-resource-hub__print-list">
+                {FILING_READINESS_STEPS.map((item) => (
+                  <li key={item.id}>
+                    <label className="official-resource-hub__check-label">
+                      <input type="checkbox" checked={Boolean(filingReadinessItems[item.id])} onChange={() => setFilingReadinessItems((current) => ({ ...current, [item.id]: !current[item.id] }))} />
+                      <span>{item.label}<br /><span lang="ur" dir="rtl">{item.labelUrdu}</span></span>
+                    </label>
+                  </li>
+                ))}
+              </ul>
+              <p className="official-resource-hub__footer">Marking every item does not confirm that IRIS will accept a return or that FBR agrees with an entry. Recheck current official requirements before submission.</p>
             </section>
             <p className="official-resource-hub__footer">Before acting, confirm current requirements, fees, deadlines, and eligibility directly on the linked official portal.</p>
           </div>

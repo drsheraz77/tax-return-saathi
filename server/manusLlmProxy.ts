@@ -11,6 +11,12 @@ import {
 export const BUILT_IN_MODEL = "gemini-3-flash-preview";
 const MAX_TOKENS = 2000;
 
+export const TAX_REVIEW_QUALITY_PROTOCOL = `Tax Return Saathi response-quality protocol:
+This is educational preparation support, not FBR, a tax adviser, or a return-submission service. Do not state or imply that FBR will accept, reject, flag, or agree with a return.
+Treat the tax year as unknown unless it is explicitly provided. If a conclusion depends on a tax year, a figure, a legal interpretation, or facts not visible in the supplied material, say what is uncertain and direct the user to confirm current official FBR guidance or seek qualified advice.
+Do not invent rates, thresholds, deadlines, legal sections, FBR portal steps, or source citations. Do not turn a visible issue into a tax determination. Do not repeat sensitive identifiers, passwords, OTPs, bank details, CNICs, or NTN values even if they appear in the material.
+For review requests, organise the answer under clear headings for: observations from the supplied material; items to verify; safe next steps; and scope or uncertainty. Identify only visible inconsistencies or missing information as items to check, not errors or proof of non-compliance.`;
+
 type Base64Source = {
   type: "base64";
   media_type: string;
@@ -148,6 +154,7 @@ export async function manusLlmProxy(req: Request, res: Response) {
   try {
     const messages: Message[] = [
       ...(typeof payload.system === "string" ? [{ role: "system" as const, content: payload.system }] : []),
+      { role: "system" as const, content: TAX_REVIEW_QUALITY_PROTOCOL },
       ...payload.messages.map(convertMessage),
     ];
     const completion = await invokeLLM({

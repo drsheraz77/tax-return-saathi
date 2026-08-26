@@ -3,6 +3,8 @@ import {
   IRIS_FAQ,
   FREELANCER_FAQ,
   FREELANCER_PRE_FILING_CHECKLIST,
+  FILING_READINESS_STEPS,
+  getFilingReadinessSummary,
   OFFICIAL_RESOURCE_HUB,
   PRE_FILING_CHECKLIST,
   searchFreelancerFaq,
@@ -59,5 +61,14 @@ describe("official resource hub", () => {
     expect(searchFreelancerFaq("record").map((item) => item.id)).toContain("freelancer-record-keeping");
     expect(FREELANCER_FAQ).toHaveLength(3);
     expect(FREELANCER_PRE_FILING_CHECKLIST).toHaveLength(7);
+  });
+
+  it("keeps source freshness visible in the model and provides a local-only, non-determinative filing-readiness summary", () => {
+    expect(OFFICIAL_RESOURCE_HUB.reviewedOn).toMatch(/2026/);
+    expect(FILING_READINESS_STEPS).toHaveLength(4);
+    expect(FILING_READINESS_STEPS.every((item) => item.label && item.labelUrdu)).toBe(true);
+    expect(getFilingReadinessSummary()).toMatchObject({ completed: 0, total: 4, status: "not-started", label: "Not started" });
+    expect(getFilingReadinessSummary({ "year-and-route": true, "records-in-hand": true })).toMatchObject({ completed: 2, status: "in-progress" });
+    expect(getFilingReadinessSummary(Object.fromEntries(FILING_READINESS_STEPS.map((item) => [item.id, true])))).toMatchObject({ completed: 4, status: "steps-marked", label: "Preparation steps marked" });
   });
 });

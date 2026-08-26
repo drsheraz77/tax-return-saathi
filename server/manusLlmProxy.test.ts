@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 vi.mock("./_core/llm", () => ({ invokeLLM: vi.fn() }));
 
 import { invokeLLM } from "./_core/llm";
-import { BUILT_IN_MODEL, manusLlmProxy } from "./manusLlmProxy";
+import { BUILT_IN_MODEL, manusLlmProxy, TAX_REVIEW_QUALITY_PROTOCOL } from "./manusLlmProxy";
 
 type RecordedResponse = { statusCode?: number; body?: unknown };
 
@@ -74,6 +74,7 @@ describe("built-in AI adapter", () => {
       max_tokens: 2000,
       messages: [
         { role: "system", content: "Be concise." },
+        { role: "system", content: TAX_REVIEW_QUALITY_PROTOCOL },
         {
           role: "user",
           content: [
@@ -108,5 +109,12 @@ describe("built-in AI adapter", () => {
     );
 
     expect(recorded).toEqual({ statusCode: 500, body: { error: "Upstream request failed" } });
+  });
+
+  it("enforces tax-year awareness, uncertainty, official verification, and no-fabrication boundaries for every request", () => {
+    expect(TAX_REVIEW_QUALITY_PROTOCOL).toMatch(/tax year as unknown unless/i);
+    expect(TAX_REVIEW_QUALITY_PROTOCOL).toMatch(/official FBR guidance/i);
+    expect(TAX_REVIEW_QUALITY_PROTOCOL).toMatch(/Do not invent rates, thresholds, deadlines, legal sections/i);
+    expect(TAX_REVIEW_QUALITY_PROTOCOL).toMatch(/Do not state or imply that FBR will accept, reject, flag, or agree/i);
   });
 });

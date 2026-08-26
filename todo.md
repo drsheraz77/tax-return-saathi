@@ -158,3 +158,8 @@
 - [x] Add a client-side pre-upload redaction check to the completed-return review so users actively confirm removal of restricted identifiers, credentials, and bank details before selecting a document.
 - [x] Add a clearly visible bilingual independent-platform and support-escalation boundary that distinguishes official FBR requirements from Tax Return Saathi preparation guidance.
 - [x] Add focused tests and verify the next audit batch’s privacy boundaries, bilingual interaction, responsive layout, full test suite, and production build before publication.
+- [x] Review the remaining audit recommendations against the current product and select the third non-duplicative, privacy-safe batch of two to three improvements.
+- [x] Surface the existing official-resource review date and source-verification purpose in the bilingual resource hub so users can see source freshness without treating it as a legal determination.
+- [x] Add a local-only filing-readiness board with controlled preparation milestones and status, without collecting tax amounts, identifiers, documents, or credentials.
+- [x] Add a server-enforced AI answer-quality protocol requiring tax-year awareness, uncertainty flagging, source-verification guidance, and no fabricated rates, sections, or FBR outcomes.
+- [x] Add focused tests and verify the third audit batch’s privacy boundaries, source freshness, bilingual interaction, responsive layout, full suite, and production build before publication.

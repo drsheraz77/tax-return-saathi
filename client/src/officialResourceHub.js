@@ -255,6 +255,26 @@ export const IRIS_FAQ = [
   },
 ];
 
+export const FILING_READINESS_STEPS = [
+  { id: "year-and-route", label: "Confirm the tax year and preparation route you are using.", labelUrdu: "اس ٹیکس سال اور تیاری کے راستے کی تصدیق کریں جسے آپ استعمال کر رہے ہیں۔" },
+  { id: "records-in-hand", label: "Gather the records you need without entering figures or documents here.", labelUrdu: "ضروری ریکارڈ جمع کریں، مگر یہاں اعداد یا دستاویزات درج نہ کریں۔" },
+  { id: "redacted-review", label: "If useful, review only a redacted completed return in the separate review tool.", labelUrdu: "ضرورت ہو تو الگ ریویو ٹول میں صرف ریڈیکٹ کی ہوئی مکمل ریٹرن کا جائزہ لیں۔" },
+  { id: "official-iris", label: "Confirm current requirements and submit only through official FBR IRIS.", labelUrdu: "موجودہ شرائط کی تصدیق کریں اور صرف سرکاری ایف بی آر آئرس کے ذریعے جمع کریں۔" },
+];
+
+export function getFilingReadinessSummary(checked = {}, steps = FILING_READINESS_STEPS) {
+  const completed = steps.filter((item) => checked[item.id]).length;
+  const total = steps.length;
+  const status = completed === 0 ? "not-started" : completed === total ? "steps-marked" : "in-progress";
+  return {
+    completed,
+    total,
+    status,
+    label: status === "not-started" ? "Not started" : status === "steps-marked" ? "Preparation steps marked" : "In progress",
+    labelUrdu: status === "not-started" ? "ابھی شروع نہیں کیا" : status === "steps-marked" ? "تیاری کے مراحل نشان زد ہیں" : "تیاری جاری ہے",
+  };
+}
+
 export const PRE_FILING_CHECKLIST = [
   { id: "iris-access", label: "Confirm that you can access your official IRIS account or the official recovery route.", labelUrdu: "تصدیق کریں کہ آپ اپنے سرکاری آئرس اکاؤنٹ یا سرکاری ریکوری راستے تک رسائی رکھتے ہیں۔" },
   { id: "registration-details", label: "Review your registration, contact, and bank-account details for accuracy before starting.", labelUrdu: "شروع کرنے سے پہلے اپنی رجسٹریشن، رابطہ اور بینک اکاؤنٹ کی معلومات کی درستگی دیکھیں۔" },
