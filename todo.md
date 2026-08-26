@@ -226,3 +226,8 @@
 - [x] Add a first-time-filer preparation route that remains usable without a profile, uses only reviewed official links and broad local actions, and does not request or store tax or identity data.
 - [x] Add a transparent “why these resources” explanation that shows the limited preference-to-resource mapping and lets users continue, edit, or delete their preferences without behavioural profiling.
 - [x] Add focused tests and verify profile-dashboard ownership, no-profile fallback, non-determinative boundaries, Urdu/English interaction, responsive layout, full suite, and production build before publication.
+- [x] Review the remaining partial audit groups after the profile-dashboard release and select the next three safe, non-duplicative education or preparation improvements.
+- [x] Add bilingual source-linked topic briefs that explain the limited purpose of core FBR education sources, with reviewed-on labels and no claim to provide an exhaustive legal database.
+- [x] Add a visual preparation explanation that maps the education-to-official-source journey without calculating tax, determining a filing route, or representing an IRIS workflow.
+- [x] Add a local-only, general planning reflection guide that uses broad non-personal choices and directs unresolved questions to reviewed official sources or a qualified professional without generating personalised tax advice.
+- [x] Add focused tests and verify citations, visual explanation boundaries, local-only planning prompts, Urdu/English interaction, responsive layout, full suite, and production build before publication.

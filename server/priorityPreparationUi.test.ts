@@ -101,4 +101,16 @@ describe("priority preparation workflow wiring", () => {
     expect(taxpayerProfile).toContain("Why these resources?");
     expect(taxpayerProfile).toContain("does not profile behaviour, infer financial or identity data, or share your preferences");
   });
+
+  it("renders source-linked briefs, a visual preparation journey, and local general planning reflections", () => {
+    expect(taxYearPanel).toContain("source-linked-topic-briefs");
+    expect(taxYearPanel).toContain("TAX_SOURCE_TOPIC_BRIEFS");
+    expect(taxYearPanel).toContain("not a complete legal database or personal advice");
+    expect(taxYearPanel).toContain("visual-preparation-journey");
+    expect(taxYearPanel).toContain("TAX_PREPARATION_VISUAL_JOURNEY");
+    expect(taxYearPanel).toContain("not an IRIS workflow, tax calculation, or filing route");
+    expect(taxYearPanel).toContain("general-planning-reflection-guide");
+    expect(taxYearPanel).toContain("TAX_PLANNING_REFLECTIONS");
+    expect(taxYearPanel).toContain("not sent or saved");
+  });
 });

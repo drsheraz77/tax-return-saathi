@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getLearningPath, getStarterKnowledgeTopics, TAX_KNOWLEDGE_FOUNDATION, TAX_LEARNING_PATHS } from "../client/src/taxKnowledgeFoundation.js";
+import { getLearningPath, getPlanningReflection, getStarterKnowledgeTopics, TAX_KNOWLEDGE_FOUNDATION, TAX_LEARNING_PATHS, TAX_PLANNING_REFLECTIONS, TAX_PREPARATION_VISUAL_JOURNEY, TAX_SOURCE_TOPIC_BRIEFS } from "../client/src/taxKnowledgeFoundation.js";
 
 describe("reviewed Tax Year 2026 starter knowledge catalogue", () => {
   it("keeps a reviewed version, citation label, and non-determination boundary", () => {
@@ -37,5 +37,27 @@ describe("reviewed Tax Year 2026 starter knowledge catalogue", () => {
       expect(path.boundaryUrdu).toBeTruthy();
     }
     expect(getLearningPath("not-a-path").id).toBe("iris-start");
+  });
+
+  it("keeps source-linked topic briefs bounded and tied to an existing reviewed FBR record", () => {
+    expect(TAX_SOURCE_TOPIC_BRIEFS).toHaveLength(4);
+    for (const brief of TAX_SOURCE_TOPIC_BRIEFS) {
+      const topic = TAX_KNOWLEDGE_FOUNDATION.topics.find((item) => item.id === brief.topicId);
+      expect(topic).toBeTruthy();
+      expect(new URL(topic.sourceUrl).hostname).toBe("www.fbr.gov.pk");
+      expect(brief.boundary).toBeTruthy();
+      expect(brief.boundaryUrdu).toBeTruthy();
+    }
+  });
+
+  it("keeps the visual journey educational and the planning reflections local, broad, and non-personal", () => {
+    expect(TAX_PREPARATION_VISUAL_JOURNEY).toHaveLength(5);
+    expect(TAX_PREPARATION_VISUAL_JOURNEY.map((step) => step.id)).toContain("escalate");
+    expect(TAX_PLANNING_REFLECTIONS).toHaveLength(3);
+    for (const reflection of TAX_PLANNING_REFLECTIONS) {
+      expect(TAX_KNOWLEDGE_FOUNDATION.topics.some((topic) => topic.id === reflection.topicId)).toBe(true);
+      expect(reflection.boundary).toMatch(/not/i);
+    }
+    expect(getPlanningReflection("missing").id).toBe("official-source-first");
   });
 });

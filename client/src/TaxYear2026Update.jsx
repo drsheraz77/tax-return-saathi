@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FBR_NOTICE_ARCHIVE } from "./fbrNoticeArchive.js";
 import { FBR_NOTICE_PREPARATION_TYPES, FBR_NOTICE_SUPPORT_URL, getNoticeDocumentChecklist, getNoticePreparationSteps } from "./fbrNoticePreparation.js";
-import { getLearningPath, getStarterKnowledgeTopics, TAX_KNOWLEDGE_FOUNDATION, TAX_LEARNING_PATHS } from "./taxKnowledgeFoundation.js";
+import { getLearningPath, getPlanningReflection, getStarterKnowledgeTopics, TAX_KNOWLEDGE_FOUNDATION, TAX_LEARNING_PATHS, TAX_PLANNING_REFLECTIONS, TAX_PREPARATION_VISUAL_JOURNEY, TAX_SOURCE_TOPIC_BRIEFS } from "./taxKnowledgeFoundation.js";
 import { OFFICIAL_SOURCE_UPDATE_CENTRE, TAX_YEAR_2026_SOURCES, TAX_YEAR_2026_UPDATE } from "./taxYear2026Update.js";
 
 const linkProps = {
@@ -18,9 +18,12 @@ export default function TaxYear2026Update() {
   const [noticeDocumentItems, setNoticeDocumentItems] = useState({});
   const [knowledgeQuery, setKnowledgeQuery] = useState("");
   const [learningPathId, setLearningPathId] = useState(TAX_LEARNING_PATHS[0].id);
+  const [planningReflectionId, setPlanningReflectionId] = useState(TAX_PLANNING_REFLECTIONS[0].id);
   const filteredKnowledgeTopics = getStarterKnowledgeTopics(knowledgeQuery);
   const activeLearningPath = getLearningPath(learningPathId);
   const activeLearningTopic = TAX_KNOWLEDGE_FOUNDATION.topics.find((topic) => topic.id === activeLearningPath.topicId);
+  const activePlanningReflection = getPlanningReflection(planningReflectionId);
+  const activePlanningTopic = TAX_KNOWLEDGE_FOUNDATION.topics.find((topic) => topic.id === activePlanningReflection.topicId);
 
   return (
     <aside className="tax-year-update" aria-label="Verified Tax Year 2026 filing updates">
@@ -76,6 +79,10 @@ export default function TaxYear2026Update() {
         .tax-year-update__learning-card p { margin: 5px 0; color: #4d513c; font-size: 12px; }
         .tax-year-update__select { box-sizing: border-box; width: 100%; margin: 4px 0 10px; border: 1px solid #b7ab79; border-radius: 8px; background: #fffef9; color: #173b31; padding: 8px; font: 13px/1.3 inherit; }
         .tax-year-update__select:focus-visible { outline: 3px solid rgba(202,165,24,.36); outline-offset: 2px; }
+        .tax-year-update__journey { display: grid; gap: 7px; margin: 9px 0 0; padding: 0; list-style: none; }
+        .tax-year-update__journey-step { display: grid; grid-template-columns: 23px 1fr; gap: 7px; align-items: start; border-left: 3px solid #caa518; padding: 7px 0 7px 8px; }
+        .tax-year-update__journey-number { display: grid; place-items: center; width: 21px; height: 21px; border-radius: 50%; background: #0B3D2E; color: #fffdf2; font: 700 11px/1 sans-serif; }
+        .tax-year-update__journey-copy { margin: 2px 0 0 !important; color: #4d513c; font-size: 12px; }
         @media (max-width: 520px) { .tax-year-update { right: 12px; bottom: 12px; } .tax-year-update__facts { grid-template-columns: 1fr; } .tax-year-update__fact--wide { grid-column: auto; } }
       `}</style>
 
@@ -131,6 +138,39 @@ export default function TaxYear2026Update() {
                 <a className="tax-year-update__archive-link" href={activeLearningTopic.sourceUrl} {...linkProps}>{activeLearningTopic.sourceLabel} ↗</a>
                 <p><strong>2. Preparation action:</strong> {activeLearningPath.preparationAction}<br /><span lang="ur" dir="rtl"><strong>2۔ تیاری عمل:</strong> {activeLearningPath.preparationActionUrdu}</span></p>
                 <p><strong>3. Limit:</strong> {activeLearningPath.boundary}<br /><span lang="ur" dir="rtl"><strong>3۔ حد:</strong> {activeLearningPath.boundaryUrdu}</span></p>
+              </section>
+              <section id="source-linked-topic-briefs" className="tax-year-update__learning-card" aria-label="Source-linked educational topic briefs">
+                <h4 className="tax-year-update__source-heading">Source-linked topic briefs / <span lang="ur" dir="rtl">ذریعہ سے منسلک موضوع بریف</span></h4>
+                <p>Each brief points back to a reviewed FBR source. It is not a complete legal database or personal advice. <span lang="ur" dir="rtl">ہر بریف جائزہ شدہ ایف بی آر ذریعہ سے منسلک ہے۔ یہ مکمل قانونی ڈیٹابیس یا ذاتی مشورہ نہیں۔</span></p>
+                <ul className="tax-year-update__source-list">
+                  {TAX_SOURCE_TOPIC_BRIEFS.map((brief) => {
+                    const topic = TAX_KNOWLEDGE_FOUNDATION.topics.find((item) => item.id === brief.topicId);
+                    return <li className="tax-year-update__source-item" key={brief.id}>
+                      <span className="tax-year-update__source-title">{brief.title}<br /><span lang="ur" dir="rtl">{brief.titleUrdu}</span></span>
+                      <p className="tax-year-update__source-purpose">{brief.summary}<br /><span lang="ur" dir="rtl">{brief.summaryUrdu}</span></p>
+                      <span className="tax-year-update__citation">{TAX_KNOWLEDGE_FOUNDATION.citationLabel} · {topic.sourceLabel} · reviewed {topic.reviewedOn}</span>
+                      <a className="tax-year-update__archive-link" href={topic.sourceUrl} {...linkProps}>{topic.sourceLabel} ↗</a>
+                      <p className="tax-year-update__source-purpose"><strong>Limit:</strong> {brief.boundary}<br /><span lang="ur" dir="rtl"><strong>حد:</strong> {brief.boundaryUrdu}</span></p>
+                    </li>;
+                  })}
+                </ul>
+              </section>
+              <section id="visual-preparation-journey" className="tax-year-update__learning-card" aria-label="Visual education-to-source preparation journey">
+                <h4 className="tax-year-update__source-heading">Visual preparation journey / <span lang="ur" dir="rtl">بصری تیاری کا سفر</span></h4>
+                <p>This explains a source-checking sequence, not an IRIS workflow, tax calculation, or filing route. <span lang="ur" dir="rtl">یہ ذریعہ چیک کرنے کی ترتیب بتاتا ہے، آئرس ورک فلو، ٹیکس حساب یا فائلنگ راستہ نہیں۔</span></p>
+                <ol className="tax-year-update__journey">
+                  {TAX_PREPARATION_VISUAL_JOURNEY.map((step, index) => <li className="tax-year-update__journey-step" key={step.id}><span className="tax-year-update__journey-number">{index + 1}</span><span><strong>{step.label}<br /><span lang="ur" dir="rtl">{step.labelUrdu}</span></strong><p className="tax-year-update__journey-copy">{step.explanation}<br /><span lang="ur" dir="rtl">{step.explanationUrdu}</span></p></span></li>)}
+                </ol>
+              </section>
+              <section id="general-planning-reflection-guide" className="tax-year-update__learning-card" aria-label="Local general planning reflection guide">
+                <h4 className="tax-year-update__source-heading">General planning reflection / <span lang="ur" dir="rtl">عمومی منصوبہ بندی پر غور</span></h4>
+                <p>Choose only a broad, non-personal reflection. This selection stays on this page and is not sent or saved. <span lang="ur" dir="rtl">صرف عمومی، غیر ذاتی غور منتخب کریں۔ یہ انتخاب اسی صفحے میں رہتا ہے، نہ بھیجا اور نہ محفوظ کیا جاتا ہے۔</span></p>
+                <select className="tax-year-update__select" aria-label="Choose a general planning reflection" value={planningReflectionId} onChange={(event) => setPlanningReflectionId(event.target.value)}>
+                  {TAX_PLANNING_REFLECTIONS.map((reflection) => <option key={reflection.id} value={reflection.id}>{reflection.title} — {reflection.titleUrdu}</option>)}
+                </select>
+                <p><strong>Reflection:</strong> {activePlanningReflection.reflection}<br /><span lang="ur" dir="rtl"><strong>غور:</strong> {activePlanningReflection.reflectionUrdu}</span></p>
+                <a className="tax-year-update__archive-link" href={activePlanningTopic.sourceUrl} {...linkProps}>{activePlanningTopic.sourceLabel} ↗</a>
+                <p><strong>Limit:</strong> {activePlanningReflection.boundary}<br /><span lang="ur" dir="rtl"><strong>حد:</strong> {activePlanningReflection.boundaryUrdu}</span></p>
               </section>
             </section>
             <button className="tax-year-update__archive-toggle" type="button" onClick={() => setSourceUpdateCentreOpen((open) => !open)} aria-expanded={sourceUpdateCentreOpen} aria-controls="official-source-update-centre">

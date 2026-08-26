@@ -116,6 +116,120 @@ export const TAX_LEARNING_PATHS = [
   },
 ];
 
+export const TAX_SOURCE_TOPIC_BRIEFS = [
+  {
+    id: "iris-brief",
+    topicId: "iris-access",
+    title: "Starting with official IRIS access",
+    titleUrdu: "سرکاری آئرس رسائی سے آغاز",
+    summary: "Use the FBR filing guide as a starting point for current IRIS access and first-time orientation, then confirm account-specific steps in IRIS itself.",
+    summaryUrdu: "موجودہ آئرس رسائی اور پہلی بار ابتدائی رہنمائی کے لیے ایف بی آر فائلنگ گائیڈ کو نقطۂ آغاز بنائیں، پھر اکاؤنٹ سے متعلق اقدامات خود آئرس میں تصدیق کریں۔",
+    boundary: "This brief is an orientation card; it does not create, access, or operate an IRIS account.",
+    boundaryUrdu: "یہ بریف ابتدائی کارڈ ہے؛ یہ آئرس اکاؤنٹ بناتا، رسائی حاصل کرتا یا چلاتا نہیں۔",
+  },
+  {
+    id: "records-brief",
+    topicId: "return-completion-records",
+    title: "Preparing a private record trail",
+    titleUrdu: "نجی ریکارڈ کی تیاری",
+    summary: "Use the official filing guidance to frame your private preparation questions and keep records outside this site.",
+    summaryUrdu: "اپنے نجی تیاری کے سوالات ترتیب دینے کے لیے سرکاری فائلنگ رہنمائی استعمال کریں اور ریکارڈ اس سائٹ سے باہر رکھیں۔",
+    boundary: "This brief does not inspect records or confirm that they are complete or legally sufficient.",
+    boundaryUrdu: "یہ بریف ریکارڈ دیکھتا نہیں اور نہ ہی ان کے مکمل یا قانونی طور پر کافی ہونے کی تصدیق کرتا ہے۔",
+  },
+  {
+    id: "dates-brief",
+    topicId: "due-dates",
+    title: "Checking published date categories",
+    titleUrdu: "شائع شدہ تاریخ کی اقسام دیکھنا",
+    summary: "Use FBR's current due-date page to review the published category that may be relevant to your question.",
+    summaryUrdu: "اپنے سوال سے متعلق ہو سکنے والی شائع شدہ قسم دیکھنے کے لیے ایف بی آر کا موجودہ ڈیڈ لائن صفحہ استعمال کریں۔",
+    boundary: "This brief cannot calculate a personal deadline, extension, or late-filing result.",
+    boundaryUrdu: "یہ بریف ذاتی ڈیڈ لائن، توسیع یا تاخیر سے فائلنگ کا نتیجہ نہیں نکال سکتا۔",
+  },
+  {
+    id: "laws-brief",
+    topicId: "laws-index",
+    title: "Finding primary material for a question",
+    titleUrdu: "سوال کے لیے بنیادی مواد تلاش کرنا",
+    summary: "Use the official laws index to locate current primary material, then seek qualified help for interpretation when needed.",
+    summaryUrdu: "موجودہ بنیادی مواد تلاش کرنے کے لیے سرکاری قوانین کا انڈیکس استعمال کریں، پھر ضرورت پر تشریح کے لیے اہل مدد لیں۔",
+    boundary: "This brief is not an interpretation, a complete legal-topic search, or personalised advice.",
+    boundaryUrdu: "یہ بریف تشریح، مکمل قانونی موضوعی تلاش یا ذاتی مشورہ نہیں۔",
+  },
+];
+
+export const TAX_PREPARATION_VISUAL_JOURNEY = [
+  {
+    id: "choose-topic",
+    label: "Choose a broad education topic",
+    labelUrdu: "عمومی تعلیمی موضوع منتخب کریں",
+    explanation: "Start with a reviewed topic card rather than entering private information.",
+    explanationUrdu: "نجی معلومات درج کرنے کے بجائے جائزہ شدہ موضوع کارڈ سے شروع کریں۔",
+  },
+  {
+    id: "read-source",
+    label: "Open the official source",
+    labelUrdu: "سرکاری ذریعہ کھولیں",
+    explanation: "Check the linked FBR page directly for its current published content.",
+    explanationUrdu: "موجودہ شائع شدہ مواد کے لیے لنک شدہ ایف بی آر صفحہ براہِ راست دیکھیں۔",
+  },
+  {
+    id: "prepare-privately",
+    label: "Use a local preparation prompt",
+    labelUrdu: "مقامی تیاری پرامپٹ استعمال کریں",
+    explanation: "Use temporary checklists or questions without entering sensitive records here.",
+    explanationUrdu: "حساس ریکارڈ یہاں درج کیے بغیر عارضی چیک لسٹ یا سوالات استعمال کریں۔",
+  },
+  {
+    id: "check-limits",
+    label: "Check the source scope and limits",
+    labelUrdu: "ذریعہ کا دائرہ اور حدود دیکھیں",
+    explanation: "Distinguish reviewed education from live FBR information, law interpretation, or an individual result.",
+    explanationUrdu: "جائزہ شدہ تعلیم کو لائیو ایف بی آر معلومات، قانونی تشریح یا انفرادی نتیجے سے الگ رکھیں۔",
+  },
+  {
+    id: "escalate",
+    label: "Use an official or qualified escalation route",
+    labelUrdu: "سرکاری یا اہل رہنمائی کا راستہ استعمال کریں",
+    explanation: "For unclear, urgent, foreign, notice, audit, demand, or court matters, use FBR's official route or qualified help.",
+    explanationUrdu: "غیر واضح، فوری، غیر ملکی، نوٹس، آڈٹ، ڈیمانڈ یا عدالتی معاملات کے لیے ایف بی آر کا سرکاری راستہ یا اہل مدد استعمال کریں۔",
+  },
+];
+
+export const TAX_PLANNING_REFLECTIONS = [
+  {
+    id: "official-source-first",
+    title: "I want to organise an official-source check",
+    titleUrdu: "میں سرکاری ذریعہ چیک ترتیب دینا چاہتا/چاہتی ہوں",
+    topicId: "iris-access",
+    reflection: "What current FBR page should I read first, and what account-specific step must I verify only in IRIS?",
+    reflectionUrdu: "مجھے پہلے کون سا موجودہ ایف بی آر صفحہ پڑھنا چاہیے، اور کون سا اکاؤنٹ سے متعلق قدم صرف آئرس میں تصدیق کرنا ہے؟",
+    boundary: "This is a general planning question, not a filing route or eligibility decision.",
+    boundaryUrdu: "یہ عمومی منصوبہ بندی کا سوال ہے، فائلنگ راستہ یا اہلیت کا فیصلہ نہیں۔",
+  },
+  {
+    id: "private-preparation-first",
+    title: "I want to organise private preparation",
+    titleUrdu: "میں نجی تیاری ترتیب دینا چاہتا/چاہتی ہوں",
+    topicId: "return-completion-records",
+    reflection: "Which broad private record categories should I review outside this site before checking official guidance?",
+    reflectionUrdu: "سرکاری رہنمائی دیکھنے سے پہلے مجھے اس سائٹ سے باہر کون سے عمومی نجی ریکارڈ زمرے دیکھنے چاہییں؟",
+    boundary: "Do not enter records, figures, identifiers, or documents here; this guide does not assess completeness.",
+    boundaryUrdu: "یہاں ریکارڈ، اعداد، شناخت یا دستاویزات درج نہ کریں؛ یہ گائیڈ مکمل ہونے کا جائزہ نہیں لیتا۔",
+  },
+  {
+    id: "unclear-question",
+    title: "I have an unclear planning question",
+    titleUrdu: "میرا منصوبہ بندی کا سوال غیر واضح ہے",
+    topicId: "laws-index",
+    reflection: "Can I identify a broad question and locate primary material, then seek qualified help for interpretation?",
+    reflectionUrdu: "کیا میں عمومی سوال شناخت کر کے بنیادی مواد تلاش کر سکتا/سکتی ہوں، پھر تشریح کے لیے اہل مدد لوں؟",
+    boundary: "This guide does not provide personalised tax planning, legal advice, or an outcome prediction.",
+    boundaryUrdu: "یہ گائیڈ ذاتی ٹیکس منصوبہ بندی، قانونی مشورہ یا نتیجے کی پیش گوئی نہیں دیتا۔",
+  },
+];
+
 export function getStarterKnowledgeTopics(query = "") {
   const normalizedQuery = String(query).trim().toLocaleLowerCase();
   if (!normalizedQuery) return TAX_KNOWLEDGE_FOUNDATION.topics;
@@ -132,4 +246,8 @@ export function getStarterKnowledgeTopics(query = "") {
 
 export function getLearningPath(pathId) {
   return TAX_LEARNING_PATHS.find((path) => path.id === pathId) ?? TAX_LEARNING_PATHS[0];
+}
+
+export function getPlanningReflection(reflectionId) {
+  return TAX_PLANNING_REFLECTIONS.find((reflection) => reflection.id === reflectionId) ?? TAX_PLANNING_REFLECTIONS[0];
 }
