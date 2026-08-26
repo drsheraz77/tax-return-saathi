@@ -147,6 +147,9 @@ describe("priority preparation workflow wiring", () => {
     expect(authoredApp).toContain("آزمائشی رائے دیں");
     expect(authoredApp).toContain("Pilot Feedback");
     expect(authoredApp).toContain("tax-return-saathi:open-pilot-feedback");
+    expect(authoredApp).toContain("pilot-feedback-category-hint");
+    expect(authoredApp).toContain("رائے کی قسم: ایپ کا مسئلہ، وضاحت، رسائی، یا سورس/لنک");
+    expect(authoredApp).toContain("Do not add personal tax details or identity");
     expect(resourceHub).toContain('id="pilot-feedback-form"');
     expect(resourceHub).toContain("window.addEventListener(\"tax-return-saathi:open-pilot-feedback\"");
     expect(resourceHub).toContain("No email or account details are requested");

@@ -10,7 +10,7 @@ describe("reviewed Tax Year 2026 starter knowledge catalogue", () => {
   });
 
   it("uses a bounded set of official FBR knowledge records with a visible scope and linked preparation tools", () => {
-    expect(TAX_KNOWLEDGE_FOUNDATION.topics.map((topic) => topic.id)).toEqual(["iris-access", "return-completion-records", "due-dates", "laws-index", "contact-support-route"]);
+    expect(TAX_KNOWLEDGE_FOUNDATION.topics.map((topic) => topic.id)).toEqual(["iris-access", "return-completion-records", "due-dates", "laws-index", "contact-support-route", "company-industry-preparation"]);
     for (const topic of TAX_KNOWLEDGE_FOUNDATION.topics) {
       expect(new URL(topic.sourceUrl).hostname).toBe("www.fbr.gov.pk");
       expect(topic.purpose).toBeTruthy();
@@ -23,17 +23,20 @@ describe("reviewed Tax Year 2026 starter knowledge catalogue", () => {
     const supportRoute = TAX_KNOWLEDGE_FOUNDATION.topics.find((topic) => topic.id === "contact-support-route");
     expect(supportRoute?.sourceUrl).toBe("https://www.fbr.gov.pk/contact-us/142252/173964");
     expect(supportRoute?.scope).toMatch(/does not provide an app-operated support channel/i);
+    const industryRoute = TAX_KNOWLEDGE_FOUNDATION.topics.find((topic) => topic.id === "company-industry-preparation");
+    expect(industryRoute?.scope).toMatch(/does not decide company status, registration, return type, sales-tax treatment, tax, deadline, or FBR acceptance/i);
   });
 
   it("filters only the in-memory reviewed records without broadening the catalogue", () => {
     expect(getStarterKnowledgeTopics("IRIS").map((topic) => topic.id)).toEqual(["iris-access"]);
     expect(getStarterKnowledgeTopics("records").map((topic) => topic.id)).toEqual(["return-completion-records"]);
+    expect(getStarterKnowledgeTopics("industry").map((topic) => topic.id)).toEqual(["company-industry-preparation"]);
     expect(getStarterKnowledgeTopics("no match")).toEqual([]);
     expect(getStarterKnowledgeTopics()).toBe(TAX_KNOWLEDGE_FOUNDATION.topics);
   });
 
   it("keeps learning paths broad, source-bound, and non-determinative", () => {
-    expect(TAX_LEARNING_PATHS).toHaveLength(4);
+    expect(TAX_LEARNING_PATHS).toHaveLength(6);
     for (const path of TAX_LEARNING_PATHS) {
       expect(TAX_KNOWLEDGE_FOUNDATION.topics.some((topic) => topic.id === path.topicId)).toBe(true);
       expect(path.boundary).toBeTruthy();
@@ -43,7 +46,7 @@ describe("reviewed Tax Year 2026 starter knowledge catalogue", () => {
   });
 
   it("keeps source-linked topic briefs bounded and tied to an existing reviewed FBR record", () => {
-    expect(TAX_SOURCE_TOPIC_BRIEFS).toHaveLength(4);
+    expect(TAX_SOURCE_TOPIC_BRIEFS).toHaveLength(5);
     for (const brief of TAX_SOURCE_TOPIC_BRIEFS) {
       const topic = TAX_KNOWLEDGE_FOUNDATION.topics.find((item) => item.id === brief.topicId);
       expect(topic).toBeTruthy();

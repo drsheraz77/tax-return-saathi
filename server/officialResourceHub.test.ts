@@ -28,8 +28,8 @@ import {
 describe("official resource hub", () => {
   it("contains complete bilingual resources on approved official hosts", () => {
     expect(validateOfficialResourceHub()).toBe(true);
-    expect(OFFICIAL_RESOURCE_HUB.sections.map((section) => section.id)).toEqual(["company", "business-forms", "freelancers", "investments", "filing"]);
-    expect(OFFICIAL_RESOURCE_HUB.sections.flatMap((section) => section.resources)).toHaveLength(17);
+    expect(OFFICIAL_RESOURCE_HUB.sections.map((section) => section.id)).toEqual(["company", "business-forms", "freelancers", "large-business-industry", "investments", "filing"]);
+    expect(OFFICIAL_RESOURCE_HUB.sections.flatMap((section) => section.resources)).toHaveLength(22);
   });
 
   it("keeps freelancer guidance in a distinct official-source section", () => {
@@ -42,6 +42,20 @@ describe("official resource hub", () => {
       "pseb-freelancer-registration-portal",
     ]);
     expect(freelancerSection?.resources.every((resource) => resource.titleUrdu && resource.descriptionUrdu)).toBe(true);
+  });
+
+  it("keeps large business and industry preparation in a separate official-source category", () => {
+    const industrySection = OFFICIAL_RESOURCE_HUB.sections.find((section) => section.id === "large-business-industry");
+    expect(industrySection?.reviewedOn).toBe("26 August 2026");
+    expect(industrySection?.resources.map((resource) => resource.id)).toEqual([
+      "fbr-company-aop-enrolment",
+      "fbr-industry-income-tax-filing",
+      "fbr-industry-record-keeping",
+      "fbr-industry-sales-tax-registration",
+      "fbr-industry-sales-tax-filing",
+    ]);
+    expect(industrySection?.introduction).toMatch(/do not decide registration, tax treatment, sales-tax status, a return type, a deadline, or what FBR will accept/i);
+    expect(industrySection?.resources.every((resource) => new URL(resource.url).hostname.endsWith("fbr.gov.pk") && resource.titleUrdu && resource.descriptionUrdu)).toBe(true);
   });
 
   it("keeps fixed-term accounts, stocks, ETFs, and bonds in a distinct neutral education section", () => {
@@ -101,10 +115,12 @@ describe("official resource hub", () => {
 
   it("routes broad complex situations to official or qualified follow-up without determining treatment", () => {
     expect(validateResourceTools()).toBe(true);
-    expect(COMPLEX_SITUATION_PREPARATION_PATHS).toHaveLength(5);
+    expect(COMPLEX_SITUATION_PREPARATION_PATHS).toHaveLength(6);
     expect(COMPLEX_SITUATION_PREPARATION_PATHS.every((item) => item.labelUrdu && item.boundaryUrdu && item.url.includes("fbr.gov.pk"))).toBe(true);
     expect(COMPLEX_SITUATION_PREPARATION_PATHS.map((item) => item.boundary).join(" ")).toMatch(/does not determine|does not classify|does not value|cannot decide/i);
-    expect(getTemporaryGuidanceSummary({ "overseas-residency": true }, COMPLEX_SITUATION_PREPARATION_PATHS)).toMatchObject({ completed: 1, total: 5, status: "in-progress" });
+    expect(COMPLEX_SITUATION_PREPARATION_PATHS.map((item) => item.id)).toContain("freelancer-individual-work");
+    expect(COMPLEX_SITUATION_PREPARATION_PATHS.map((item) => item.id)).toContain("company-industry-operation");
+    expect(getTemporaryGuidanceSummary({ "overseas-residency": true }, COMPLEX_SITUATION_PREPARATION_PATHS)).toMatchObject({ completed: 1, total: 6, status: "in-progress" });
   });
 
   it("keeps return-and-wealth relationship education non-sensitive and non-reconciliatory", () => {
@@ -146,5 +162,7 @@ describe("official resource hub", () => {
     expect(review.reviewedOn).toBe(OFFICIAL_RESOURCE_HUB.reviewedOn);
     expect(review.scope).toContain(section?.title);
     expect(review.scopeUrdu).toContain(section?.titleUrdu);
+    const industrySection = OFFICIAL_RESOURCE_HUB.sections.find((item) => item.id === "large-business-industry");
+    expect(getOfficialResourceCategoryReview(industrySection).reviewedOn).toBe("26 August 2026");
   });
 });

@@ -250,3 +250,11 @@
 - [x] Add focused tests and verify pilot/privacy/consent accessibility, refusal and persistence behaviour, no advertising or analytics execution before consent, Urdu/English presentation, responsive layout, full suite, and production build before publication.
 - [x] Add a prominent Urdu-first Pilot Feedback button to the main interface that opens the existing bounded feedback flow without adding fields, retention, tracking, or sensitive-data collection.
 - [x] Add focused coverage and verify the Pilot Feedback entry point, feedback privacy wording, Urdu/English presentation, desktop/mobile layout, full suite, and production build before publication.
+- [x] Add a concise Urdu-first feedback-category hint beside the Pilot Feedback button that routes users to the existing bounded anonymous feedback form without requesting sensitive details.
+- [x] Research and document the exact provider-specific prerequisites for a Google-certified CMP integration, including account, domain, policy URL, vendor declaration, and Google AdSense steps, without claiming legal compliance or enabling third-party code.
+- [x] Defer Google-certified CMP integration at the user's request until the owner opens the correct AdSense account and explicitly confirms the account-side consent-message publication; no third-party CMP code, Google Ads, or AdSense tag was enabled.
+- [x] Add focused coverage and verify the feedback hint, privacy boundary, responsive layout, full suite, and production build before publishing the UI portion of this batch.
+- [x] Audit and report the completion status of the Pilot Feedback hint and Google-certified CMP preparation, explicitly separating completed website work from deferred owner-side AdSense setup.
+- [x] Separate the current freelancer-and-business resource/path category into distinct Urdu/English Freelancer and Large Business / Industry categories without changing existing tax rules or profile fields.
+- [x] Add bounded, official-source-linked large-business and industry tax-preparation guidance that covers process and record-readiness themes only, not rates, eligibility, tax treatment, personal filing decisions, or FBR outcomes.
+- [x] Add focused model/UI coverage and verify official-source scope, Urdu/English presentation, responsive layout, full suite, and production build before publication.

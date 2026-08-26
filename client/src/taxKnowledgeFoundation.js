@@ -86,6 +86,22 @@ export const TAX_KNOWLEDGE_FOUNDATION = {
         { id: "complex-situations", label: "Complex-situation preparation navigator", labelUrdu: "پیچیدہ صورتحال تیاری نیویگیٹر" },
       ],
     },
+    {
+      id: "company-industry-preparation",
+      title: "Company and industry official preparation routes",
+      titleUrdu: "کمپنی اور صنعت کے سرکاری تیاری راستے",
+      purpose: "Use the official FBR registration and filing starting points to frame internal preparation questions for a company or industrial operation. Check the current official route before acting.",
+      purposeUrdu: "کمپنی یا صنعتی آپریشن کے لیے اندرونی تیاری کے سوالات ترتیب دینے کو ایف بی آر کے سرکاری رجسٹریشن اور فائلنگ ابتدائی ذرائع استعمال کریں۔ عمل سے پہلے موجودہ سرکاری راستہ دیکھیں۔",
+      sourceLabel: "FBR: Register for Income Tax",
+      sourceUrl: "https://www.fbr.gov.pk/categ/register-income-tax/51147/30846/71148",
+      reviewedOn: "26 August 2026",
+      scope: "Official preparation-route orientation only; it does not decide company status, registration, return type, sales-tax treatment, tax, deadline, or FBR acceptance.",
+      scopeUrdu: "صرف سرکاری تیاری راستے کی ابتدائی معلومات؛ یہ کمپنی اسٹیٹس، رجسٹریشن، ریٹرن کی قسم، سیلز ٹیکس ٹریٹمنٹ، ٹیکس، ڈیڈ لائن یا ایف بی آر کی قبولیت طے نہیں کرتی۔",
+      preparationLinks: [
+        { id: "official-resources", label: "Official tax and investment resources", labelUrdu: "سرکاری ٹیکس اور سرمایہ کاری وسائل" },
+        { id: "complex-situations", label: "Complex-situation preparation navigator", labelUrdu: "پیچیدہ صورتحال تیاری نیویگیٹر" },
+      ],
+    },
   ],
 };
 
@@ -130,6 +146,26 @@ export const TAX_LEARNING_PATHS = [
     boundary: "This path does not interpret law, determine treatment, or replace qualified advice.",
     boundaryUrdu: "یہ راستہ قانون کی تشریح، ٹریٹمنٹ کا تعین یا اہل مشورے کا متبادل نہیں۔",
   },
+  {
+    id: "freelancer-preparation",
+    title: "I am preparing as an individual freelancer",
+    titleUrdu: "میں انفرادی فری لانسر کے طور پر تیاری کر رہا/رہی ہوں",
+    topicId: "return-completion-records",
+    preparationAction: "Use the separate Freelancer resources and private record-preparation prompts, then confirm the current official route before acting.",
+    preparationActionUrdu: "الگ فری لانسر وسائل اور نجی ریکارڈ تیاری یاددہانیاں استعمال کریں، پھر عمل سے پہلے موجودہ سرکاری راستہ تصدیق کریں۔",
+    boundary: "This path does not classify your work, determine treatment or eligibility, calculate tax, or confirm what FBR will accept.",
+    boundaryUrdu: "یہ راستہ آپ کے کام کی درجہ بندی، ٹریٹمنٹ یا اہلیت کا تعین، ٹیکس کا حساب یا ایف بی آر کی قبولیت کی تصدیق نہیں کرتا۔",
+  },
+  {
+    id: "company-industry-preparation",
+    title: "I am preparing for a company or industrial operation",
+    titleUrdu: "میں کمپنی یا صنعتی آپریشن کے لیے تیاری کر رہا/رہی ہوں",
+    topicId: "company-industry-preparation",
+    preparationAction: "Use the separate Large Business & Industry official-source section to organise internal questions before an authorised person uses the official portal.",
+    preparationActionUrdu: "کسی مجاز شخص کے سرکاری پورٹل استعمال کرنے سے پہلے اندرونی سوالات ترتیب دینے کو الگ بڑے کاروبار اور صنعت کے سرکاری ذرائع والا حصہ استعمال کریں۔",
+    boundary: "This path does not decide company status, registration, sales-tax status, return type, tax, deadline, or FBR outcome.",
+    boundaryUrdu: "یہ راستہ کمپنی اسٹیٹس، رجسٹریشن، سیلز ٹیکس اسٹیٹس، ریٹرن کی قسم، ٹیکس، ڈیڈ لائن یا ایف بی آر نتیجہ طے نہیں کرتا۔",
+  },
 ];
 
 export const TAX_SOURCE_TOPIC_BRIEFS = [
@@ -172,6 +208,16 @@ export const TAX_SOURCE_TOPIC_BRIEFS = [
     summaryUrdu: "موجودہ بنیادی مواد تلاش کرنے کے لیے سرکاری قوانین کا انڈیکس استعمال کریں، پھر ضرورت پر تشریح کے لیے اہل مدد لیں۔",
     boundary: "This brief is not an interpretation, a complete legal-topic search, or personalised advice.",
     boundaryUrdu: "یہ بریف تشریح، مکمل قانونی موضوعی تلاش یا ذاتی مشورہ نہیں۔",
+  },
+  {
+    id: "company-industry-brief",
+    topicId: "company-industry-preparation",
+    title: "Preparing company and industry source questions",
+    titleUrdu: "کمپنی اور صنعت کے سورس سوالات کی تیاری",
+    summary: "Start with the reviewed FBR registration source, then use the separate industry resource section to review official filing, record-keeping, and sales-tax starting points as relevant to questions—not as decisions.",
+    summaryUrdu: "جائزہ شدہ ایف بی آر رجسٹریشن ذریعہ سے آغاز کریں، پھر الگ صنعت وسائل حصہ استعمال کر کے سرکاری فائلنگ، ریکارڈ رکھنے اور سیلز ٹیکس ابتدائی ذرائع سوالات سے متعلق دیکھیں—فیصلوں کے طور پر نہیں۔",
+    boundary: "This brief does not decide an entity’s obligations, treatment, return, registration, deadline, calculation, or outcome.",
+    boundaryUrdu: "یہ بریف کسی ادارے کی ذمہ داری، ٹریٹمنٹ، ریٹرن، رجسٹریشن، ڈیڈ لائن، حساب یا نتیجہ طے نہیں کرتا۔",
   },
 ];
 
