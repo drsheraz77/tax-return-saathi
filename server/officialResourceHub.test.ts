@@ -21,6 +21,7 @@ import {
   IRIS_NAVIGATION_WALKTHROUGH,
   LARGE_BUSINESS_INTERNAL_ROLE_CHECKLIST,
   LARGE_BUSINESS_PREPARATION_FILTERS,
+  LARGE_BUSINESS_QUALIFIED_ESCALATION,
   SOURCE_AWARE_QUESTION_PLANS,
   searchFreelancerFaq,
   searchIrisFaq,
@@ -73,6 +74,17 @@ describe("official resource hub", () => {
     expect(LARGE_BUSINESS_INTERNAL_ROLE_CHECKLIST).toHaveLength(6);
     expect(LARGE_BUSINESS_INTERNAL_ROLE_CHECKLIST.every((item) => item.id && item.label && item.labelUrdu)).toBe(true);
     expect(LARGE_BUSINESS_INTERNAL_ROLE_CHECKLIST.map((item) => item.label).join(" ")).toMatch(/do not enter a name|do not upload or paste|not a legal deadline|qualified professional/i);
+  });
+
+  it("provides a bilingual industry escalation route without giving a tax or legal conclusion", () => {
+    expect(LARGE_BUSINESS_QUALIFIED_ESCALATION).toMatchObject({
+      id: "large-business-qualified-escalation",
+      sourceLabel: "Open FBR contact and support",
+    });
+    expect(new URL(LARGE_BUSINESS_QUALIFIED_ESCALATION.url).hostname).toBe("www.fbr.gov.pk");
+    expect(LARGE_BUSINESS_QUALIFIED_ESCALATION.titleUrdu).toBeTruthy();
+    expect(LARGE_BUSINESS_QUALIFIED_ESCALATION.descriptionUrdu).toBeTruthy();
+    expect(`${LARGE_BUSINESS_QUALIFIED_ESCALATION.description} ${LARGE_BUSINESS_QUALIFIED_ESCALATION.boundary}`).toMatch(/Do not submit case details|does not interpret law|does not.*decide.*tax treatment|does not.*predict/i);
   });
 
   it("keeps fixed-term accounts, stocks, ETFs, and bonds in a distinct neutral education section", () => {

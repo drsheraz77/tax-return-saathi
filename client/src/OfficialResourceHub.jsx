@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { AI_ANSWER_EVALUATION_STEPS, CALCULATION_EXPLANATION_MAP, COMPLEX_SITUATION_PREPARATION_PATHS, FILING_READINESS_STEPS, filterLargeBusinessIndustryResources, FREELANCER_FAQ, FREELANCER_PRE_FILING_CHECKLIST, getFilingReadinessSummary, getOfficialResourceCategoryReview, getPreSubmissionErrorPreventionSummary, getSourceAwareQuestionPlan, getTemporaryGuidanceSummary, IRIS_FAQ, IRIS_NAVIGATION_WALKTHROUGH, LARGE_BUSINESS_INTERNAL_ROLE_CHECKLIST, LARGE_BUSINESS_PREPARATION_FILTERS, OFFICIAL_RESOURCE_HUB, POST_SUBMISSION_CONTINUITY_STEPS, PRE_FILING_CHECKLIST, PRE_SUBMISSION_ERROR_PREVENTION_STEPS, RETURN_WEALTH_RELATIONSHIP_STEPS, searchFreelancerFaq, searchIrisFaq, SOURCE_AWARE_QUESTION_PLANS } from "./officialResourceHub.js";
+import { AI_ANSWER_EVALUATION_STEPS, CALCULATION_EXPLANATION_MAP, COMPLEX_SITUATION_PREPARATION_PATHS, FILING_READINESS_STEPS, filterLargeBusinessIndustryResources, FREELANCER_FAQ, FREELANCER_PRE_FILING_CHECKLIST, getFilingReadinessSummary, getOfficialResourceCategoryReview, getPreSubmissionErrorPreventionSummary, getSourceAwareQuestionPlan, getTemporaryGuidanceSummary, IRIS_FAQ, IRIS_NAVIGATION_WALKTHROUGH, LARGE_BUSINESS_INTERNAL_ROLE_CHECKLIST, LARGE_BUSINESS_PREPARATION_FILTERS, LARGE_BUSINESS_QUALIFIED_ESCALATION, OFFICIAL_RESOURCE_HUB, POST_SUBMISSION_CONTINUITY_STEPS, PRE_FILING_CHECKLIST, PRE_SUBMISSION_ERROR_PREVENTION_STEPS, RETURN_WEALTH_RELATIONSHIP_STEPS, searchFreelancerFaq, searchIrisFaq, SOURCE_AWARE_QUESTION_PLANS } from "./officialResourceHub.js";
 import { trpc } from "./lib/trpc";
 import { getWealthReadinessPrintRows, getWealthStatementReadinessSummary, WEALTH_READINESS_OPTIONS, WEALTH_STATEMENT_PREPARATION_STEPS } from "./wealthStatementPreparation.js";
 import { buildNonSensitiveReadinessSummary, getPreFilingTimelineSummary, PRE_FILING_TIMELINE_STEPS, TIMELINE_STATUS_OPTIONS } from "./preFilingTimelinePlanner.js";
@@ -137,6 +137,8 @@ export default function OfficialResourceHub() {
         .official-resource-hub__industry-filter-note { margin: 6px 0 0; color: #625f4e; font-size: 11px; }
         .official-resource-hub__industry-checklist { margin-top: 12px; border: 1px solid #d9c975; border-radius: 10px; background: #fffef9; padding: 11px; }
         .official-resource-hub__industry-checklist h3 { margin: 0 0 6px; color: #0B3D2E; font-size: 14px; }
+        .official-resource-hub__industry-escalation { margin-top: 12px; border: 1px solid #cfad71; border-left: 4px solid #a6512d; border-radius: 10px; background: #fff7ed; padding: 11px; }
+        .official-resource-hub__industry-escalation h3 { margin: 0 0 6px; color: #6a321c; font-size: 14px; }
         .official-resource-hub__link { color: #075c48; font-size: 12px; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
         .official-resource-hub__link:focus-visible { outline: 3px solid rgba(202,165,24,.48); outline-offset: 3px; border-radius: 3px; }
         .official-resource-hub__quick-nav { display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 12px; padding: 10px; border: 1px solid #d9c975; border-radius: 10px; background: #f7f1d9; }
@@ -268,6 +270,16 @@ export default function OfficialResourceHub() {
                           </ul>
                           <button className="official-resource-hub__print-action" type="button" onClick={() => setLargeBusinessRoleItems({})}>Clear temporary role marks / <span lang="ur" dir="rtl">عارضی کردار نشانات صاف کریں</span></button>
                           <p className="official-resource-hub__footer">These marks disappear on refresh and do not assign legal responsibility, confirm a filing requirement, or determine an FBR outcome.</p>
+                        </section>
+                      )}
+                      {isIndustrySection && (
+                        <section id={LARGE_BUSINESS_QUALIFIED_ESCALATION.id} className="official-resource-hub__industry-escalation" aria-labelledby="large-business-qualified-escalation-title">
+                          <h3 id="large-business-qualified-escalation-title">{LARGE_BUSINESS_QUALIFIED_ESCALATION.title}<br /><span lang="ur" dir="rtl">{LARGE_BUSINESS_QUALIFIED_ESCALATION.titleUrdu}</span></h3>
+                          <p className="official-resource-hub__tool-copy">{LARGE_BUSINESS_QUALIFIED_ESCALATION.description}</p>
+                          <p className="official-resource-hub__tool-copy" lang="ur" dir="rtl">{LARGE_BUSINESS_QUALIFIED_ESCALATION.descriptionUrdu}</p>
+                          <a className="official-resource-hub__link" href={LARGE_BUSINESS_QUALIFIED_ESCALATION.url} {...linkProps}>{LARGE_BUSINESS_QUALIFIED_ESCALATION.sourceLabel} ↗</a>
+                          <p className="official-resource-hub__footer">{LARGE_BUSINESS_QUALIFIED_ESCALATION.boundary}</p>
+                          <p className="official-resource-hub__footer" lang="ur" dir="rtl">{LARGE_BUSINESS_QUALIFIED_ESCALATION.boundaryUrdu}</p>
                         </section>
                       )}
                     </div>

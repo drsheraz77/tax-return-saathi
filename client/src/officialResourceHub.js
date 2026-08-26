@@ -725,6 +725,18 @@ export const LARGE_BUSINESS_INTERNAL_ROLE_CHECKLIST = [
   { id: "industry-escalation", label: "Route unclear tax treatment, registration, deadline, or filing questions to FBR or a qualified professional.", labelUrdu: "غیر واضح ٹیکس ٹریٹمنٹ، رجسٹریشن، ڈیڈ لائن یا فائلنگ سوالات ایف بی آر یا اہل پیشہ ور کو بھیجیں۔" },
 ];
 
+export const LARGE_BUSINESS_QUALIFIED_ESCALATION = {
+  id: "large-business-qualified-escalation",
+  title: "Complex industry question? Pause and seek qualified clarification",
+  titleUrdu: "پیچیدہ صنعتی سوال؟ رکیں اور اہل وضاحت حاصل کریں",
+  description: "For a complex or unclear company, industrial-operation, registration, record, filing, notice, audit, demand, court, cross-border, or time-sensitive question, use the official FBR support route and consider a suitably qualified tax or legal professional. Do not submit case details, records, figures, passwords, notices, or identity information through this site.",
+  descriptionUrdu: "کمپنی، صنعتی آپریشن، رجسٹریشن، ریکارڈ، فائلنگ، نوٹس، آڈٹ، ڈیمانڈ، عدالتی، سرحد پار یا فوری نوعیت کے پیچیدہ یا غیر واضح سوال کے لیے سرکاری ایف بی آر مدد کا راستہ استعمال کریں اور مناسب اہل ٹیکس یا قانونی پیشہ ور پر غور کریں۔ اس سائٹ کے ذریعے کیس کی تفصیلات، ریکارڈ، اعداد، پاس ورڈ، نوٹس یا شناختی معلومات جمع نہ کرائیں۔",
+  boundary: "This preparation card does not interpret law, classify an entity, decide tax treatment or a deadline, draft a response, recommend a professional, or predict an FBR outcome.",
+  boundaryUrdu: "یہ تیاری کارڈ قانون کی تشریح، ادارے کی درجہ بندی، ٹیکس ٹریٹمنٹ یا ڈیڈ لائن کا فیصلہ، جواب کی تیاری، کسی پیشہ ور کی سفارش یا ایف بی آر کے نتیجے کی پیش گوئی نہیں کرتا۔",
+  url: "https://www.fbr.gov.pk/contact-us/142252/173964",
+  sourceLabel: "Open FBR contact and support",
+};
+
 export function filterLargeBusinessIndustryResources(filterId = "all", hub = OFFICIAL_RESOURCE_HUB) {
   const selectedFilter = LARGE_BUSINESS_PREPARATION_FILTERS.some((filter) => filter.id === filterId) ? filterId : "all";
   const industrySection = hub.sections.find((section) => section.id === "large-business-industry");

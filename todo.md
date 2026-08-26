@@ -262,3 +262,5 @@
 - [x] Add a compact reviewed-date badge to the Large Business / Industry resource cards using the existing reviewed source date and explicitly retaining the manual, non-live boundary.
 - [x] Add an accessible Large Business / Industry card filter for registration, filing, and record readiness that filters static reviewed cards locally without determining requirements or persisting selections.
 - [x] Add focused model/UI tests and verify checklist/privacy boundaries, date badge, filter behaviour, Urdu/English presentation, responsive layout, full suite, and production build before publication.
+- [x] Add a bilingual qualified-escalation card for complex Large Business / Industry questions, linked only to the approved FBR support route and qualified professional guidance without requesting case details or providing individual tax or legal advice.
+- [x] Add focused coverage and verify escalation wording, official-link boundary, Urdu/English presentation, responsive layout, full suite, and production build before publication.

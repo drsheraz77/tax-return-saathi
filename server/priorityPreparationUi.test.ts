@@ -166,4 +166,13 @@ describe("priority preparation workflow wiring", () => {
     expect(resourceHub).toContain("No names, company information, records, figures, documents, or filing data are requested, stored, or sent.");
     expect(resourceHub).toContain("do not assign legal responsibility, confirm a filing requirement, or determine an FBR outcome");
   });
+
+  it("renders a bilingual qualified industry escalation card with an official support route and no-advice boundary", () => {
+    expect(resourceHub).toContain("LARGE_BUSINESS_QUALIFIED_ESCALATION");
+    expect(resourceHub).toContain("large-business-qualified-escalation");
+    expect(resourceHub).toContain("LARGE_BUSINESS_QUALIFIED_ESCALATION.title");
+    expect(resourceHub).toContain("LARGE_BUSINESS_QUALIFIED_ESCALATION.description");
+    expect(resourceHub).toContain("LARGE_BUSINESS_QUALIFIED_ESCALATION.boundary");
+    expect(resourceHub).toContain("LARGE_BUSINESS_QUALIFIED_ESCALATION.url");
+  });
 });
