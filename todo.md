@@ -205,3 +205,11 @@
 - [x] Add focused tests and verify keyboard navigation wiring, accessibility safeguards, deferred guidance loading, metadata boundaries, responsive layout, full suite, and production build before publishing this phase.
 - [x] Complete the subsequent low-data guidance, structured AI, navigation, accessibility, performance, and public-discovery batches with testing and checkpoints after each batch.
 - [x] Prepare separate security, consent, retention, legal-basis, and human-review requirements for any deferred sensitive-data or personalised-decision capability.
+- [x] Select one governed sensitive capability and define its precise user benefit, prohibited outcomes, and lower-data alternative before any data field or interface is designed.
+- [x] Select one governed sensitive capability and define its precise user benefit, prohibited outcomes, and lower-data alternative before any data field or interface is designed.
+- [x] Define the secure taxpayer-profile user benefit, prohibited fields and outcomes, and a controlled broad-category alternative that avoids identity or financial data.
+- [x] Produce a taxpayer-profile-specific data inventory, consent, retention, access-control, threat-model, source-quality, escalation, deletion, and rollback design.
+- [ ] Obtain explicit approval for the taxpayer-profile data scope and safeguards before creating any profile schema, API, storage, or UI.
+- [x] Produce a capability-specific data inventory, consent, retention, access-control, threat-model, source-quality, escalation, and rollback design.
+- [ ] Obtain explicit approval for the proposed data scope, safeguards, and narrow implementation boundary before enabling any sensitive-data collection, storage, processing, or decision support.
+- [ ] Implement, test, and publish only the explicitly approved capability with its documented privacy, security, and non-determinative controls.
