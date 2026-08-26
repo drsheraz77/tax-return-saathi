@@ -1,0 +1,35 @@
+export const TAX_KNOWLEDGE_FOUNDATION = {
+  version: "Tax Year 2026 · limited official-source foundation",
+  reviewedOn: "26 August 2026",
+  limitation: "This is a small preparation source map, not a complete tax-rule database or a determination of any person's filing position.",
+  limitationUrdu: "یہ تیاری کے لیے محدود سرکاری ذرائع کا نقشہ ہے؛ مکمل ٹیکس رول ڈیٹابیس یا کسی فرد کی فائلنگ پوزیشن کا تعین نہیں۔",
+  topics: [
+    {
+      id: "filing-workflow",
+      title: "Return filing workflow",
+      titleUrdu: "ریٹرن فائلنگ کا طریقۂ کار",
+      purpose: "Use this official page to verify IRIS access, return completion, filing, record keeping, and privacy guidance before acting.",
+      purposeUrdu: "عمل سے پہلے آئرس رسائی، ریٹرن مکمل کرنے، فائلنگ، ریکارڈ رکھنے اور رازداری کی رہنمائی کی تصدیق کے لیے یہ سرکاری صفحہ استعمال کریں۔",
+      sourceLabel: "FBR: File Income Tax Return",
+      sourceUrl: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71158",
+    },
+    {
+      id: "due-dates",
+      title: "Published due-date categories",
+      titleUrdu: "شائع شدہ ڈیڈ لائن کی اقسام",
+      purpose: "Use this official page to check the currently published filing-date category; do not infer an extension or personal deadline from this tool.",
+      purposeUrdu: "موجودہ شائع شدہ فائلنگ تاریخ کی قسم جانچنے کے لیے یہ سرکاری صفحہ استعمال کریں؛ اس ٹول سے توسیع یا اپنی ذاتی ڈیڈ لائن اخذ نہ کریں۔",
+      sourceLabel: "FBR: Income Tax due dates",
+      sourceUrl: "https://www.fbr.gov.pk/categ/income-tax-due-dates/51147/40846/81148",
+    },
+    {
+      id: "laws-index",
+      title: "Acts, ordinances and rules index",
+      titleUrdu: "ایکٹس، آرڈیننسز اور قواعد کا انڈیکس",
+      purpose: "Use this official index to locate the current primary legal material relevant to a question. Seek qualified advice for interpretation.",
+      purposeUrdu: "کسی سوال سے متعلق موجودہ بنیادی قانونی مواد تلاش کرنے کے لیے یہ سرکاری انڈیکس استعمال کریں۔ تشریح کے لیے اہل مشورہ لیں۔",
+      sourceLabel: "FBR: Acts / Ordinances / Rules",
+      sourceUrl: "https://www.fbr.gov.pk/act-rules-ordinances/131226",
+    },
+  ],
+};

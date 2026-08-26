@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { FILING_READINESS_STEPS, FREELANCER_FAQ, FREELANCER_PRE_FILING_CHECKLIST, getFilingReadinessSummary, IRIS_FAQ, OFFICIAL_RESOURCE_HUB, PRE_FILING_CHECKLIST, searchFreelancerFaq, searchIrisFaq } from "./officialResourceHub.js";
 import { trpc } from "./lib/trpc";
+import { getWealthStatementReadinessSummary, WEALTH_READINESS_OPTIONS, WEALTH_STATEMENT_PREPARATION_STEPS } from "./wealthStatementPreparation.js";
 
 const linkProps = { target: "_blank", rel: "noreferrer" };
 
@@ -13,6 +14,8 @@ export default function OfficialResourceHub() {
   const [showFreelancerChecklist, setShowFreelancerChecklist] = useState(false);
   const [checkedItems, setCheckedItems] = useState({});
   const [filingReadinessItems, setFilingReadinessItems] = useState({});
+  const [wealthPreparationOpen, setWealthPreparationOpen] = useState(false);
+  const [wealthReadinessItems, setWealthReadinessItems] = useState({});
   const [feedbackCategory, setFeedbackCategory] = useState("general");
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [feedbackNotice, setFeedbackNotice] = useState("");
@@ -22,6 +25,7 @@ export default function OfficialResourceHub() {
   const matchingFaq = useMemo(() => searchIrisFaq(faqQuery), [faqQuery]);
   const matchingFreelancerFaq = useMemo(() => searchFreelancerFaq(freelancerFaqQuery), [freelancerFaqQuery]);
   const filingReadiness = useMemo(() => getFilingReadinessSummary(filingReadinessItems), [filingReadinessItems]);
+  const wealthReadiness = useMemo(() => getWealthStatementReadinessSummary(wealthReadinessItems), [wealthReadinessItems]);
   const { data: accountUser, isLoading: isAccountLoading } = trpc.auth.me.useQuery();
   const privacyUtils = trpc.useUtils();
   const accountPrivacyQuery = trpc.privacy.summary.useQuery(undefined, { enabled: Boolean(accountUser), retry: false });
@@ -78,8 +82,8 @@ export default function OfficialResourceHub() {
         .official-resource-hub__tools { border-top: 1px solid #e5dbb3; padding-top: 13px; }
         .official-resource-hub__tool-title { margin: 0 0 6px; color: #0B3D2E; font-size: 15px; }
         .official-resource-hub__tool-copy { margin: 0 0 9px; color: #595844; font-size: 12px; }
-        .official-resource-hub__search { box-sizing: border-box; width: 100%; border: 1px solid #b7ab79; border-radius: 8px; background: #fffef9; color: #173b31; padding: 9px 10px; font: 14px/1.3 inherit; }
-        .official-resource-hub__search:focus-visible { outline: 3px solid rgba(202,165,24,.36); outline-offset: 2px; }
+        .official-resource-hub__search, .official-resource-hub__select { box-sizing: border-box; width: 100%; border: 1px solid #b7ab79; border-radius: 8px; background: #fffef9; color: #173b31; padding: 9px 10px; font: 14px/1.3 inherit; }
+        .official-resource-hub__search:focus-visible, .official-resource-hub__select:focus-visible { outline: 3px solid rgba(202,165,24,.36); outline-offset: 2px; }
         .official-resource-hub__no-results { margin: 10px 0; color: #625f4e; font-size: 12px; }
         .official-resource-hub__print-toggle, .official-resource-hub__print-action { border: 1px solid #0B3D2E; border-radius: 8px; background: #0B3D2E; color: #fffdf2; cursor: pointer; padding: 9px 11px; font: 700 13px/1.2 inherit; }
         .official-resource-hub__print-toggle:hover, .official-resource-hub__print-toggle:focus-visible, .official-resource-hub__print-action:hover, .official-resource-hub__print-action:focus-visible { background: #075c48; outline: 3px solid rgba(202,165,24,.36); outline-offset: 2px; }
@@ -326,6 +330,31 @@ export default function OfficialResourceHub() {
                 ))}
               </ul>
               <p className="official-resource-hub__footer">Marking every item does not confirm that IRIS will accept a return or that FBR agrees with an entry. Recheck current official requirements before submission.</p>
+            </section>
+            <section className="official-resource-hub__tools" aria-labelledby="wealth-preparation-title">
+              <h3 id="wealth-preparation-title" className="official-resource-hub__tool-title">Local wealth-statement preparation<br /><span lang="ur" dir="rtl">مقامی ویلتھ اسٹیٹمنٹ تیاری</span></h3>
+              <p className="official-resource-hub__tool-copy">Use broad, temporary readiness choices to organise your own records. This is not a wealth-statement calculator, reconciliation, validation, or filing form. It never asks for or stores figures, assets, liabilities, identifiers, documents, passwords, OTPs, or bank details.</p>
+              <p className="official-resource-hub__tool-copy" lang="ur" dir="rtl">اپنے ریکارڈ ترتیب دینے کے لیے صرف عمومی، عارضی تیاری کے انتخاب استعمال کریں۔ یہ ویلتھ اسٹیٹمنٹ کیلکولیٹر، مصالحت، توثیق یا فائلنگ فارم نہیں۔ یہ اعداد، اثاثے، ذمہ داریاں، شناختی معلومات، دستاویزات، پاس ورڈ، او ٹی پی یا بینک تفصیلات نہ مانگتا ہے نہ محفوظ کرتا ہے۔</p>
+              <button className="official-resource-hub__print-toggle" type="button" onClick={() => setWealthPreparationOpen((open) => !open)} aria-expanded={wealthPreparationOpen} aria-controls="wealth-preparation-board">{wealthPreparationOpen ? "Hide wealth preparation" : "Open wealth preparation board"}</button>
+              {wealthPreparationOpen && (
+                <section id="wealth-preparation-board" className="official-resource-hub__print-sheet official-resource-hub__print-sheet--visible" aria-label="Local wealth-statement preparation board">
+                  <p className="official-resource-hub__print-meta" role="status"><strong>Temporary choices: {wealthReadiness.selected}/{wealthReadiness.total} · support located {wealthReadiness.ready} · review needed {wealthReadiness.needsReview} · unsure {wealthReadiness.notSure}</strong><br /><span lang="ur" dir="rtl">عارضی انتخاب: {wealthReadiness.selected}/{wealthReadiness.total} · ثبوت دستیاب {wealthReadiness.ready} · جائزہ درکار {wealthReadiness.needsReview} · غیر یقینی {wealthReadiness.notSure}</span></p>
+                  <ul className="official-resource-hub__print-list">
+                    {WEALTH_STATEMENT_PREPARATION_STEPS.map((step) => (
+                      <li className="official-resource-hub__item" key={step.id}>
+                        <span className="official-resource-hub__item-title">{step.label}</span>
+                        <span className="official-resource-hub__item-urdu" lang="ur" dir="rtl">{step.labelUrdu}</span>
+                        <label className="sr-only" htmlFor={`wealth-${step.id}`}>Temporary preparation status for {step.label}</label>
+                        <select id={`wealth-${step.id}`} className="official-resource-hub__select" value={wealthReadinessItems[step.id] || ""} onChange={(event) => setWealthReadinessItems((current) => ({ ...current, [step.id]: event.target.value }))}>
+                          {WEALTH_READINESS_OPTIONS.map((option) => <option key={option.value || "empty"} value={option.value}>{option.label} — {option.labelUrdu}</option>)}
+                        </select>
+                      </li>
+                    ))}
+                  </ul>
+                  <button className="official-resource-hub__print-action" type="button" onClick={() => setWealthReadinessItems({})}>Clear temporary choices / <span lang="ur" dir="rtl">عارضی انتخاب صاف کریں</span></button>
+                  <p className="official-resource-hub__footer">Nothing from this board is written to browser storage, your account, or the app database. Verify current requirements through official FBR sources before acting.</p>
+                </section>
+              )}
             </section>
             <p className="official-resource-hub__footer">Before acting, confirm current requirements, fees, deadlines, and eligibility directly on the linked official portal.</p>
           </div>

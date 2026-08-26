@@ -163,3 +163,8 @@
 - [x] Add a local-only filing-readiness board with controlled preparation milestones and status, without collecting tax amounts, identifiers, documents, or credentials.
 - [x] Add a server-enforced AI answer-quality protocol requiring tax-year awareness, uncertainty flagging, source-verification guidance, and no fabricated rates, sections, or FBR outcomes.
 - [x] Add focused tests and verify the third audit batch’s privacy boundaries, source freshness, bilingual interaction, responsive layout, full suite, and production build before publication.
+- [x] Compare the supplied comprehensive audit report against the current product and deliver an evidence-based count of implemented, partial, and outstanding feature groups.
+- [x] Add a local-only wealth-statement preparation workflow that collects only controlled readiness choices, explains reconciliation conceptually, and does not store financial figures, assets, liabilities, identifiers, or documents.
+- [x] Add a versioned tax-year and official-source foundation for a small initial set of guidance topics, with clear source purpose and no claim that it is a complete tax-rule database.
+- [x] Expand the FBR-notice preparation path into a structured, non-determinative guidance workflow with safe notice-type, deadline-preparation, document-preparation, and escalation prompts.
+- [x] Add focused tests and verify the new privacy boundaries, Urdu/English interaction, responsive layout, full test suite, and production build before publication.

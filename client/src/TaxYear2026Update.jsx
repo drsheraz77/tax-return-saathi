@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { FBR_NOTICE_ARCHIVE } from "./fbrNoticeArchive.js";
+import { FBR_NOTICE_PREPARATION_TYPES, FBR_NOTICE_SUPPORT_URL, getNoticePreparationSteps } from "./fbrNoticePreparation.js";
+import { TAX_KNOWLEDGE_FOUNDATION } from "./taxKnowledgeFoundation.js";
 import { TAX_YEAR_2026_SOURCES, TAX_YEAR_2026_UPDATE } from "./taxYear2026Update.js";
 
 const linkProps = {
@@ -10,6 +12,8 @@ const linkProps = {
 export default function TaxYear2026Update() {
   const [isOpen, setIsOpen] = useState(false);
   const [archiveOpen, setArchiveOpen] = useState(false);
+  const [noticeGuideOpen, setNoticeGuideOpen] = useState(false);
+  const [noticeType, setNoticeType] = useState("unsure");
 
   return (
     <aside className="tax-year-update" aria-label="Verified Tax Year 2026 filing updates">
@@ -46,6 +50,15 @@ export default function TaxYear2026Update() {
         .tax-year-update__archive-title { display: block; margin-top: 2px; color: #173b31; font-size: 13px; font-weight: 700; }
         .tax-year-update__archive-summary { margin: 3px 0 5px !important; color: #454d40; font-size: 12px; }
         .tax-year-update__archive-link { color: #075c48; font-size: 12px; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+        .tax-year-update__source-map, .tax-year-update__notice-guide { margin-top: 12px; border: 1px solid #e4d9a9; border-radius: 10px; background: #fffef9; padding: 11px; }
+        .tax-year-update__source-heading, .tax-year-update__notice-heading { margin: 0 0 5px; color: #0B3D2E; font-size: 14px; }
+        .tax-year-update__source-copy, .tax-year-update__notice-copy { margin: 0 0 8px; color: #5d5a46; font-size: 12px; }
+        .tax-year-update__source-list, .tax-year-update__notice-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+        .tax-year-update__source-item, .tax-year-update__notice-item { border-left: 3px solid #caa518; padding-left: 9px; }
+        .tax-year-update__source-title, .tax-year-update__notice-step { display: block; color: #173b31; font-size: 12px; font-weight: 700; }
+        .tax-year-update__source-purpose { margin: 3px 0 5px; color: #4d513c; font-size: 12px; }
+        .tax-year-update__select { box-sizing: border-box; width: 100%; margin: 4px 0 10px; border: 1px solid #b7ab79; border-radius: 8px; background: #fffef9; color: #173b31; padding: 8px; font: 13px/1.3 inherit; }
+        .tax-year-update__select:focus-visible { outline: 3px solid rgba(202,165,24,.36); outline-offset: 2px; }
         @media (max-width: 520px) { .tax-year-update { right: 12px; bottom: 12px; } .tax-year-update__facts { grid-template-columns: 1fr; } .tax-year-update__fact--wide { grid-column: auto; } }
       `}</style>
 
@@ -68,6 +81,20 @@ export default function TaxYear2026Update() {
               <div className="tax-year-update__fact tax-year-update__fact--wide"><span className="tax-year-update__label">Special tax-year companies</span><span className="tax-year-update__value">Due {TAX_YEAR_2026_UPDATE.specialTaxYearCompanyDueDate}</span></div>
             </div>
             <p className="tax-year-update__note">These are the published due dates, not a statement that any extension has been granted. Check FBR’s current notice before filing and keep your supporting records.</p>
+            <section className="tax-year-update__source-map" aria-label="Limited Tax Year 2026 official-source foundation">
+              <h3 className="tax-year-update__source-heading">{TAX_KNOWLEDGE_FOUNDATION.version}<br /><span lang="ur" dir="rtl">ٹیکس سال 2026 سرکاری ذرائع کا محدود نقشہ</span></h3>
+              <p className="tax-year-update__source-copy">Reviewed {TAX_KNOWLEDGE_FOUNDATION.reviewedOn}. {TAX_KNOWLEDGE_FOUNDATION.limitation}</p>
+              <p className="tax-year-update__source-copy" lang="ur" dir="rtl">جائزہ: {TAX_KNOWLEDGE_FOUNDATION.reviewedOn}۔ {TAX_KNOWLEDGE_FOUNDATION.limitationUrdu}</p>
+              <ul className="tax-year-update__source-list">
+                {TAX_KNOWLEDGE_FOUNDATION.topics.map((topic) => (
+                  <li className="tax-year-update__source-item" key={topic.id}>
+                    <span className="tax-year-update__source-title">{topic.title}<br /><span lang="ur" dir="rtl">{topic.titleUrdu}</span></span>
+                    <p className="tax-year-update__source-purpose">{topic.purpose}<br /><span lang="ur" dir="rtl">{topic.purposeUrdu}</span></p>
+                    <a className="tax-year-update__archive-link" href={topic.sourceUrl} {...linkProps}>{topic.sourceLabel} ↗</a>
+                  </li>
+                ))}
+              </ul>
+            </section>
             <div className="tax-year-update__links">
               <a href={TAX_YEAR_2026_UPDATE.irisUrl} {...linkProps}>Open FBR IRIS</a>
               <a href={TAX_YEAR_2026_SOURCES.fbrDueDates} {...linkProps}>FBR due dates</a>
@@ -75,6 +102,26 @@ export default function TaxYear2026Update() {
               <a href={TAX_YEAR_2026_SOURCES.fbrSocialAnnouncement} {...linkProps}>FBR public announcement</a>
               <a href={TAX_YEAR_2026_SOURCES.newspaperCoverage} {...linkProps}>Newspaper coverage</a>
             </div>
+            <button className="tax-year-update__archive-toggle" type="button" onClick={() => setNoticeGuideOpen((open) => !open)} aria-expanded={noticeGuideOpen} aria-controls="fbr-notice-preparation-guide">
+              {noticeGuideOpen ? "Hide" : "Open"} FBR notice preparation guide · <span lang="ur" dir="rtl">ایف بی آر نوٹس تیاری گائیڈ</span>
+            </button>
+            {noticeGuideOpen && (
+              <section id="fbr-notice-preparation-guide" className="tax-year-update__notice-guide" aria-label="FBR notice preparation guide">
+                <h3 className="tax-year-update__notice-heading">Prepare safely; do not upload or enter notice details here.<br /><span lang="ur" dir="rtl">محفوظ تیاری کریں؛ نوٹس کی تفصیل یہاں اپ لوڈ یا درج نہ کریں۔</span></h3>
+                <p className="tax-year-update__notice-copy">Select only a broad, temporary category. This guide does not identify a notice, calculate a deadline, draft a response, or determine the correct outcome.</p>
+                <label htmlFor="fbr-notice-type">Broad notice category / <span lang="ur" dir="rtl">نوٹس کی عمومی قسم</span></label>
+                <select id="fbr-notice-type" className="tax-year-update__select" value={noticeType} onChange={(event) => setNoticeType(event.target.value)}>
+                  {FBR_NOTICE_PREPARATION_TYPES.map((type) => <option key={type.value} value={type.value}>{type.label} — {type.labelUrdu}</option>)}
+                </select>
+                <ol className="tax-year-update__notice-list">
+                  {getNoticePreparationSteps(noticeType).map((step) => (
+                    <li className="tax-year-update__notice-item" key={step.id}><span className="tax-year-update__notice-step">{step.label}<br /><span lang="ur" dir="rtl">{step.labelUrdu}</span></span></li>
+                  ))}
+                </ol>
+                <p className="tax-year-update__note">For an unclear notice, response, or deadline, verify directly through the official channel or seek qualified advice.</p>
+                <a className="tax-year-update__archive-link" href={FBR_NOTICE_SUPPORT_URL} {...linkProps}>Open FBR contact and support route ↗</a>
+              </section>
+            )}
             <button className="tax-year-update__archive-toggle" type="button" onClick={() => setArchiveOpen((open) => !open)} aria-expanded={archiveOpen} aria-controls="fbr-notice-archive">
               {archiveOpen ? "Hide" : "View"} dated FBR notice archive · <span lang="ur" dir="rtl">ایف بی آر اعلانات</span>
             </button>
