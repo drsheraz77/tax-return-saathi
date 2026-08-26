@@ -5,6 +5,7 @@ import {
   IRIS_FAQ,
   FREELANCER_FAQ,
   FREELANCER_PRE_FILING_CHECKLIST,
+  filterLargeBusinessIndustryResources,
   FILING_READINESS_STEPS,
   COMPLEX_SITUATION_PREPARATION_PATHS,
   getFilingReadinessSummary,
@@ -18,6 +19,8 @@ import {
   RETURN_WEALTH_RELATIONSHIP_STEPS,
   getSourceAwareQuestionPlan,
   IRIS_NAVIGATION_WALKTHROUGH,
+  LARGE_BUSINESS_INTERNAL_ROLE_CHECKLIST,
+  LARGE_BUSINESS_PREPARATION_FILTERS,
   SOURCE_AWARE_QUESTION_PLANS,
   searchFreelancerFaq,
   searchIrisFaq,
@@ -56,6 +59,20 @@ describe("official resource hub", () => {
     ]);
     expect(industrySection?.introduction).toMatch(/do not decide registration, tax treatment, sales-tax status, a return type, a deadline, or what FBR will accept/i);
     expect(industrySection?.resources.every((resource) => new URL(resource.url).hostname.endsWith("fbr.gov.pk") && resource.titleUrdu && resource.descriptionUrdu)).toBe(true);
+  });
+
+  it("provides a local industry preparation filter, dated resource metadata, and a broad internal-role checklist without business-data intake", () => {
+    const industrySection = OFFICIAL_RESOURCE_HUB.sections.find((section) => section.id === "large-business-industry");
+    expect(LARGE_BUSINESS_PREPARATION_FILTERS.map((filter) => filter.id)).toEqual(["all", "registration", "filing", "record-readiness"]);
+    expect(industrySection?.resources.every((resource) => ["registration", "filing", "record-readiness"].includes(resource.preparationCategory))).toBe(true);
+    expect(filterLargeBusinessIndustryResources("all")).toHaveLength(5);
+    expect(filterLargeBusinessIndustryResources("registration").map((resource) => resource.id)).toEqual(["fbr-company-aop-enrolment", "fbr-industry-sales-tax-registration"]);
+    expect(filterLargeBusinessIndustryResources("filing")).toHaveLength(2);
+    expect(filterLargeBusinessIndustryResources("record-readiness").map((resource) => resource.id)).toEqual(["fbr-industry-record-keeping"]);
+    expect(filterLargeBusinessIndustryResources("unexpected")).toHaveLength(5);
+    expect(LARGE_BUSINESS_INTERNAL_ROLE_CHECKLIST).toHaveLength(6);
+    expect(LARGE_BUSINESS_INTERNAL_ROLE_CHECKLIST.every((item) => item.id && item.label && item.labelUrdu)).toBe(true);
+    expect(LARGE_BUSINESS_INTERNAL_ROLE_CHECKLIST.map((item) => item.label).join(" ")).toMatch(/do not enter a name|do not upload or paste|not a legal deadline|qualified professional/i);
   });
 
   it("keeps fixed-term accounts, stocks, ETFs, and bonds in a distinct neutral education section", () => {

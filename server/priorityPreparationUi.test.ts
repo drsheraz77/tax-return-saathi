@@ -155,4 +155,15 @@ describe("priority preparation workflow wiring", () => {
     expect(resourceHub).toContain("No email or account details are requested");
     expect(resourceHub).toContain("scheduled for deletion after 30 days");
   });
+
+  it("renders local-only industry preparation controls with a per-card manual review date", () => {
+    expect(resourceHub).toContain("large-business-resource-filter");
+    expect(resourceHub).toContain("LARGE_BUSINESS_PREPARATION_FILTERS");
+    expect(resourceHub).toContain("This temporary filter is not saved and does not decide whether a business must register or file.");
+    expect(resourceHub).toContain("Industry source review · {categoryReview.reviewedOn} · manual, not live");
+    expect(resourceHub).toContain("large-business-internal-role-checklist");
+    expect(resourceHub).toContain("LARGE_BUSINESS_INTERNAL_ROLE_CHECKLIST");
+    expect(resourceHub).toContain("No names, company information, records, figures, documents, or filing data are requested, stored, or sent.");
+    expect(resourceHub).toContain("do not assign legal responsibility, confirm a filing requirement, or determine an FBR outcome");
+  });
 });

@@ -134,6 +134,7 @@ export const OFFICIAL_RESOURCE_HUB = {
           descriptionUrdu: "کسی اندرونی فالو اپ کی ذمہ داری دینے سے پہلے کمپنی اور اے او پی معلومات کے لیے ایف بی آر کا سرکاری ای انرولمنٹ اور رجسٹریشن ابتدائی صفحہ دیکھیں۔ موجودہ سرکاری راستہ براہِ راست ایف بی آر سے تصدیق کریں۔",
           url: "https://www.fbr.gov.pk/categ/register-income-tax/51147/30846/71148",
           sourceLabel: "Open FBR income-tax registration guidance",
+          preparationCategory: "registration",
         },
         {
           id: "fbr-industry-income-tax-filing",
@@ -143,6 +144,7 @@ export const OFFICIAL_RESOURCE_HUB = {
           descriptionUrdu: "کسی مجاز شخص کے سرکاری پورٹل استعمال کرنے سے پہلے موجودہ سرکاری آئرس ورک فلو موضوعات دیکھنے کے لیے ایف بی آر فائلنگ رہنمائی استعمال کریں۔ یہ لنک درست ریٹرن کی شناخت یا فائلنگ ذمہ داری کی تصدیق نہیں کرتا۔",
           url: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71158",
           sourceLabel: "Open FBR income-tax filing guidance",
+          preparationCategory: "filing",
         },
         {
           id: "fbr-industry-record-keeping",
@@ -152,6 +154,7 @@ export const OFFICIAL_RESOURCE_HUB = {
           descriptionUrdu: "نجی اندرونی ریکارڈ تیاری کے سوالات ترتیب دینے کے لیے ایف بی آر کا ریکارڈ رکھنے کا ذریعہ دیکھیں۔ ریکارڈ اس سائٹ سے باہر رکھیں اور جہاں سرکاری مواد کی تشریح درکار ہو اہل وضاحت لیں۔",
           url: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71158",
           sourceLabel: "Open FBR filing and record-preparation guidance",
+          preparationCategory: "record-readiness",
         },
         {
           id: "fbr-industry-sales-tax-registration",
@@ -161,6 +164,7 @@ export const OFFICIAL_RESOURCE_HUB = {
           descriptionUrdu: "کسی غیر سرکاری چیک لسٹ پر انحصار سے پہلے ایف بی آر کا سرکاری سیلز ٹیکس رجسٹریشن ابتدائی صفحہ دیکھیں۔ یہ فیصلہ نہیں کرتا کہ کسی کاروبار کو رجسٹر ہونا ضروری ہے یا نہیں۔",
           url: "https://www.fbr.gov.pk/categ/register-sales-tax/51148/50848/101150",
           sourceLabel: "Open FBR sales-tax registration guidance",
+          preparationCategory: "registration",
         },
         {
           id: "fbr-industry-sales-tax-filing",
@@ -170,6 +174,7 @@ export const OFFICIAL_RESOURCE_HUB = {
           descriptionUrdu: "رجسٹرڈ شخص کے ورک فلو کے موجودہ پورٹل راستے کا جائزہ لینے کے لیے ایف بی آر کا سرکاری سیلز ٹیکس فائلنگ ذریعہ استعمال کریں۔ یہ ٹیکس دہندہ کا اسٹیٹس، حساب، ریٹرن یا فائلنگ کا وقت شناخت نہیں کرتا۔",
           url: "https://www.fbr.gov.pk/categ/file-sales-tax-return/51148/50849/101158",
           sourceLabel: "Open FBR sales-tax filing guidance",
+          preparationCategory: "filing",
         },
       ],
     },
@@ -703,6 +708,29 @@ export const FREELANCER_PRE_FILING_CHECKLIST = [
   { id: "freelancer-copy", label: "Keep a copy of the submitted return and the supporting records you relied on.", labelUrdu: "جمع شدہ ریٹرن اور ان معاون ریکارڈ کی نقل محفوظ رکھیں جن پر آپ نے انحصار کیا۔" },
   { id: "freelancer-guidance", label: "Keep FBR filing help available to confirm current IRIS steps, requirements, and record-keeping guidance.", labelUrdu: "موجودہ آئرس مراحل، شرائط اور ریکارڈ رکھنے کی رہنمائی کی تصدیق کے لیے ایف بی آر فائلنگ مدد دستیاب رکھیں۔" },
 ];
+
+export const LARGE_BUSINESS_PREPARATION_FILTERS = [
+  { id: "all", label: "All starting points", labelUrdu: "تمام ابتدائی ذرائع" },
+  { id: "registration", label: "Registration", labelUrdu: "رجسٹریشن" },
+  { id: "filing", label: "Filing", labelUrdu: "فائلنگ" },
+  { id: "record-readiness", label: "Record readiness", labelUrdu: "ریکارڈ تیاری" },
+];
+
+export const LARGE_BUSINESS_INTERNAL_ROLE_CHECKLIST = [
+  { id: "industry-coordinator", label: "Identify a broad internal preparation coordinator; do not enter a name or contact details here.", labelUrdu: "ایک عمومی اندرونی تیاری رابطہ کار شناخت کریں؛ یہاں نام یا رابطہ تفصیلات درج نہ کریں۔" },
+  { id: "industry-role-map", label: "Map broad internal preparation roles for records, official-portal access, and management review without deciding tax responsibility.", labelUrdu: "ٹیکس ذمہ داری طے کیے بغیر ریکارڈ، سرکاری پورٹل رسائی اور انتظامی جائزے کے عمومی اندرونی کردار طے کریں۔" },
+  { id: "industry-official-links", label: "Keep the relevant official FBR starting links available for the team to recheck before acting.", labelUrdu: "اقدام سے پہلے ٹیم کے دوبارہ جائزے کے لیے متعلقہ سرکاری ایف بی آر ابتدائی لنکس دستیاب رکھیں۔" },
+  { id: "industry-record-location", label: "Agree where the team will keep its own supporting records outside this site; do not upload or paste them here.", labelUrdu: "طے کریں کہ ٹیم اپنے معاون ریکارڈ اس سائٹ سے باہر کہاں رکھے گی؛ انہیں یہاں اپ لوڈ یا پیسٹ نہ کریں۔" },
+  { id: "industry-working-date", label: "Set an internal working date for preparation only; it is not a legal deadline or a filing instruction.", labelUrdu: "صرف تیاری کے لیے اندرونی کام کی تاریخ رکھیں؛ یہ قانونی ڈیڈ لائن یا فائلنگ ہدایت نہیں ہے۔" },
+  { id: "industry-escalation", label: "Route unclear tax treatment, registration, deadline, or filing questions to FBR or a qualified professional.", labelUrdu: "غیر واضح ٹیکس ٹریٹمنٹ، رجسٹریشن، ڈیڈ لائن یا فائلنگ سوالات ایف بی آر یا اہل پیشہ ور کو بھیجیں۔" },
+];
+
+export function filterLargeBusinessIndustryResources(filterId = "all", hub = OFFICIAL_RESOURCE_HUB) {
+  const selectedFilter = LARGE_BUSINESS_PREPARATION_FILTERS.some((filter) => filter.id === filterId) ? filterId : "all";
+  const industrySection = hub.sections.find((section) => section.id === "large-business-industry");
+  const resources = industrySection?.resources || [];
+  return selectedFilter === "all" ? resources : resources.filter((resource) => resource.preparationCategory === selectedFilter);
+}
 
 const OFFICIAL_HOSTS = new Set([
   "www.secp.gov.pk",

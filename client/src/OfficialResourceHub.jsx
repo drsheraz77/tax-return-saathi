@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { AI_ANSWER_EVALUATION_STEPS, CALCULATION_EXPLANATION_MAP, COMPLEX_SITUATION_PREPARATION_PATHS, FILING_READINESS_STEPS, FREELANCER_FAQ, FREELANCER_PRE_FILING_CHECKLIST, getFilingReadinessSummary, getOfficialResourceCategoryReview, getPreSubmissionErrorPreventionSummary, getSourceAwareQuestionPlan, getTemporaryGuidanceSummary, IRIS_FAQ, IRIS_NAVIGATION_WALKTHROUGH, OFFICIAL_RESOURCE_HUB, POST_SUBMISSION_CONTINUITY_STEPS, PRE_FILING_CHECKLIST, PRE_SUBMISSION_ERROR_PREVENTION_STEPS, RETURN_WEALTH_RELATIONSHIP_STEPS, searchFreelancerFaq, searchIrisFaq, SOURCE_AWARE_QUESTION_PLANS } from "./officialResourceHub.js";
+import { AI_ANSWER_EVALUATION_STEPS, CALCULATION_EXPLANATION_MAP, COMPLEX_SITUATION_PREPARATION_PATHS, FILING_READINESS_STEPS, filterLargeBusinessIndustryResources, FREELANCER_FAQ, FREELANCER_PRE_FILING_CHECKLIST, getFilingReadinessSummary, getOfficialResourceCategoryReview, getPreSubmissionErrorPreventionSummary, getSourceAwareQuestionPlan, getTemporaryGuidanceSummary, IRIS_FAQ, IRIS_NAVIGATION_WALKTHROUGH, LARGE_BUSINESS_INTERNAL_ROLE_CHECKLIST, LARGE_BUSINESS_PREPARATION_FILTERS, OFFICIAL_RESOURCE_HUB, POST_SUBMISSION_CONTINUITY_STEPS, PRE_FILING_CHECKLIST, PRE_SUBMISSION_ERROR_PREVENTION_STEPS, RETURN_WEALTH_RELATIONSHIP_STEPS, searchFreelancerFaq, searchIrisFaq, SOURCE_AWARE_QUESTION_PLANS } from "./officialResourceHub.js";
 import { trpc } from "./lib/trpc";
 import { getWealthReadinessPrintRows, getWealthStatementReadinessSummary, WEALTH_READINESS_OPTIONS, WEALTH_STATEMENT_PREPARATION_STEPS } from "./wealthStatementPreparation.js";
 import { buildNonSensitiveReadinessSummary, getPreFilingTimelineSummary, PRE_FILING_TIMELINE_STEPS, TIMELINE_STATUS_OPTIONS } from "./preFilingTimelinePlanner.js";
@@ -14,6 +14,8 @@ export default function OfficialResourceHub() {
   const [showChecklist, setShowChecklist] = useState(false);
   const [showFreelancerChecklist, setShowFreelancerChecklist] = useState(false);
   const [checkedItems, setCheckedItems] = useState({});
+  const [largeBusinessRoleItems, setLargeBusinessRoleItems] = useState({});
+  const [largeBusinessFilter, setLargeBusinessFilter] = useState("all");
   const [irisWalkthroughOpen, setIrisWalkthroughOpen] = useState(false);
   const [irisWalkthroughItems, setIrisWalkthroughItems] = useState({});
   const [preSubmissionChecklistOpen, setPreSubmissionChecklistOpen] = useState(false);
@@ -41,6 +43,7 @@ export default function OfficialResourceHub() {
   const [privacyNotice, setPrivacyNotice] = useState("");
   const matchingFaq = useMemo(() => searchIrisFaq(faqQuery), [faqQuery]);
   const matchingFreelancerFaq = useMemo(() => searchFreelancerFaq(freelancerFaqQuery), [freelancerFaqQuery]);
+  const filteredLargeBusinessResources = useMemo(() => filterLargeBusinessIndustryResources(largeBusinessFilter), [largeBusinessFilter]);
   const filingReadiness = useMemo(() => getFilingReadinessSummary(filingReadinessItems), [filingReadinessItems]);
   const preSubmissionReadiness = useMemo(() => getPreSubmissionErrorPreventionSummary(preSubmissionItems), [preSubmissionItems]);
   const complexSituationReadiness = useMemo(() => getTemporaryGuidanceSummary(complexSituationItems, COMPLEX_SITUATION_PREPARATION_PATHS), [complexSituationItems]);
@@ -128,6 +131,12 @@ export default function OfficialResourceHub() {
         .official-resource-hub__item-urdu, .official-resource-hub__faq-urdu { display: block; margin-top: 2px; color: #4d513c; font-size: 13px; }
         .official-resource-hub__item-description, .official-resource-hub__faq-answer { margin: 6px 0; color: #4d513c; font-size: 12px; }
         .official-resource-hub__item-description--urdu { margin-top: -2px; }
+        .official-resource-hub__review-badge { display: inline-block; margin: 2px 0 5px; border: 1px solid #c8b264; border-radius: 999px; background: #f7f1d9; color: #4d513c; padding: 4px 7px; font-size: 10px; font-weight: 700; line-height: 1.3; }
+        .official-resource-hub__industry-filter { margin: 10px 0; border: 1px solid #d9c975; border-radius: 10px; background: #f7f1d9; padding: 10px; }
+        .official-resource-hub__industry-filter label { display: block; color: #173b31; font-size: 12px; font-weight: 700; }
+        .official-resource-hub__industry-filter-note { margin: 6px 0 0; color: #625f4e; font-size: 11px; }
+        .official-resource-hub__industry-checklist { margin-top: 12px; border: 1px solid #d9c975; border-radius: 10px; background: #fffef9; padding: 11px; }
+        .official-resource-hub__industry-checklist h3 { margin: 0 0 6px; color: #0B3D2E; font-size: 14px; }
         .official-resource-hub__link { color: #075c48; font-size: 12px; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
         .official-resource-hub__link:focus-visible { outline: 3px solid rgba(202,165,24,.48); outline-offset: 3px; border-radius: 3px; }
         .official-resource-hub__quick-nav { display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 12px; padding: 10px; border: 1px solid #d9c975; border-radius: 10px; background: #f7f1d9; }
@@ -206,8 +215,10 @@ export default function OfficialResourceHub() {
             </section>
             {OFFICIAL_RESOURCE_HUB.sections.map((section) => {
               const isExpanded = expandedSection === section.id;
+              const isIndustrySection = section.id === "large-business-industry";
               const panelId = `official-resource-${section.id}-content`;
               const categoryReview = getOfficialResourceCategoryReview(section);
+              const visibleResources = isIndustrySection ? filteredLargeBusinessResources : section.resources;
               return (
                 <section id={`official-resource-${section.id}`} className="official-resource-hub__accordion" key={section.id}>
                   <button className="official-resource-hub__section-toggle" type="button" onClick={() => setExpandedSection((current) => current === section.id ? "" : section.id)} aria-expanded={isExpanded} aria-controls={panelId}>
@@ -219,17 +230,46 @@ export default function OfficialResourceHub() {
                       <p className="official-resource-hub__intro">{section.introduction}</p>
                       <p className="official-resource-hub__intro" lang="ur" dir="rtl">{section.introductionUrdu}</p>
                       <p className="official-resource-hub__print-meta"><strong>Category source review · {categoryReview.reviewedOn}</strong><br />{categoryReview.scope}<br /><span lang="ur" dir="rtl">زمرہ وار ماخذ جائزہ · {categoryReview.reviewedOn}<br />{categoryReview.scopeUrdu}</span></p>
+                      {isIndustrySection && (
+                        <div className="official-resource-hub__industry-filter">
+                          <label htmlFor="large-business-resource-filter">Filter industry cards locally / <span lang="ur" dir="rtl">صنعتی کارڈز مقامی طور پر فلٹر کریں</span></label>
+                          <select id="large-business-resource-filter" className="official-resource-hub__select" value={largeBusinessFilter} onChange={(event) => setLargeBusinessFilter(event.target.value)}>
+                            {LARGE_BUSINESS_PREPARATION_FILTERS.map((filter) => <option key={filter.id} value={filter.id}>{filter.label} — {filter.labelUrdu}</option>)}
+                          </select>
+                          <p className="official-resource-hub__industry-filter-note">This temporary filter is not saved and does not decide whether a business must register or file. <span lang="ur" dir="rtl">یہ عارضی فلٹر محفوظ نہیں ہوتا اور یہ فیصلہ نہیں کرتا کہ کاروبار کو رجسٹر یا فائل کرنا ہے۔</span></p>
+                        </div>
+                      )}
                       <ul className="official-resource-hub__list">
-                        {section.resources.map((resource) => (
+                        {visibleResources.map((resource) => (
                           <li className="official-resource-hub__item" key={resource.id}>
                             <span className="official-resource-hub__item-title">{resource.title}</span>
                             <span className="official-resource-hub__item-urdu" lang="ur" dir="rtl">{resource.titleUrdu}</span>
+                            {isIndustrySection && <span className="official-resource-hub__review-badge">Industry source review · {categoryReview.reviewedOn} · manual, not live<br /><span lang="ur" dir="rtl">صنعتی ماخذ جائزہ · {categoryReview.reviewedOn} · دستی، براہِ راست نہیں</span></span>}
                             <p className="official-resource-hub__item-description">{resource.description}</p>
                             <p className="official-resource-hub__item-description official-resource-hub__item-description--urdu" lang="ur" dir="rtl">{resource.descriptionUrdu}</p>
                             <a className="official-resource-hub__link" href={resource.url} {...linkProps}>{resource.sourceLabel} ↗</a>
                           </li>
                         ))}
                       </ul>
+                      {isIndustrySection && (
+                        <section id="large-business-internal-role-checklist" className="official-resource-hub__industry-checklist" aria-labelledby="large-business-internal-role-checklist-title">
+                          <h3 id="large-business-internal-role-checklist-title">Internal role preparation checklist<br /><span lang="ur" dir="rtl">اندرونی کردار تیاری چیک لسٹ</span></h3>
+                          <p className="official-resource-hub__tool-copy">Temporary on-screen prompts for broad team preparation only. No names, company information, records, figures, documents, or filing data are requested, stored, or sent.</p>
+                          <p className="official-resource-hub__tool-copy" lang="ur" dir="rtl">یہ صرف عمومی ٹیم تیاری کے عارضی آن اسکرین نکات ہیں۔ نام، کمپنی معلومات، ریکارڈ، اعداد، دستاویزات یا فائلنگ ڈیٹا نہ مانگا، محفوظ کیا یا بھیجا جاتا ہے۔</p>
+                          <ul className="official-resource-hub__print-list">
+                            {LARGE_BUSINESS_INTERNAL_ROLE_CHECKLIST.map((item) => (
+                              <li key={item.id}>
+                                <label className="official-resource-hub__check-label">
+                                  <input type="checkbox" checked={Boolean(largeBusinessRoleItems[item.id])} onChange={() => setLargeBusinessRoleItems((current) => ({ ...current, [item.id]: !current[item.id] }))} />
+                                  <span>{item.label}<br /><span lang="ur" dir="rtl">{item.labelUrdu}</span></span>
+                                </label>
+                              </li>
+                            ))}
+                          </ul>
+                          <button className="official-resource-hub__print-action" type="button" onClick={() => setLargeBusinessRoleItems({})}>Clear temporary role marks / <span lang="ur" dir="rtl">عارضی کردار نشانات صاف کریں</span></button>
+                          <p className="official-resource-hub__footer">These marks disappear on refresh and do not assign legal responsibility, confirm a filing requirement, or determine an FBR outcome.</p>
+                        </section>
+                      )}
                     </div>
                   )}
                 </section>

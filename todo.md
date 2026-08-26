@@ -258,3 +258,7 @@
 - [x] Separate the current freelancer-and-business resource/path category into distinct Urdu/English Freelancer and Large Business / Industry categories without changing existing tax rules or profile fields.
 - [x] Add bounded, official-source-linked large-business and industry tax-preparation guidance that covers process and record-readiness themes only, not rates, eligibility, tax treatment, personal filing decisions, or FBR outcomes.
 - [x] Add focused model/UI coverage and verify official-source scope, Urdu/English presentation, responsive layout, full suite, and production build before publication.
+- [x] Add a local-only Urdu/English internal-role preparation checklist for the Large Business / Industry category that uses broad responsibility prompts only and does not collect team, company, tax, or filing data.
+- [x] Add a compact reviewed-date badge to the Large Business / Industry resource cards using the existing reviewed source date and explicitly retaining the manual, non-live boundary.
+- [x] Add an accessible Large Business / Industry card filter for registration, filing, and record readiness that filters static reviewed cards locally without determining requirements or persisting selections.
+- [x] Add focused model/UI tests and verify checklist/privacy boundaries, date badge, filter behaviour, Urdu/English presentation, responsive layout, full suite, and production build before publication.
