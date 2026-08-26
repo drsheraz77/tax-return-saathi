@@ -25,4 +25,12 @@ describe("priority preparation workflow wiring", () => {
     expect(resourceHub).toContain("Print temporary summary");
     expect(resourceHub).toContain("Category source review");
   });
+
+  it("renders the temporary pre-filing timeline and private readiness download without a storage claim", () => {
+    expect(resourceHub).toContain("PRE_FILING_TIMELINE_STEPS");
+    expect(resourceHub).toContain("pre-filing-timeline-title");
+    expect(resourceHub).toContain("downloadNonSensitiveReadinessSummary");
+    expect(resourceHub).toContain("tax-return-saathi-readiness-summary.txt");
+    expect(resourceHub).toContain("contains no figures, names, CNICs, account details, documents, or credentials");
+  });
 });

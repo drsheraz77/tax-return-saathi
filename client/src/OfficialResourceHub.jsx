@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { FILING_READINESS_STEPS, FREELANCER_FAQ, FREELANCER_PRE_FILING_CHECKLIST, getFilingReadinessSummary, getOfficialResourceCategoryReview, IRIS_FAQ, OFFICIAL_RESOURCE_HUB, PRE_FILING_CHECKLIST, searchFreelancerFaq, searchIrisFaq } from "./officialResourceHub.js";
 import { trpc } from "./lib/trpc";
 import { getWealthReadinessPrintRows, getWealthStatementReadinessSummary, WEALTH_READINESS_OPTIONS, WEALTH_STATEMENT_PREPARATION_STEPS } from "./wealthStatementPreparation.js";
+import { buildNonSensitiveReadinessSummary, getPreFilingTimelineSummary, PRE_FILING_TIMELINE_STEPS, TIMELINE_STATUS_OPTIONS } from "./preFilingTimelinePlanner.js";
 
 const linkProps = { target: "_blank", rel: "noreferrer" };
 
@@ -16,6 +17,7 @@ export default function OfficialResourceHub() {
   const [filingReadinessItems, setFilingReadinessItems] = useState({});
   const [wealthPreparationOpen, setWealthPreparationOpen] = useState(false);
   const [wealthReadinessItems, setWealthReadinessItems] = useState({});
+  const [timelineItems, setTimelineItems] = useState({});
   const [feedbackCategory, setFeedbackCategory] = useState("general");
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [feedbackNotice, setFeedbackNotice] = useState("");
@@ -26,6 +28,7 @@ export default function OfficialResourceHub() {
   const matchingFreelancerFaq = useMemo(() => searchFreelancerFaq(freelancerFaqQuery), [freelancerFaqQuery]);
   const filingReadiness = useMemo(() => getFilingReadinessSummary(filingReadinessItems), [filingReadinessItems]);
   const wealthReadiness = useMemo(() => getWealthStatementReadinessSummary(wealthReadinessItems), [wealthReadinessItems]);
+  const timelineReadiness = useMemo(() => getPreFilingTimelineSummary(timelineItems), [timelineItems]);
   const { data: accountUser, isLoading: isAccountLoading } = trpc.auth.me.useQuery();
   const privacyUtils = trpc.useUtils();
   const accountPrivacyQuery = trpc.privacy.summary.useQuery(undefined, { enabled: Boolean(accountUser), retry: false });
@@ -49,6 +52,22 @@ export default function OfficialResourceHub() {
 
   function toggleChecklistItem(itemId) {
     setCheckedItems((current) => ({ ...current, [itemId]: !current[itemId] }));
+  }
+
+  function downloadNonSensitiveReadinessSummary() {
+    const content = buildNonSensitiveReadinessSummary({
+      timelineStatus: timelineItems,
+      wealthReadiness: wealthReadinessItems,
+    });
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "tax-return-saathi-readiness-summary.txt";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
   }
 
   return (
@@ -365,6 +384,28 @@ export default function OfficialResourceHub() {
                   <p className="official-resource-hub__footer">Nothing from this board is written to browser storage, your account, or the app database. Verify current requirements through official FBR sources before acting.</p>
                 </section>
               )}
+
+              <section className="official-resource-hub__tools" aria-labelledby="pre-filing-timeline-title">
+                <h3 className="official-resource-hub__tool-title" id="pre-filing-timeline-title">Pre-filing timeline planner · <span lang="ur" dir="rtl">فائلنگ سے پہلے ٹائم لائن پلانر</span></h3>
+                <p className="official-resource-hub__tool-copy">Mark only a temporary preparation status for each stage. This planner does not calculate legal deadlines, collect tax information, or decide whether you are ready to file. <span lang="ur" dir="rtl">ہر مرحلے کے لیے صرف عارضی تیاری کی حالت منتخب کریں۔ یہ پلانر قانونی آخری تاریخ نہیں نکالتا، ٹیکس معلومات جمع نہیں کرتا، اور فائلنگ کی تیاری کا فیصلہ نہیں کرتا۔</span></p>
+                <p className="official-resource-hub__print-meta">{timelineReadiness.readyToVerify} ready to verify · {timelineReadiness.inProgress} in progress · {timelineReadiness.notStarted} not started · {timelineReadiness.unmarked} not marked</p>
+                <ul className="official-resource-hub__print-list">
+                  {PRE_FILING_TIMELINE_STEPS.map((step) => (
+                    <li className="official-resource-hub__item" key={step.id}>
+                      <strong className="official-resource-hub__item-title">{step.label}</strong>
+                      <span className="official-resource-hub__item-urdu" lang="ur" dir="rtl">{step.urdu}</span>
+                      <p className="official-resource-hub__item-description">{step.boundary}</p>
+                      <select className="official-resource-hub__select" aria-label={`${step.label} temporary status`} value={timelineItems[step.id] || ""} onChange={(event) => setTimelineItems((current) => ({ ...current, [step.id]: event.target.value }))}>
+                        <option value="">Not marked / نشان زد نہیں</option>
+                        {TIMELINE_STATUS_OPTIONS.map((option) => <option key={option.id} value={option.id}>{option.label} / {option.urdu}</option>)}
+                      </select>
+                    </li>
+                  ))}
+                </ul>
+                <button className="official-resource-hub__print-action" type="button" onClick={downloadNonSensitiveReadinessSummary}>Download private readiness summary / <span lang="ur" dir="rtl">نجی تیاری خلاصہ ڈاؤن لوڈ کریں</span></button>
+                <button className="official-resource-hub__print-action" type="button" onClick={() => setTimelineItems({})}>Clear temporary timeline / <span lang="ur" dir="rtl">عارضی ٹائم لائن صاف کریں</span></button>
+                <p className="official-resource-hub__footer">The download is created in your browser and contains only these selected status labels and the wealth-readiness status labels. It contains no figures, names, CNICs, account details, documents, or credentials.</p>
+              </section>
             </section>
             <p className="official-resource-hub__footer">Before acting, confirm current requirements, fees, deadlines, and eligibility directly on the linked official portal.</p>
           </div>

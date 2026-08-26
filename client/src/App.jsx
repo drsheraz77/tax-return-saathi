@@ -167,6 +167,8 @@ const T = {
     checkPrivacy: "This is an education-only review. It cannot access or reproduce FBR checks, confirm your figures, predict notices, submit a return, or make a binding tax decision. Your redacted file is sent through the app's server-side managed AI pathway for this analysis and is not persisted in this app's database. Do not upload passwords, OTPs, bank-account details, or an unmasked CNIC number.",
     redactionConfirm: "I confirm that I removed or masked passwords, OTPs, full CNIC numbers, and bank, account, card, or IBAN details before selecting files.",
     redactionHint: "This check is for your safety; it does not verify file contents. Upload only pages needed for this educational review.",
+    redactionGuideTitle: "Show a safe redaction example",
+    redactionGuide: "Before selecting a file, mask passwords, OTPs, complete CNIC numbers, signatures, bank or card numbers, IBANs, account details, barcodes, QR codes, and unrelated personal details. Keep only the return fields or notice text needed for your question. The app cannot confirm whether a document is safely redacted, so re-check every selected page yourself.",
     redactionRequired: "Confirm that you removed or masked restricted data before selecting documents.",
     reviewTrustBoundary: "Independent preparation support, not an FBR service. For a demand, audit, court matter, or unresolved complex issue, use official FBR guidance or a qualified tax adviser before acting.",
     qIncome: "Which income sources did you have this year (Jul 2025 – Jun 2026)?",
@@ -635,6 +637,8 @@ const T = {
     checkPrivacy: "یہ صرف تعلیمی جانچ ہے۔ یہ ایف بی آر کی جانچ تک رسائی نہیں رکھتا، اسے نقل نہیں کر سکتا، آپ کے اعداد کی تصدیق، نوٹس کی پیش گوئی، ریٹرن جمع، یا حتمی ٹیکس فیصلہ نہیں کر سکتا۔ آپ کی چھپائی ہوئی فائل اسی تجزیے کے لیے ایپ کے سرور سائیڈ مینیجڈ اے آئی راستے سے گزرتی ہے اور ایپ کے ڈیٹابیس میں محفوظ نہیں کی جاتی۔ پاس ورڈ، OTP، بینک اکاؤنٹ کی تفصیلات، یا بغیر چھپایا ہوا شناختی کارڈ نمبر اپ لوڈ نہ کریں۔",
     redactionConfirm: "میں تصدیق کرتا/کرتی ہوں کہ فائل منتخب کرنے سے پہلے میں نے پاس ورڈ، OTP، مکمل شناختی کارڈ نمبر، اور بینک، اکاؤنٹ، کارڈ یا IBAN کی تفصیلات ہٹا یا چھپا دی ہیں۔",
     redactionHint: "یہ جانچ صرف آپ کی حفاظت کے لیے ہے؛ یہ فائل کا مواد نہیں جانچتی۔ صرف وہ صفحات اپ لوڈ کریں جو اس تعلیمی جانچ کے لیے درکار ہوں۔",
+    redactionGuideTitle: "محفوظ ریڈیکشن کی مثال دیکھیں",
+    redactionGuide: "فائل منتخب کرنے سے پہلے پاس ورڈ، OTP، مکمل شناختی کارڈ نمبر، دستخط، بینک یا کارڈ نمبر، IBAN، اکاؤنٹ کی تفصیلات، بارکوڈ، QR کوڈ اور غیر متعلقہ ذاتی تفصیلات چھپا دیں۔ صرف وہ ریٹرن فیلڈز یا نوٹس متن رکھیں جو آپ کے سوال کے لیے درکار ہوں۔ اس ایپ کو یہ تصدیق کرنے کی صلاحیت نہیں کہ دستاویز محفوظ طور پر چھپائی گئی ہے، اس لیے ہر منتخب صفحہ خود دوبارہ دیکھیں۔",
     redactionRequired: "دستاویز منتخب کرنے سے پہلے تصدیق کریں کہ آپ نے محدود معلومات ہٹا یا چھپا دی ہیں۔",
     reviewTrustBoundary: "یہ آزاد تیاری کی مدد ہے، ایف بی آر سروس نہیں۔ رقم کے مطالبے، آڈٹ، عدالتی معاملے، یا کسی غیر حل شدہ پیچیدہ مسئلے میں کارروائی سے پہلے سرکاری ایف بی آر رہنمائی یا مستند ٹیکس مشیر سے رجوع کریں۔",
     qIncome: "اس سال (جولائی ۲۰۲۵ – جون ۲۰۲۶) آپ کی آمدنی کے ذرائع کون سے تھے؟",
@@ -2234,6 +2238,10 @@ RESPOND ONLY with JSON, no markdown fences, no preamble, in ${lang === "ur" ? "U
             <span>{t.redactionConfirm}</span>
           </label>
           <p className="text-[11px] mt-2 opacity-70">{t.redactionHint}</p>
+          <details className="mt-2 text-start rounded border px-2 py-1" style={{ borderColor: "#E5DAB9", background: "#FFFDF6" }}>
+            <summary className="cursor-pointer text-[11px] font-semibold" style={{ color: COLORS.green }}>{t.redactionGuideTitle}</summary>
+            <p className="text-[11px] mt-2 opacity-75">{t.redactionGuide}</p>
+          </details>
         </div>
         <input
           type="file"

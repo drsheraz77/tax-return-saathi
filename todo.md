@@ -172,3 +172,7 @@
 - [x] Add visible source-review tracking by official resource category, showing limited review scope and review date without asserting legal completeness.
 - [x] Add a guided FBR-notice response document checklist with broad non-sensitive categories, temporary choices, and escalation to the notice, IRIS, official FBR support, or a qualified professional.
 - [x] Add focused tests and verify the printable output, privacy boundaries, bilingual interaction, responsive layouts, full test suite, and production build before publication.
+- [x] Add a privacy-safe pre-filing timeline planner based on controlled readiness actions, without calculating legal deadlines or collecting personal tax information.
+- [x] Add bilingual guided redaction examples beside the completed-return review gate, clarifying what to remove without receiving a document or claiming redaction is complete.
+- [x] Add a downloadable non-sensitive readiness summary that exports only controlled completion states and privacy/scope reminders, with no financial, identity, document, or credential fields.
+- [x] Add focused tests and verify timeline, redaction, download, privacy boundaries, bilingual interaction, responsive layout, full suite, and production build before publication.
