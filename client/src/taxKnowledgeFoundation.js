@@ -70,6 +70,22 @@ export const TAX_KNOWLEDGE_FOUNDATION = {
         { id: "official-resources", label: "Official tax and investment resources", labelUrdu: "سرکاری ٹیکس اور سرمایہ کاری وسائل" },
       ],
     },
+    {
+      id: "contact-support-route",
+      title: "Official contact and escalation route",
+      titleUrdu: "سرکاری رابطہ اور رہنمائی کا راستہ",
+      purpose: "Use FBR's official contact page only to find an escalation or support route for an unclear, urgent, notice, audit, demand, court, foreign, residency, or other complex matter. This site does not operate support or inspect a case.",
+      purposeUrdu: "غیر واضح، فوری، نوٹس، آڈٹ، ڈیمانڈ، عدالتی، غیر ملکی، رہائشی یا دوسرے پیچیدہ معاملے کے لیے صرف رہنمائی یا سپورٹ کا راستہ تلاش کرنے کو ایف بی آر کا سرکاری رابطہ صفحہ استعمال کریں۔ یہ سائٹ سپورٹ نہیں چلاتی اور نہ ہی کسی کیس کا جائزہ لیتی ہے۔",
+      sourceLabel: "FBR: Contact us",
+      sourceUrl: "https://www.fbr.gov.pk/contact-us/142252/173964",
+      reviewedOn: "26 August 2026",
+      scope: "Official escalation-route orientation only; it does not provide an app-operated support channel, a response, a deadline, or a case outcome.",
+      scopeUrdu: "صرف سرکاری رہنمائی کے راستے کی ابتدائی معلومات؛ یہ ایپ کے زیرِ انتظام سپورٹ چینل، جواب، ڈیڈ لائن یا کیس کا نتیجہ فراہم نہیں کرتی۔",
+      preparationLinks: [
+        { id: "fbr-notice-preparation-guide", label: "FBR notice preparation guide", labelUrdu: "ایف بی آر نوٹس تیاری گائیڈ" },
+        { id: "complex-situations", label: "Complex-situation preparation navigator", labelUrdu: "پیچیدہ صورتحال تیاری نیویگیٹر" },
+      ],
+    },
   ],
 };
 

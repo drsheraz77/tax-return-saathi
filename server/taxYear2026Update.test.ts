@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { FBR_NOTICE_ARCHIVE } from "../client/src/fbrNoticeArchive.js";
-import { OFFICIAL_SOURCE_UPDATE_CENTRE, TAX_YEAR_2026_SOURCES, TAX_YEAR_2026_UPDATE, validateOfficialSourceUpdateCentre } from "../client/src/taxYear2026Update.js";
+import { OFFICIAL_SOURCE_UPDATE_CENTRE, REVIEWED_SOURCE_CHANGE_LOG, TAX_YEAR_2026_SOURCES, TAX_YEAR_2026_UPDATE, validateOfficialSourceUpdateCentre, validateReviewedSourceChangeLog } from "../client/src/taxYear2026Update.js";
 
 describe("Tax Year 2026 filing update", () => {
   it("uses the verified filing period and published due dates", () => {
@@ -24,6 +24,20 @@ describe("Tax Year 2026 filing update", () => {
     expect(OFFICIAL_SOURCE_UPDATE_CENTRE.sources.map((source) => source.id)).toEqual(["filing-workflow", "due-dates", "notices-and-announcements", "laws-and-rules-index"]);
     expect(OFFICIAL_SOURCE_UPDATE_CENTRE.limitation).toMatch(/not a live FBR feed/i);
     expect(OFFICIAL_SOURCE_UPDATE_CENTRE.sources.every((source) => source.titleUrdu && source.purposeUrdu && source.sourceUrl.includes("fbr.gov.pk"))).toBe(true);
+  });
+
+  it("keeps a bounded bilingual manual app-side source-change log rather than claiming FBR monitoring", () => {
+    expect(validateReviewedSourceChangeLog()).toBe(true);
+    expect(REVIEWED_SOURCE_CHANGE_LOG.status).toBe("manual-catalogue-review");
+    expect(REVIEWED_SOURCE_CHANGE_LOG.limitation).toMatch(/not a live FBR feed, automated monitor/i);
+    expect(REVIEWED_SOURCE_CHANGE_LOG.entries.map((entry) => entry.id)).toEqual([
+      "contact-route-catalogue-record-added",
+      "filing-guidance-manual-review-recorded",
+      "due-date-purpose-manual-review-recorded",
+      "laws-index-purpose-manual-review-recorded",
+    ]);
+    expect(REVIEWED_SOURCE_CHANGE_LOG.entries.every((entry) => entry.titleUrdu && entry.summaryUrdu && entry.scopeUrdu && new URL(entry.sourceUrl).hostname === "www.fbr.gov.pk")).toBe(true);
+    expect(REVIEWED_SOURCE_CHANGE_LOG.entries.map((entry) => entry.dateIso)).toEqual([...REVIEWED_SOURCE_CHANGE_LOG.entries.map((entry) => entry.dateIso)].sort().reverse());
   });
 
   it("keeps the dated FBR notice archive ordered and clearly separates current from historical notices", () => {

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FBR_NOTICE_ARCHIVE } from "./fbrNoticeArchive.js";
 import { FBR_NOTICE_PREPARATION_TYPES, FBR_NOTICE_SUPPORT_URL, getNoticeDocumentChecklist, getNoticePreparationSteps } from "./fbrNoticePreparation.js";
 import { getLearningPath, getPlanningReflection, getStarterKnowledgeTopics, TAX_KNOWLEDGE_FOUNDATION, TAX_LEARNING_PATHS, TAX_PLANNING_REFLECTIONS, TAX_PREPARATION_VISUAL_JOURNEY, TAX_SOURCE_TOPIC_BRIEFS } from "./taxKnowledgeFoundation.js";
-import { OFFICIAL_SOURCE_UPDATE_CENTRE, TAX_YEAR_2026_SOURCES, TAX_YEAR_2026_UPDATE } from "./taxYear2026Update.js";
+import { OFFICIAL_SOURCE_UPDATE_CENTRE, REVIEWED_SOURCE_CHANGE_LOG, TAX_YEAR_2026_SOURCES, TAX_YEAR_2026_UPDATE } from "./taxYear2026Update.js";
 
 const linkProps = {
   target: "_blank",
@@ -13,6 +13,7 @@ export default function TaxYear2026Update() {
   const [isOpen, setIsOpen] = useState(false);
   const [archiveOpen, setArchiveOpen] = useState(false);
   const [sourceUpdateCentreOpen, setSourceUpdateCentreOpen] = useState(false);
+  const [sourceChangeLogOpen, setSourceChangeLogOpen] = useState(false);
   const [noticeGuideOpen, setNoticeGuideOpen] = useState(false);
   const [noticeType, setNoticeType] = useState("unsure");
   const [noticeDocumentItems, setNoticeDocumentItems] = useState({});
@@ -191,6 +192,27 @@ export default function TaxYear2026Update() {
                   ))}
                 </ul>
                 <a className="tax-year-update__archive-link" href={OFFICIAL_SOURCE_UPDATE_CENTRE.currentFbrUpdatesUrl} {...linkProps}>Check FBR’s current website directly ↗</a>
+              </section>
+            )}
+            <button className="tax-year-update__archive-toggle" type="button" onClick={() => setSourceChangeLogOpen((open) => !open)} aria-expanded={sourceChangeLogOpen} aria-controls="manual-source-change-log">
+              {sourceChangeLogOpen ? "Hide" : "Open"} manual source-catalogue change log · <span lang="ur" dir="rtl">دستی سورس کیٹلاگ تبدیلی لاگ</span>
+            </button>
+            {sourceChangeLogOpen && (
+              <section id="manual-source-change-log" className="tax-year-update__source-map" aria-label="Manual reviewed-source catalogue change log">
+                <h3 className="tax-year-update__source-heading">{REVIEWED_SOURCE_CHANGE_LOG.title}<br /><span lang="ur" dir="rtl">{REVIEWED_SOURCE_CHANGE_LOG.titleUrdu}</span></h3>
+                <p className="tax-year-update__source-copy"><strong>Manual catalogue log; not a live FBR feed or automated monitor.</strong><br />Reviewed {REVIEWED_SOURCE_CHANGE_LOG.reviewedOn}. {REVIEWED_SOURCE_CHANGE_LOG.limitation}</p>
+                <p className="tax-year-update__source-copy" lang="ur" dir="rtl"><strong>دستی کیٹلاگ لاگ؛ لائیو ایف بی آر فیڈ یا خودکار مانیٹر نہیں۔</strong><br />جائزہ: {REVIEWED_SOURCE_CHANGE_LOG.reviewedOn}۔ {REVIEWED_SOURCE_CHANGE_LOG.limitationUrdu}</p>
+                <ol className="tax-year-update__source-list">
+                  {REVIEWED_SOURCE_CHANGE_LOG.entries.map((entry) => (
+                    <li className="tax-year-update__source-item" key={entry.id}>
+                      <time className="tax-year-update__archive-date" dateTime={entry.dateIso}>{entry.displayDate} · {entry.statusLabel}<br /><span lang="ur" dir="rtl">{entry.statusLabelUrdu}</span></time>
+                      <span className="tax-year-update__source-title">{entry.title}<br /><span lang="ur" dir="rtl">{entry.titleUrdu}</span></span>
+                      <p className="tax-year-update__source-purpose">{entry.summary}<br /><span lang="ur" dir="rtl">{entry.summaryUrdu}</span></p>
+                      <p className="tax-year-update__source-purpose"><strong>Scope:</strong> {entry.scope}<br /><span lang="ur" dir="rtl"><strong>دائرہ:</strong> {entry.scopeUrdu}</span></p>
+                      <a className="tax-year-update__archive-link" href={entry.sourceUrl} {...linkProps}>{entry.sourceLabel} ↗</a>
+                    </li>
+                  ))}
+                </ol>
               </section>
             )}
             <div className="tax-year-update__links">

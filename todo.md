@@ -231,3 +231,9 @@
 - [x] Add a visual preparation explanation that maps the education-to-official-source journey without calculating tax, determining a filing route, or representing an IRIS workflow.
 - [x] Add a local-only, general planning reflection guide that uses broad non-personal choices and directs unresolved questions to reviewed official sources or a qualified professional without generating personalised tax advice.
 - [x] Add focused tests and verify citations, visual explanation boundaries, local-only planning prompts, Urdu/English interaction, responsive layout, full suite, and production build before publication.
+- [x] Assess the remaining audit capabilities for technical feasibility, governance prerequisites, and deliberate privacy or role-boundary exclusions.
+- [x] Deliver a clear classification of feasible-next, governance-gated, and deliberately out-of-scope audit capabilities with practical prerequisites.
+- [x] Expand the bilingual reviewed knowledge catalogue with a bounded set of additional official-source topic records, each showing source, review date, limited scope, and no individual determination.
+- [x] Add a bilingual, manually maintained source-change log that records catalogue review changes, source additions, and source-status notes without claiming automatic monitoring or a live FBR feed.
+- [x] Add visible source-governance boundaries and official destination links for the expanded catalogue and change log without collecting visitor data or changing profile fields.
+- [x] Add focused tests and verify catalogue/change-log ordering, official-host validation, review boundaries, Urdu/English interaction, responsive layout, full suite, and production build before publication.

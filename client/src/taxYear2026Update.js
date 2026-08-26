@@ -67,6 +67,81 @@ export const OFFICIAL_SOURCE_UPDATE_CENTRE = {
   ],
 };
 
+export const REVIEWED_SOURCE_CHANGE_LOG = {
+  reviewedOn: "26 August 2026",
+  status: "manual-catalogue-review",
+  title: "Manual reviewed-source catalogue log",
+  titleUrdu: "دستی جائزہ شدہ سورس کیٹلاگ لاگ",
+  limitation: "This manual catalogue log records limited app-side review events only. It is not a live FBR feed, automated monitor, proof that no external FBR source changed, complete FBR change history, or personal update service.",
+  limitationUrdu: "یہ دستی کیٹلاگ لاگ صرف ایپ کے محدود جائزہ واقعات ریکارڈ کرتا ہے۔ یہ لائیو ایف بی آر فیڈ، خودکار مانیٹر، اس بات کا ثبوت کہ کوئی بیرونی ایف بی آر ذریعہ تبدیل نہیں ہوا، مکمل ایف بی آر تبدیلیوں کی تاریخ یا ذاتی اپڈیٹ سروس نہیں۔",
+  entries: [
+    {
+      id: "contact-route-catalogue-record-added",
+      dateIso: "2026-08-26",
+      displayDate: "26 August 2026",
+      status: "catalogue-record-added",
+      statusLabel: "App catalogue record added",
+      statusLabelUrdu: "ایپ کیٹلاگ ریکارڈ شامل کیا گیا",
+      title: "FBR contact and escalation route added to the catalogue",
+      titleUrdu: "ایف بی آر رابطہ اور رہنمائی کا راستہ کیٹلاگ میں شامل کیا گیا",
+      summary: "The app added FBR's official contact page as a bounded escalation-route record for unclear or complex matters. The app does not provide support, examine a case, or state an FBR outcome.",
+      summaryUrdu: "ایپ نے غیر واضح یا پیچیدہ معاملات کے لیے ایف بی آر کے سرکاری رابطہ صفحے کو محدود رہنمائی کے راستے کے ریکارڈ کے طور پر شامل کیا۔ ایپ سپورٹ فراہم نہیں کرتی، کیس نہیں دیکھتی اور نہ ہی ایف بی آر کا نتیجہ بتاتی ہے۔",
+      scope: "This records an app-side catalogue addition; it does not say whether the FBR page changed or did not change.",
+      scopeUrdu: "یہ ایپ کی طرف سے کیٹلاگ میں اضافہ ریکارڈ کرتا ہے؛ یہ نہیں کہتا کہ ایف بی آر کا صفحہ تبدیل ہوا یا نہیں ہوا۔",
+      sourceUrl: "https://www.fbr.gov.pk/contact-us/142252/173964",
+      sourceLabel: "Open FBR contact page",
+    },
+    {
+      id: "filing-guidance-manual-review-recorded",
+      dateIso: "2026-08-26",
+      displayDate: "26 August 2026",
+      status: "manual-review-completed",
+      statusLabel: "Manual app review completed",
+      statusLabelUrdu: "دستی ایپ جائزہ مکمل ہوا",
+      title: "Filing-guidance catalogue record manually reviewed",
+      titleUrdu: "فائلنگ رہنمائی کے کیٹلاگ ریکارڈ کا دستی جائزہ لیا گیا",
+      summary: "The app recorded a limited review of its FBR filing-guidance destination for IRIS-access, return-preparation, completion, records, and privacy orientation.",
+      summaryUrdu: "ایپ نے آئرس رسائی، ریٹرن تیاری، تکمیل، ریکارڈ اور رازداری کی ابتدائی معلومات کے لیے اپنے ایف بی آر فائلنگ رہنمائی کے لنک کا محدود جائزہ ریکارڈ کیا۔",
+      scope: "This is an app-side review event, not a statement that FBR guidance changed, remained unchanged, or applies to an individual.",
+      scopeUrdu: "یہ ایپ کی طرف سے جائزہ واقعہ ہے، اس بات کا بیان نہیں کہ ایف بی آر رہنمائی تبدیل ہوئی، تبدیل نہیں ہوئی یا کسی فرد پر لاگو ہوتی ہے۔",
+      sourceUrl: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71158",
+      sourceLabel: "Open FBR filing guidance",
+    },
+    {
+      id: "due-date-purpose-manual-review-recorded",
+      dateIso: "2026-08-26",
+      displayDate: "26 August 2026",
+      status: "manual-review-completed",
+      statusLabel: "Manual app review completed",
+      statusLabelUrdu: "دستی ایپ جائزہ مکمل ہوا",
+      title: "Published due-date catalogue purpose manually reviewed",
+      titleUrdu: "شائع شدہ تاریخ کے کیٹلاگ مقصد کا دستی جائزہ لیا گیا",
+      summary: "The app recorded a limited review of the FBR due-date destination for published categories only, without calculating a personal deadline or extension.",
+      summaryUrdu: "ایپ نے صرف شائع شدہ زمروں کے لیے ایف بی آر ڈیڈ لائن لنک کا محدود جائزہ ریکارڈ کیا، کسی ذاتی ڈیڈ لائن یا توسیع کا حساب لگائے بغیر۔",
+      scope: "This is an app-side review event, not proof of any current personal deadline, extension, or FBR source change status.",
+      scopeUrdu: "یہ ایپ کی طرف سے جائزہ واقعہ ہے، کسی موجودہ ذاتی ڈیڈ لائن، توسیع یا ایف بی آر ذریعہ تبدیلی کی حیثیت کا ثبوت نہیں۔",
+      sourceUrl: "https://www.fbr.gov.pk/categ/income-tax-due-dates/51147/40846/81148",
+      sourceLabel: "Open FBR due dates",
+    },
+    {
+      id: "laws-index-purpose-manual-review-recorded",
+      dateIso: "2026-08-26",
+      displayDate: "26 August 2026",
+      status: "manual-review-completed",
+      statusLabel: "Manual app review completed",
+      statusLabelUrdu: "دستی ایپ جائزہ مکمل ہوا",
+      title: "Laws-index catalogue purpose manually reviewed",
+      titleUrdu: "قوانین انڈیکس کے کیٹلاگ مقصد کا دستی جائزہ لیا گیا",
+      summary: "The app recorded a limited review of the FBR laws index as a starting point for locating primary material, not for legal interpretation.",
+      summaryUrdu: "ایپ نے بنیادی مواد تلاش کرنے کے نقطۂ آغاز کے طور پر ایف بی آر قوانین انڈیکس کا محدود جائزہ ریکارڈ کیا، قانونی تشریح کے لیے نہیں۔",
+      scope: "This is an app-side review event, not a complete legal change history, law interpretation, or advice for a person.",
+      scopeUrdu: "یہ ایپ کی طرف سے جائزہ واقعہ ہے، مکمل قانونی تبدیلیوں کی تاریخ، قانونی تشریح یا کسی فرد کے لیے مشورہ نہیں۔",
+      sourceUrl: "https://www.fbr.gov.pk/act-rules-ordinances/131226",
+      sourceLabel: "Open FBR laws index",
+    },
+  ],
+};
+
 export function validateOfficialSourceUpdateCentre(centre = OFFICIAL_SOURCE_UPDATE_CENTRE) {
   return centre.reviewedOn &&
     centre.status === "reviewed-not-live" &&
@@ -79,6 +154,39 @@ export function validateOfficialSourceUpdateCentre(centre = OFFICIAL_SOURCE_UPDA
     centre.sources.every((source) => {
       try {
         return source.id && source.title && source.titleUrdu && source.purpose && source.purposeUrdu && source.sourceLabel && new URL(source.sourceUrl).hostname === "www.fbr.gov.pk";
+      } catch {
+        return false;
+      }
+    });
+}
+
+export function validateReviewedSourceChangeLog(log = REVIEWED_SOURCE_CHANGE_LOG) {
+  const datesAreNewestFirst = log.entries.every((entry, index) => index === 0 || entry.dateIso <= log.entries[index - 1].dateIso);
+
+  return log.reviewedOn &&
+    log.status === "manual-catalogue-review" &&
+    log.title &&
+    log.titleUrdu &&
+    log.limitation &&
+    log.limitationUrdu &&
+    log.entries.length === 4 &&
+    datesAreNewestFirst &&
+    log.entries.every((entry) => {
+      try {
+        return entry.id &&
+          /^\d{4}-\d{2}-\d{2}$/.test(entry.dateIso) &&
+          entry.displayDate &&
+          entry.status &&
+          entry.statusLabel &&
+          entry.statusLabelUrdu &&
+          entry.title &&
+          entry.titleUrdu &&
+          entry.summary &&
+          entry.summaryUrdu &&
+          entry.scope &&
+          entry.scopeUrdu &&
+          entry.sourceLabel &&
+          new URL(entry.sourceUrl).hostname === "www.fbr.gov.pk";
       } catch {
         return false;
       }

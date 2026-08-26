@@ -113,4 +113,12 @@ describe("priority preparation workflow wiring", () => {
     expect(taxYearPanel).toContain("TAX_PLANNING_REFLECTIONS");
     expect(taxYearPanel).toContain("not sent or saved");
   });
+
+  it("renders a bilingual manual source-catalogue change log with a clear not-live monitoring boundary", () => {
+    expect(taxYearPanel).toContain("REVIEWED_SOURCE_CHANGE_LOG");
+    expect(taxYearPanel).toContain("manual-source-change-log");
+    expect(taxYearPanel).toContain("Manual catalogue log; not a live FBR feed or automated monitor.");
+    expect(taxYearPanel).toContain("REVIEWED_SOURCE_CHANGE_LOG.limitation");
+    expect(taxYearPanel).toContain("entry.sourceLabel");
+  });
 });

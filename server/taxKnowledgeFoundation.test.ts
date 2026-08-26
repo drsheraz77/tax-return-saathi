@@ -10,7 +10,7 @@ describe("reviewed Tax Year 2026 starter knowledge catalogue", () => {
   });
 
   it("uses a bounded set of official FBR knowledge records with a visible scope and linked preparation tools", () => {
-    expect(TAX_KNOWLEDGE_FOUNDATION.topics.map((topic) => topic.id)).toEqual(["iris-access", "return-completion-records", "due-dates", "laws-index"]);
+    expect(TAX_KNOWLEDGE_FOUNDATION.topics.map((topic) => topic.id)).toEqual(["iris-access", "return-completion-records", "due-dates", "laws-index", "contact-support-route"]);
     for (const topic of TAX_KNOWLEDGE_FOUNDATION.topics) {
       expect(new URL(topic.sourceUrl).hostname).toBe("www.fbr.gov.pk");
       expect(topic.purpose).toBeTruthy();
@@ -20,6 +20,9 @@ describe("reviewed Tax Year 2026 starter knowledge catalogue", () => {
       expect(topic.scopeUrdu).toBeTruthy();
       expect(topic.preparationLinks.length).toBeGreaterThan(0);
     }
+    const supportRoute = TAX_KNOWLEDGE_FOUNDATION.topics.find((topic) => topic.id === "contact-support-route");
+    expect(supportRoute?.sourceUrl).toBe("https://www.fbr.gov.pk/contact-us/142252/173964");
+    expect(supportRoute?.scope).toMatch(/does not provide an app-operated support channel/i);
   });
 
   it("filters only the in-memory reviewed records without broadening the catalogue", () => {
