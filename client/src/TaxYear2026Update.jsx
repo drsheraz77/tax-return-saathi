@@ -59,6 +59,10 @@ export default function TaxYear2026Update() {
         .tax-year-update__source-item, .tax-year-update__notice-item { border-left: 3px solid #caa518; padding-left: 9px; }
         .tax-year-update__source-title, .tax-year-update__notice-step { display: block; color: #173b31; font-size: 12px; font-weight: 700; }
         .tax-year-update__source-purpose { margin: 3px 0 5px; color: #4d513c; font-size: 12px; }
+        .tax-year-update__citation { display: block; margin: 5px 0 4px; color: #6b6246; font-size: 11px; font-weight: 700; }
+        .tax-year-update__connection-label { display: block; margin-top: 7px; color: #665d40; font-size: 11px; font-weight: 700; }
+        .tax-year-update__connection-list { display: flex; flex-wrap: wrap; gap: 5px; margin: 4px 0 2px; padding: 0; list-style: none; }
+        .tax-year-update__connection { border: 1px solid #d8ceaa; border-radius: 999px; background: #f7f1d9; color: #365446; padding: 3px 6px; font-size: 10px; }
         .tax-year-update__select { box-sizing: border-box; width: 100%; margin: 4px 0 10px; border: 1px solid #b7ab79; border-radius: 8px; background: #fffef9; color: #173b31; padding: 8px; font: 13px/1.3 inherit; }
         .tax-year-update__select:focus-visible { outline: 3px solid rgba(202,165,24,.36); outline-offset: 2px; }
         @media (max-width: 520px) { .tax-year-update { right: 12px; bottom: 12px; } .tax-year-update__facts { grid-template-columns: 1fr; } .tax-year-update__fact--wide { grid-column: auto; } }
@@ -83,8 +87,8 @@ export default function TaxYear2026Update() {
               <div className="tax-year-update__fact tax-year-update__fact--wide"><span className="tax-year-update__label">Special tax-year companies</span><span className="tax-year-update__value">Due {TAX_YEAR_2026_UPDATE.specialTaxYearCompanyDueDate}</span></div>
             </div>
             <p className="tax-year-update__note">These are the published due dates, not a statement that any extension has been granted. Check FBR’s current notice before filing and keep your supporting records.</p>
-            <section className="tax-year-update__source-map" aria-label="Limited Tax Year 2026 official-source foundation">
-              <h3 className="tax-year-update__source-heading">{TAX_KNOWLEDGE_FOUNDATION.version}<br /><span lang="ur" dir="rtl">ٹیکس سال 2026 سرکاری ذرائع کا محدود نقشہ</span></h3>
+            <section id="reviewed-tax-knowledge-catalogue" className="tax-year-update__source-map" aria-label="Reviewed Tax Year 2026 starter knowledge catalogue">
+              <h3 className="tax-year-update__source-heading">{TAX_KNOWLEDGE_FOUNDATION.version}<br /><span lang="ur" dir="rtl">ٹیکس سال 2026 جائزہ شدہ ابتدائی معلوماتی کیٹلاگ</span></h3>
               <p className="tax-year-update__source-copy">Reviewed {TAX_KNOWLEDGE_FOUNDATION.reviewedOn}. {TAX_KNOWLEDGE_FOUNDATION.limitation}</p>
               <p className="tax-year-update__source-copy" lang="ur" dir="rtl">جائزہ: {TAX_KNOWLEDGE_FOUNDATION.reviewedOn}۔ {TAX_KNOWLEDGE_FOUNDATION.limitationUrdu}</p>
               <ul className="tax-year-update__source-list">
@@ -92,7 +96,13 @@ export default function TaxYear2026Update() {
                   <li className="tax-year-update__source-item" key={topic.id}>
                     <span className="tax-year-update__source-title">{topic.title}<br /><span lang="ur" dir="rtl">{topic.titleUrdu}</span></span>
                     <p className="tax-year-update__source-purpose">{topic.purpose}<br /><span lang="ur" dir="rtl">{topic.purposeUrdu}</span></p>
+                    <span className="tax-year-update__citation">{TAX_KNOWLEDGE_FOUNDATION.citationLabel} · {topic.sourceLabel} · reviewed {topic.reviewedOn}<br /><span lang="ur" dir="rtl">{TAX_KNOWLEDGE_FOUNDATION.citationLabelUrdu} · جائزہ {topic.reviewedOn}</span></span>
+                    <p className="tax-year-update__source-purpose"><strong>Scope:</strong> {topic.scope}<br /><span lang="ur" dir="rtl"><strong>دائرہ:</strong> {topic.scopeUrdu}</span></p>
                     <a className="tax-year-update__archive-link" href={topic.sourceUrl} {...linkProps}>{topic.sourceLabel} ↗</a>
+                    <span className="tax-year-update__connection-label">Use alongside existing preparation tools / <span lang="ur" dir="rtl">موجودہ تیاری ٹولز کے ساتھ استعمال کریں</span></span>
+                    <ul className="tax-year-update__connection-list">
+                      {topic.preparationLinks.map((connection) => <li className="tax-year-update__connection" key={connection.id}>{connection.label} · <span lang="ur" dir="rtl">{connection.labelUrdu}</span></li>)}
+                    </ul>
                   </li>
                 ))}
               </ul>

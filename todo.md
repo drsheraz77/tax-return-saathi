@@ -184,3 +184,11 @@
 - [x] Add a privacy-safe return-and-wealth-statement relationship explainer with local-only readiness marks and no financial figures, assets, liabilities, identifiers, documents, or legal-completeness determination.
 - [x] Add a bilingual post-submission continuity checklist covering official acknowledgement, private record retention, and official follow-up routes without tracking a return, sending reminders, or asserting FBR acceptance.
 - [x] Add focused tests and verify the new escalations, privacy boundaries, bilingual interaction, responsive layout, full suite, and production build before publication.
+- [x] Reassess the original audit coverage against all completed feature batches and identify the remaining partial, missing, or intentionally deferred capabilities.
+- [x] Deliver a practical prioritised audit-remainder assessment with a recommended next incremental batch.
+- [x] Confirm the phased delivery scope for all remaining partial audit groups and obtain explicit approval before any sensitive-profile, document-intelligence, reconciliation, or personalised-planning capability is designed.
+- [x] Add a versioned, bilingual official-source knowledge catalogue for a bounded set of high-demand tax-preparation topics, each with official destination, review date, limited scope, and no individual determination.
+- [x] Add reusable bilingual citation and review cards that make the official source, review date, and limits visible in educational guidance without representing a live legal database.
+- [x] Add first topic-learning entries that connect existing preparation tools to the bounded knowledge records without storing user financial or identity data.
+- [ ] Complete the subsequent low-data guidance, structured AI, navigation, accessibility, performance, and public-discovery batches with testing and checkpoints after each batch.
+- [ ] Prepare separate security, consent, retention, legal-basis, and human-review requirements for any deferred sensitive-data or personalised-decision capability.

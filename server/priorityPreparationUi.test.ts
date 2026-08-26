@@ -9,6 +9,9 @@ const resourceHub = readFileSync(resolve(projectRoot, "client/src/OfficialResour
 describe("priority preparation workflow wiring", () => {
   it("renders the limited source foundation and structured FBR-notice preparation guide", () => {
     expect(taxYearPanel).toContain("TAX_KNOWLEDGE_FOUNDATION");
+    expect(taxYearPanel).toContain("reviewed-tax-knowledge-catalogue");
+    expect(taxYearPanel).toContain("TAX_KNOWLEDGE_FOUNDATION.citationLabel");
+    expect(taxYearPanel).toContain("Use alongside existing preparation tools");
     expect(taxYearPanel).toContain("fbr-notice-preparation-guide");
     expect(taxYearPanel).toContain("FBR_NOTICE_PREPARATION_TYPES");
     expect(taxYearPanel).toContain("does not identify a notice, calculate a deadline");
