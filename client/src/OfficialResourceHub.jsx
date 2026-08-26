@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { COMPLEX_SITUATION_PREPARATION_PATHS, FILING_READINESS_STEPS, FREELANCER_FAQ, FREELANCER_PRE_FILING_CHECKLIST, getFilingReadinessSummary, getOfficialResourceCategoryReview, getPreSubmissionErrorPreventionSummary, getTemporaryGuidanceSummary, IRIS_FAQ, IRIS_NAVIGATION_WALKTHROUGH, OFFICIAL_RESOURCE_HUB, POST_SUBMISSION_CONTINUITY_STEPS, PRE_FILING_CHECKLIST, PRE_SUBMISSION_ERROR_PREVENTION_STEPS, RETURN_WEALTH_RELATIONSHIP_STEPS, searchFreelancerFaq, searchIrisFaq } from "./officialResourceHub.js";
+import { AI_ANSWER_EVALUATION_STEPS, CALCULATION_EXPLANATION_MAP, COMPLEX_SITUATION_PREPARATION_PATHS, FILING_READINESS_STEPS, FREELANCER_FAQ, FREELANCER_PRE_FILING_CHECKLIST, getFilingReadinessSummary, getOfficialResourceCategoryReview, getPreSubmissionErrorPreventionSummary, getSourceAwareQuestionPlan, getTemporaryGuidanceSummary, IRIS_FAQ, IRIS_NAVIGATION_WALKTHROUGH, OFFICIAL_RESOURCE_HUB, POST_SUBMISSION_CONTINUITY_STEPS, PRE_FILING_CHECKLIST, PRE_SUBMISSION_ERROR_PREVENTION_STEPS, RETURN_WEALTH_RELATIONSHIP_STEPS, searchFreelancerFaq, searchIrisFaq, SOURCE_AWARE_QUESTION_PLANS } from "./officialResourceHub.js";
 import { trpc } from "./lib/trpc";
 import { getWealthReadinessPrintRows, getWealthStatementReadinessSummary, WEALTH_READINESS_OPTIONS, WEALTH_STATEMENT_PREPARATION_STEPS } from "./wealthStatementPreparation.js";
 import { buildNonSensitiveReadinessSummary, getPreFilingTimelineSummary, PRE_FILING_TIMELINE_STEPS, TIMELINE_STATUS_OPTIONS } from "./preFilingTimelinePlanner.js";
@@ -24,6 +24,11 @@ export default function OfficialResourceHub() {
   const [returnWealthItems, setReturnWealthItems] = useState({});
   const [postSubmissionOpen, setPostSubmissionOpen] = useState(false);
   const [postSubmissionItems, setPostSubmissionItems] = useState({});
+  const [questionPlannerOpen, setQuestionPlannerOpen] = useState(false);
+  const [questionPlanId, setQuestionPlanId] = useState(SOURCE_AWARE_QUESTION_PLANS[0].id);
+  const [calculationMapOpen, setCalculationMapOpen] = useState(false);
+  const [answerEvaluationOpen, setAnswerEvaluationOpen] = useState(false);
+  const [answerEvaluationItems, setAnswerEvaluationItems] = useState({});
   const [filingReadinessItems, setFilingReadinessItems] = useState({});
   const [wealthPreparationOpen, setWealthPreparationOpen] = useState(false);
   const [wealthReadinessItems, setWealthReadinessItems] = useState({});
@@ -41,6 +46,8 @@ export default function OfficialResourceHub() {
   const complexSituationReadiness = useMemo(() => getTemporaryGuidanceSummary(complexSituationItems, COMPLEX_SITUATION_PREPARATION_PATHS), [complexSituationItems]);
   const returnWealthReadiness = useMemo(() => getTemporaryGuidanceSummary(returnWealthItems, RETURN_WEALTH_RELATIONSHIP_STEPS), [returnWealthItems]);
   const postSubmissionReadiness = useMemo(() => getTemporaryGuidanceSummary(postSubmissionItems, POST_SUBMISSION_CONTINUITY_STEPS), [postSubmissionItems]);
+  const answerEvaluationReadiness = useMemo(() => getTemporaryGuidanceSummary(answerEvaluationItems, AI_ANSWER_EVALUATION_STEPS), [answerEvaluationItems]);
+  const activeQuestionPlan = getSourceAwareQuestionPlan(questionPlanId);
   const wealthReadiness = useMemo(() => getWealthStatementReadinessSummary(wealthReadinessItems), [wealthReadinessItems]);
   const timelineReadiness = useMemo(() => getPreFilingTimelineSummary(timelineItems), [timelineItems]);
   const { data: accountUser, isLoading: isAccountLoading } = trpc.auth.me.useQuery();
@@ -387,6 +394,73 @@ export default function OfficialResourceHub() {
                   </ul>
                   <button className="official-resource-hub__print-action" type="button" onClick={() => setPostSubmissionItems({})}>Clear temporary continuity marks / <span lang="ur" dir="rtl">عارضی تسلسل نشانات صاف کریں</span></button>
                   <p className="official-resource-hub__footer">These marks disappear when the page is refreshed and are not written to browser storage, your account, or the app database. They do not confirm submission, acknowledgement, acceptance, or a future FBR outcome.</p>
+                </section>
+              )}
+            </section>
+
+            <section className="official-resource-hub__tools" aria-labelledby="source-aware-question-planner-title">
+              <h3 id="source-aware-question-planner-title" className="official-resource-hub__tool-title">Source-aware question planner<br /><span lang="ur" dir="rtl">سورس آگاہ سوال منصوبہ ساز</span></h3>
+              <p className="official-resource-hub__tool-copy">Choose a broad learning goal to see a safe question for an official-source check. Your choice stays only on this page; do not enter facts, figures, identifiers, documents, or account details.</p>
+              <p className="official-resource-hub__tool-copy" lang="ur" dir="rtl">سرکاری سورس چیک کے لیے محفوظ سوال دیکھنے کو ایک عمومی سیکھنے کا مقصد منتخب کریں۔ آپ کا انتخاب صرف اسی صفحے پر رہتا ہے؛ حقائق، اعداد، شناختی معلومات، دستاویزات یا اکاؤنٹ تفصیلات درج نہ کریں۔</p>
+              <button className="official-resource-hub__print-toggle" type="button" onClick={() => setQuestionPlannerOpen((open) => !open)} aria-expanded={questionPlannerOpen} aria-controls="source-aware-question-planner">{questionPlannerOpen ? "Hide question planner" : "Open question planner"}</button>
+              {questionPlannerOpen && (
+                <section id="source-aware-question-planner" className="official-resource-hub__print-sheet official-resource-hub__print-sheet--visible" aria-label="Local source-aware question planner">
+                  <label className="sr-only" htmlFor="source-aware-question-plan">Choose a broad question goal</label>
+                  <select id="source-aware-question-plan" className="official-resource-hub__select" value={questionPlanId} onChange={(event) => setQuestionPlanId(event.target.value)}>
+                    {SOURCE_AWARE_QUESTION_PLANS.map((plan) => <option key={plan.id} value={plan.id}>{plan.label}</option>)}
+                  </select>
+                  <article className="official-resource-hub__item" style={{ marginTop: 10 }}>
+                    <strong>{activeQuestionPlan.label}</strong>
+                    <p className="official-resource-hub__item-urdu" lang="ur" dir="rtl">{activeQuestionPlan.labelUrdu}</p>
+                    <p className="official-resource-hub__item-description">{activeQuestionPlan.prompt}</p>
+                    <p className="official-resource-hub__item-description official-resource-hub__item-description--urdu" lang="ur" dir="rtl">{activeQuestionPlan.promptUrdu}</p>
+                    <p className="official-resource-hub__footer">{activeQuestionPlan.boundary}</p>
+                    <p className="official-resource-hub__footer" lang="ur" dir="rtl">{activeQuestionPlan.boundaryUrdu}</p>
+                    <a className="official-resource-hub__link" href={activeQuestionPlan.url} {...linkProps}>{activeQuestionPlan.sourceLabel} ↗</a>
+                  </article>
+                  <p className="official-resource-hub__footer">This planner does not send a question to AI, save a selection, determine treatment, or give a filing decision.</p>
+                </section>
+              )}
+            </section>
+
+            <section className="official-resource-hub__tools" aria-labelledby="calculation-explanation-map-title">
+              <h3 id="calculation-explanation-map-title" className="official-resource-hub__tool-title">Educational calculation-explanation map<br /><span lang="ur" dir="rtl">تعلیمی کیلکولیشن وضاحتی نقشہ</span></h3>
+              <p className="official-resource-hub__tool-copy">A visual review sequence for using an educational calculation responsibly. It does not change the authored calculator, request amounts, or produce an official tax result.</p>
+              <p className="official-resource-hub__tool-copy" lang="ur" dir="rtl">تعلیمی کیلکولیشن کو ذمہ داری سے استعمال کرنے کے لیے بصری جائزہ ترتیب۔ یہ اصل کیلکولیٹر نہیں بدلتا، اعداد نہیں مانگتا اور سرکاری ٹیکس نتیجہ نہیں دیتا۔</p>
+              <button className="official-resource-hub__print-toggle" type="button" onClick={() => setCalculationMapOpen((open) => !open)} aria-expanded={calculationMapOpen} aria-controls="calculation-explanation-map">{calculationMapOpen ? "Hide explanation map" : "Open explanation map"}</button>
+              {calculationMapOpen && (
+                <section id="calculation-explanation-map" className="official-resource-hub__print-sheet official-resource-hub__print-sheet--visible" aria-label="Educational calculation explanation map">
+                  <ol className="official-resource-hub__print-list">
+                    {CALCULATION_EXPLANATION_MAP.map((step) => (
+                      <li className="official-resource-hub__item" key={step.id}>
+                        <strong>{step.label}</strong><br />
+                        <span className="official-resource-hub__item-urdu" lang="ur" dir="rtl">{step.labelUrdu}</span>
+                      </li>
+                    ))}
+                  </ol>
+                  <a className="official-resource-hub__link" href="https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71158" {...linkProps}>Check current FBR filing guidance ↗</a>
+                  <p className="official-resource-hub__footer">This map cannot validate categories, rates, deductions, credits, withholding, a return, or FBR acceptance. Use current official guidance when a rule or result matters.</p>
+                </section>
+              )}
+            </section>
+
+            <section className="official-resource-hub__tools" aria-labelledby="ai-answer-evaluation-title">
+              <h3 id="ai-answer-evaluation-title" className="official-resource-hub__tool-title">Educational AI-answer evaluation checklist<br /><span lang="ur" dir="rtl">تعلیمی اے آئی جواب جائزہ چیک لسٹ</span></h3>
+              <p className="official-resource-hub__tool-copy">Use temporary marks to assess whether an educational answer explains its limits before you rely on it. This checklist does not grade an answer, verify sources, or replace an official check.</p>
+              <p className="official-resource-hub__tool-copy" lang="ur" dir="rtl">کسی تعلیمی جواب پر انحصار سے پہلے اس کی حدود کی وضاحت جانچنے کے لیے عارضی نشانات استعمال کریں۔ یہ چیک لسٹ جواب کو گریڈ، سورس کی تصدیق یا سرکاری جانچ کا متبادل نہیں بناتی۔</p>
+              <button className="official-resource-hub__print-toggle" type="button" onClick={() => setAnswerEvaluationOpen((open) => !open)} aria-expanded={answerEvaluationOpen} aria-controls="ai-answer-evaluation-checklist">{answerEvaluationOpen ? "Hide AI-answer checklist" : "Open AI-answer checklist"}</button>
+              {answerEvaluationOpen && (
+                <section id="ai-answer-evaluation-checklist" className="official-resource-hub__print-sheet official-resource-hub__print-sheet--visible" aria-label="Temporary educational AI-answer evaluation checklist">
+                  <p className="official-resource-hub__print-meta" role="status"><strong>{answerEvaluationReadiness.label} · {answerEvaluationReadiness.completed}/{answerEvaluationReadiness.total}</strong><br /><span lang="ur" dir="rtl">{answerEvaluationReadiness.labelUrdu}</span></p>
+                  <ul className="official-resource-hub__print-list">
+                    {AI_ANSWER_EVALUATION_STEPS.map((step) => (
+                      <li key={step.id}>
+                        <label className="official-resource-hub__check-label"><input type="checkbox" checked={Boolean(answerEvaluationItems[step.id])} onChange={() => setAnswerEvaluationItems((current) => ({ ...current, [step.id]: !current[step.id] }))} /><span>{step.label}<br /><span lang="ur" dir="rtl">{step.labelUrdu}</span></span></label>
+                      </li>
+                    ))}
+                  </ul>
+                  <button className="official-resource-hub__print-action" type="button" onClick={() => setAnswerEvaluationItems({})}>Clear temporary evaluation marks / <span lang="ur" dir="rtl">عارضی جائزہ نشانات صاف کریں</span></button>
+                  <p className="official-resource-hub__footer">These marks disappear on refresh and are not saved to browser storage, your account, or the app database. Marking every item does not make an answer correct, complete, current, or suitable for your facts.</p>
                 </section>
               )}
             </section>

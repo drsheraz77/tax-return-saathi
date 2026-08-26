@@ -66,4 +66,17 @@ describe("priority preparation workflow wiring", () => {
     expect(resourceHub).toContain("does not track a return, send alerts, keep copies, or say that FBR has accepted anything");
     expect(resourceHub).toContain("not written to browser storage, your account, or the app database");
   });
+
+  it("renders source-aware questions, a visual calculation explanation, and temporary AI-answer evaluation safeguards", () => {
+    expect(resourceHub).toContain("source-aware-question-planner");
+    expect(resourceHub).toContain("SOURCE_AWARE_QUESTION_PLANS");
+    expect(resourceHub).toContain("does not send a question to AI, save a selection, determine treatment, or give a filing decision");
+    expect(resourceHub).toContain("calculation-explanation-map");
+    expect(resourceHub).toContain("CALCULATION_EXPLANATION_MAP");
+    expect(resourceHub).toContain("does not change the authored calculator, request amounts, or produce an official tax result");
+    expect(resourceHub).toContain("ai-answer-evaluation-checklist");
+    expect(resourceHub).toContain("AI_ANSWER_EVALUATION_STEPS");
+    expect(resourceHub).toContain("does not grade an answer, verify sources, or replace an official check");
+    expect(resourceHub).toContain("not saved to browser storage, your account, or the app database");
+  });
 });

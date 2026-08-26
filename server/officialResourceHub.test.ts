@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  AI_ANSWER_EVALUATION_STEPS,
+  CALCULATION_EXPLANATION_MAP,
   IRIS_FAQ,
   FREELANCER_FAQ,
   FREELANCER_PRE_FILING_CHECKLIST,
@@ -14,7 +16,9 @@ import {
   PRE_FILING_CHECKLIST,
   PRE_SUBMISSION_ERROR_PREVENTION_STEPS,
   RETURN_WEALTH_RELATIONSHIP_STEPS,
+  getSourceAwareQuestionPlan,
   IRIS_NAVIGATION_WALKTHROUGH,
+  SOURCE_AWARE_QUESTION_PLANS,
   searchFreelancerFaq,
   searchIrisFaq,
   validateOfficialResourceHub,
@@ -115,6 +119,25 @@ describe("official resource hub", () => {
     expect(POST_SUBMISSION_CONTINUITY_STEPS.every((item) => item.labelUrdu && item.boundaryUrdu && item.url.includes("fbr.gov.pk"))).toBe(true);
     expect(POST_SUBMISSION_CONTINUITY_STEPS.map((item) => item.boundary).join(" ")).toMatch(/cannot see a submission|Do not upload|does not monitor|cannot draft/i);
     expect(getTemporaryGuidanceSummary()).toMatchObject({ completed: 0, total: 0, status: "not-started", label: "Not started" });
+  });
+
+  it("provides a local source-aware question planner without sending a question or deciding treatment", () => {
+    expect(validateResourceTools()).toBe(true);
+    expect(SOURCE_AWARE_QUESTION_PLANS).toHaveLength(4);
+    expect(SOURCE_AWARE_QUESTION_PLANS.every((item) => item.labelUrdu && item.prompt && item.promptUrdu && item.boundaryUrdu && item.url.includes("fbr.gov.pk"))).toBe(true);
+    expect(getSourceAwareQuestionPlan("question-published-date")).toMatchObject({ id: "question-published-date", sourceLabel: "Open FBR published due dates" });
+    expect(getSourceAwareQuestionPlan("unknown-plan").id).toBe("question-iris");
+    expect(SOURCE_AWARE_QUESTION_PLANS.map((item) => item.boundary).join(" ")).toMatch(/does not calculate a personal deadline|does not inspect records|does not interpret law/i);
+  });
+
+  it("keeps calculation explanations and answer evaluation as education rather than a legal or AI-verification result", () => {
+    expect(CALCULATION_EXPLANATION_MAP).toHaveLength(5);
+    expect(CALCULATION_EXPLANATION_MAP.every((item) => item.id && item.label && item.labelUrdu)).toBe(true);
+    expect(CALCULATION_EXPLANATION_MAP.map((item) => item.label).join(" ")).toMatch(/educational tool|official FBR result|qualified help/i);
+    expect(AI_ANSWER_EVALUATION_STEPS).toHaveLength(5);
+    expect(AI_ANSWER_EVALUATION_STEPS.every((item) => item.label && item.labelUrdu)).toBe(true);
+    expect(AI_ANSWER_EVALUATION_STEPS.map((item) => item.label).join(" ")).toMatch(/tax-year assumption|official FBR source|uncertainty|Do not paste CNIC/i);
+    expect(getTemporaryGuidanceSummary(Object.fromEntries(AI_ANSWER_EVALUATION_STEPS.map((item) => [item.id, true])), AI_ANSWER_EVALUATION_STEPS)).toMatchObject({ completed: 5, total: 5, status: "all-marked" });
   });
 
   it("derives a dated, limited review scope for each official resource category", () => {

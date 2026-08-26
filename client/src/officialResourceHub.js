@@ -487,6 +487,93 @@ export const POST_SUBMISSION_CONTINUITY_STEPS = [
   },
 ];
 
+export const SOURCE_AWARE_QUESTION_PLANS = [
+  {
+    id: "question-iris",
+    label: "Official IRIS access or return-start question",
+    labelUrdu: "سرکاری آئرس رسائی یا ریٹرن شروع کرنے کا سوال",
+    prompt: "Which current official FBR page should I use to confirm the relevant IRIS access or return-start guidance?",
+    promptUrdu: "متعلقہ آئرس رسائی یا ریٹرن شروع کرنے کی رہنمائی کی تصدیق کے لیے مجھے کون سا موجودہ سرکاری ایف بی آر صفحہ استعمال کرنا چاہیے؟",
+    boundary: "This only helps frame a source-checking question. It does not open IRIS, access an account, or decide whether you can file.",
+    boundaryUrdu: "یہ صرف سورس چیک کرنے کا سوال ترتیب دیتا ہے۔ یہ آئرس نہیں کھولتا، اکاؤنٹ تک رسائی نہیں دیتا اور نہ فیصلہ کرتا ہے کہ آپ فائل کر سکتے ہیں۔",
+    url: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71158",
+    sourceLabel: "Open FBR filing guidance",
+  },
+  {
+    id: "question-published-date",
+    label: "Published filing-date category question",
+    labelUrdu: "شائع شدہ فائلنگ تاریخ کی قسم کا سوال",
+    prompt: "Which published FBR due-date category may be relevant, and what current official page should I check before acting?",
+    promptUrdu: "کون سی شائع شدہ ایف بی آر ڈیڈ ڈیٹ قسم متعلق ہو سکتی ہے، اور عمل سے پہلے مجھے کون سا موجودہ سرکاری صفحہ دیکھنا چاہیے؟",
+    boundary: "This does not calculate a personal deadline, extension, or late-filing consequence.",
+    boundaryUrdu: "یہ ذاتی ڈیڈ لائن، توسیع یا تاخیر سے فائلنگ کا نتیجہ نہیں نکالتا۔",
+    url: "https://www.fbr.gov.pk/categ/income-tax-due-dates/51147/40846/81148",
+    sourceLabel: "Open FBR published due dates",
+  },
+  {
+    id: "question-records",
+    label: "Return preparation and private records question",
+    labelUrdu: "ریٹرن تیاری اور نجی ریکارڈ کا سوال",
+    prompt: "Which current official filing guidance should I review before organising the records I will rely on?",
+    promptUrdu: "جن ریکارڈز پر میں انحصار کروں گا/گی ان کو ترتیب دینے سے پہلے مجھے کون سی موجودہ سرکاری فائلنگ رہنمائی دیکھنی چاہیے؟",
+    boundary: "This does not inspect records, receive documents, decide evidence is sufficient, or calculate tax.",
+    boundaryUrdu: "یہ ریکارڈ نہیں دیکھتا، دستاویزات وصول نہیں کرتا، ثبوت کی کفایت کا فیصلہ یا ٹیکس کا حساب نہیں کرتا۔",
+    url: "https://www.fbr.gov.pk/categ/file-income-tax-return/51147/80860/71158",
+    sourceLabel: "Open FBR filing guidance",
+  },
+  {
+    id: "question-complex",
+    label: "Complex or unclear matter question",
+    labelUrdu: "پیچیدہ یا غیر واضح معاملے کا سوال",
+    prompt: "Which official FBR source or qualified professional should clarify this complex matter before I rely on any educational explanation?",
+    promptUrdu: "کسی تعلیمی وضاحت پر انحصار سے پہلے اس پیچیدہ معاملے کی وضاحت کے لیے کون سا سرکاری ایف بی آر ذریعہ یا اہل پیشہ ور مناسب ہے؟",
+    boundary: "This does not interpret law, classify a situation, determine tax treatment, or draft a response.",
+    boundaryUrdu: "یہ قانون کی تشریح، صورت حال کی درجہ بندی، ٹیکس ٹریٹمنٹ کا تعین یا جواب تیار نہیں کرتا۔",
+    url: "https://www.fbr.gov.pk/contact-us/142252/173964",
+    sourceLabel: "Open FBR contact and support",
+  },
+];
+
+export function getSourceAwareQuestionPlan(planId) {
+  return SOURCE_AWARE_QUESTION_PLANS.find((plan) => plan.id === planId) ?? SOURCE_AWARE_QUESTION_PLANS[0];
+}
+
+export const CALCULATION_EXPLANATION_MAP = [
+  {
+    id: "calc-year",
+    label: "1. Identify the stated tax year and the limits of the educational tool.",
+    labelUrdu: "1۔ بتائے گئے ٹیکس سال اور تعلیمی ٹول کی حدود شناخت کریں۔",
+  },
+  {
+    id: "calc-categories",
+    label: "2. Organise only the relevant broad income, deduction, withholding, or credit categories using your own private records.",
+    labelUrdu: "2۔ اپنے نجی ریکارڈ استعمال کرتے ہوئے صرف متعلقہ عمومی آمدن، کٹوتی، ودہولڈنگ یا کریڈٹ زمرے ترتیب دیں۔",
+  },
+  {
+    id: "calc-source",
+    label: "3. Check current official sources where a rule, rate, date, or treatment is uncertain.",
+    labelUrdu: "3۔ جہاں قاعدہ، شرح، تاریخ یا ٹریٹمنٹ غیر یقینی ہو وہاں موجودہ سرکاری ذرائع دیکھیں۔",
+  },
+  {
+    id: "calc-review",
+    label: "4. Review the educational output as a prompt for questions—not as an official FBR result or acceptance check.",
+    labelUrdu: "4۔ تعلیمی آؤٹ پٹ کو سوالات کے لیے یاددہانی کے طور پر دیکھیں—سرکاری ایف بی آر نتیجہ یا قبولیت چیک کے طور پر نہیں۔",
+  },
+  {
+    id: "calc-escalate",
+    label: "5. Use official FBR guidance or qualified help for a complex, unclear, urgent, disputed, audit, demand, or court-related matter.",
+    labelUrdu: "5۔ پیچیدہ، غیر واضح، فوری، متنازع، آڈٹ، ڈیمانڈ یا عدالتی معاملے کے لیے سرکاری ایف بی آر رہنمائی یا اہل مدد استعمال کریں۔",
+  },
+];
+
+export const AI_ANSWER_EVALUATION_STEPS = [
+  { id: "answer-tax-year", label: "Check whether the educational answer states its tax-year assumption or says that the year is unknown.", labelUrdu: "دیکھیں کہ آیا تعلیمی جواب اپنا ٹیکس سال مفروضہ بتاتا ہے یا کہتا ہے کہ سال معلوم نہیں۔" },
+  { id: "answer-official-source", label: "Check whether it distinguishes an official FBR source from a general explanation and gives you a way to verify current information.", labelUrdu: "دیکھیں کہ آیا یہ سرکاری ایف بی آر ذریعہ کو عمومی وضاحت سے الگ کرتا ہے اور موجودہ معلومات کی تصدیق کا راستہ دیتا ہے۔" },
+  { id: "answer-uncertainty", label: "Check whether it flags uncertainty instead of inventing a rate, deadline, rule, portal step, or outcome.", labelUrdu: "دیکھیں کہ آیا یہ شرح، ڈیڈ لائن، قاعدہ، پورٹل مرحلہ یا نتیجہ گھڑنے کے بجائے غیر یقینی کو واضح کرتا ہے۔" },
+  { id: "answer-privacy", label: "Do not paste CNIC, NTN, passwords, OTPs, bank details, tax amounts, documents, or notice text to obtain an answer.", labelUrdu: "جواب حاصل کرنے کے لیے سی این آئی سی، این ٹی این، پاس ورڈ، او ٹی پی، بینک تفصیلات، ٹیکس اعداد، دستاویزات یا نوٹس متن پیسٹ نہ کریں۔" },
+  { id: "answer-escalation", label: "For complex, urgent, disputed, audit, demand, court, foreign, or residency matters, use official or qualified follow-up instead of relying on the answer alone.", labelUrdu: "پیچیدہ، فوری، متنازع، آڈٹ، ڈیمانڈ، عدالتی، بیرون ملک یا رہائشی معاملات میں صرف جواب پر انحصار کرنے کے بجائے سرکاری یا اہل فالو اپ استعمال کریں۔" },
+];
+
 export function getTemporaryGuidanceSummary(checked = {}, steps = []) {
   const completed = steps.filter((item) => checked[item.id]).length;
   const total = steps.length;
@@ -605,7 +692,7 @@ export function getOfficialResourceCategoryReview(section) {
   };
 }
 
-export function validateResourceTools(faq = IRIS_FAQ, checklist = PRE_FILING_CHECKLIST, freelancerFaq = FREELANCER_FAQ, freelancerChecklist = FREELANCER_PRE_FILING_CHECKLIST, walkthrough = IRIS_NAVIGATION_WALKTHROUGH, errorPrevention = PRE_SUBMISSION_ERROR_PREVENTION_STEPS, complexPaths = COMPLEX_SITUATION_PREPARATION_PATHS, wealthRelationship = RETURN_WEALTH_RELATIONSHIP_STEPS, continuitySteps = POST_SUBMISSION_CONTINUITY_STEPS) {
+export function validateResourceTools(faq = IRIS_FAQ, checklist = PRE_FILING_CHECKLIST, freelancerFaq = FREELANCER_FAQ, freelancerChecklist = FREELANCER_PRE_FILING_CHECKLIST, walkthrough = IRIS_NAVIGATION_WALKTHROUGH, errorPrevention = PRE_SUBMISSION_ERROR_PREVENTION_STEPS, complexPaths = COMPLEX_SITUATION_PREPARATION_PATHS, wealthRelationship = RETURN_WEALTH_RELATIONSHIP_STEPS, continuitySteps = POST_SUBMISSION_CONTINUITY_STEPS, questionPlans = SOURCE_AWARE_QUESTION_PLANS, calculationMap = CALCULATION_EXPLANATION_MAP, answerEvaluation = AI_ANSWER_EVALUATION_STEPS) {
   const isValidFaq = (items) => items.every((item) => {
     try {
       return item.id && item.question && item.questionUrdu && item.answer && item.answerUrdu && item.keywords.length > 0 && OFFICIAL_HOSTS.has(new URL(item.url).hostname);
@@ -629,5 +716,6 @@ export function validateResourceTools(faq = IRIS_FAQ, checklist = PRE_FILING_CHE
     }
   });
   const isValidRelationshipGuide = (items) => items.every((item) => item.id && item.label && item.labelUrdu && item.boundary && item.boundaryUrdu);
-  return isValidFaq(faq) && isValidChecklist(checklist) && isValidFaq(freelancerFaq) && isValidChecklist(freelancerChecklist) && isValidWalkthrough(walkthrough) && isValidChecklist(errorPrevention) && isValidOfficialRoute(complexPaths) && isValidRelationshipGuide(wealthRelationship) && isValidOfficialRoute(continuitySteps);
+  const isValidQuestionPlan = (items) => isValidOfficialRoute(items) && items.every((item) => item.prompt && item.promptUrdu);
+  return isValidFaq(faq) && isValidChecklist(checklist) && isValidFaq(freelancerFaq) && isValidChecklist(freelancerChecklist) && isValidWalkthrough(walkthrough) && isValidChecklist(errorPrevention) && isValidOfficialRoute(complexPaths) && isValidRelationshipGuide(wealthRelationship) && isValidOfficialRoute(continuitySteps) && isValidQuestionPlan(questionPlans) && isValidChecklist(calculationMap) && isValidChecklist(answerEvaluation);
 }

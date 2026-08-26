@@ -194,5 +194,9 @@
 - [x] Add a low-data guided learning path that connects broad preparation goals to reviewed official sources and existing preparation tools without deciding a taxpayer’s treatment or filing route.
 - [x] Add reusable bilingual educational topic cards with a source, reviewed-on marker, scope boundary, and related preparation action to begin the searchable content architecture.
 - [x] Add focused tests and verify local-only topic discovery, learning-path limits, bilingual interaction, responsive layout, full suite, and production build before publishing this phase.
+- [x] Add a bilingual, local-only source-aware question planner that turns a broad learning goal into safe questions to ask and source checks to make, without sending a query to AI or deciding treatment.
+- [x] Add a visual, educational calculation-explanation map that describes the review sequence without changing the authored calculator, requesting amounts, or presenting a legal tax result.
+- [x] Add a temporary AI-answer evaluation checklist that teaches visitors to check tax year, official source, uncertainty, and privacy before relying on an educational answer.
+- [x] Add focused tests and verify the structured-guidance, visual-explanation, and evaluation boundaries, bilingual interaction, responsive layout, full suite, and production build before publishing this phase.
 - [ ] Complete the subsequent low-data guidance, structured AI, navigation, accessibility, performance, and public-discovery batches with testing and checkpoints after each batch.
 - [ ] Prepare separate security, consent, retention, legal-basis, and human-review requirements for any deferred sensitive-data or personalised-decision capability.
