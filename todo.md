@@ -272,3 +272,6 @@
 - [x] Redesign the initial privacy-choice card into a compact bilingual first step with equal accept and decline actions, keeping the choice local-only and without advertising, analytics, or legal-certification claims.
 - [x] Add an optional second details step that exposes the full privacy explanation, policy link, and explicit non-certified/non-AdSense boundary without hiding choice or withdrawal controls.
 - [x] Add focused coverage and verify compact and details states, accept/decline persistence, keyboard access, Urdu/English presentation, responsive layout, full suite, and production build before publication.
+- [x] Add driris@gmail.com as the public pilot-feedback contact route and make the email link accessible without changing the existing anonymous in-app feedback flow.
+- [x] Align feedback acknowledgements and the public privacy policy with the new optional direct-contact route, including a clear warning not to send tax, identity, financial, credential, notice, or document details by email.
+- [x] Add focused coverage and verify contact wording, mailto safety, Urdu/English presentation, responsive layout, full suite, and production build before publication.

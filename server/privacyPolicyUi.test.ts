@@ -7,6 +7,7 @@ const app = readFileSync(resolve(projectRoot, "client/src/App.jsx"), "utf8");
 const appEntry = readFileSync(resolve(projectRoot, "client/src/main.jsx"), "utf8");
 const privacyNotice = readFileSync(resolve(projectRoot, "client/src/PrivacyConsentNotice.jsx"), "utf8");
 const privacyPolicy = readFileSync(resolve(projectRoot, "client/src/PublicPrivacyPolicy.jsx"), "utf8");
+const resourceHub = readFileSync(resolve(projectRoot, "client/src/OfficialResourceHub.jsx"), "utf8");
 
 describe("pilot privacy and public policy interface", () => {
   it("makes pilot status and a shareable public privacy route visible", () => {
@@ -41,5 +42,13 @@ describe("pilot privacy and public policy interface", () => {
     expect(privacyPolicy).toContain("does not currently run Google Ads, AdSense tags, or analytics tags");
     expect(privacyPolicy).toContain("not a Google-certified CMP");
     expect(privacyPolicy).toContain("not a legal certification");
+  });
+
+  it("offers the supplied pilot email as an optional non-anonymous contact route with a sensitive-data warning", () => {
+    expect(resourceHub).toContain('mailto:driris@gmail.com?subject=Tax%20Return%20Saathi%20pilot%20feedback');
+    expect(resourceHub).toContain("Email is not anonymous and is separate from this form");
+    expect(resourceHub).toContain("do not send tax, identity, financial, credential, notice, or document details");
+    expect(privacyPolicy).toContain("Optional direct pilot feedback may be emailed to driris@gmail.com");
+    expect(privacyPolicy).toContain("email is not anonymous and is separate from the form");
   });
 });

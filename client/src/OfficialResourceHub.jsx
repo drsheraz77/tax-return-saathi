@@ -332,6 +332,8 @@ export default function OfficialResourceHub() {
               <div id="pilot-feedback-form" className="official-resource-hub__support-card" tabIndex={-1}>
                 <h4>Share feedback <span lang="ur" dir="rtl">اپنی رائے دیں</span></h4>
                 <p>Tell us how the tool can be clearer or easier to use. This is not a channel for tax records, personal tax advice, or urgent filing help.</p>
+                <p className="official-resource-hub__feedback-note">For optional direct pilot contact, email <a className="official-resource-hub__link" href="mailto:driris@gmail.com?subject=Tax%20Return%20Saathi%20pilot%20feedback">driris@gmail.com</a>. Email is not anonymous and is separate from this form; do not send tax, identity, financial, credential, notice, or document details.</p>
+                <p className="official-resource-hub__feedback-note" lang="ur" dir="rtl">آزمائشی ورژن کے بارے میں براہِ راست رابطے کے لیے <a className="official-resource-hub__link" href="mailto:driris@gmail.com?subject=Tax%20Return%20Saathi%20pilot%20feedback">driris@gmail.com</a> کو ای میل کر سکتے ہیں۔ ای میل گمنام نہیں ہوتی اور اس فارم سے الگ ہے؛ ٹیکس، شناختی، مالی، اسناد، نوٹس یا دستاویز کی تفصیل نہ بھیجیں۔</p>
                 {!feedbackAcknowledged ? <form className="official-resource-hub__feedback-form" onSubmit={(event) => { event.preventDefault(); setFeedbackNotice(""); feedbackMutation.mutate({ category: feedbackCategory, message: feedbackMessage }); }}>
                   <label htmlFor="feedback-category">Topic</label>
                   <select id="feedback-category" value={feedbackCategory} onChange={(event) => setFeedbackCategory(event.target.value)}>
@@ -349,13 +351,14 @@ export default function OfficialResourceHub() {
                   <h5>Feedback received <span lang="ur" dir="rtl">آپ کی رائے موصول ہو گئی</span></h5>
                   <p>{feedbackNotice}</p>
                   <p>Your message is anonymous; this site cannot reply directly. For official tax or IRIS help, use the FBR contact details below.</p>
+                  <p>If you need to contact the pilot team directly, you may email <a className="official-resource-hub__link" href="mailto:driris@gmail.com?subject=Tax%20Return%20Saathi%20pilot%20feedback">driris@gmail.com</a>; email is not anonymous, and you must not send sensitive details.</p>
                   <button type="button" onClick={() => { setFeedbackAcknowledged(false); setFeedbackNotice(""); }}>Send another feedback message</button>
                 </section>}
               </div>
               <div className="official-resource-hub__support-card">
                 <h4>Contact & official help <span lang="ur" dir="rtl">رابطہ اور سرکاری مدد</span></h4>
-                <p>For this site, use the feedback form above; it does not provide individual tax advice or a reply channel. For official tax or IRIS help, contact the FBR Helpline: <strong>051 111 772 772</strong> (international: <strong>+92 51 111 772 772</strong>) or <a className="official-resource-hub__link" href="mailto:helpline@fbr.gov.pk">helpline@fbr.gov.pk</a>. FBR states Monday–Friday, 8:00 AM–11:30 PM.</p>
-                <p lang="ur" dir="rtl">اس ویب سائٹ کے لیے اوپر والا فیڈبیک فارم استعمال کریں؛ یہ انفرادی ٹیکس مشورہ یا جواب دینے کا ذریعہ نہیں ہے۔ سرکاری ٹیکس یا آئرس مدد کے لیے ایف بی آر ہیلپ لائن سے رابطہ کریں۔</p>
+                <p>For this site, use the anonymous feedback form above or optional direct pilot email at <a className="official-resource-hub__link" href="mailto:driris@gmail.com?subject=Tax%20Return%20Saathi%20pilot%20feedback">driris@gmail.com</a>. Direct email is not anonymous; do not include sensitive details. Neither route provides individual tax advice. For official tax or IRIS help, contact the FBR Helpline: <strong>051 111 772 772</strong> (international: <strong>+92 51 111 772 772</strong>) or <a className="official-resource-hub__link" href="mailto:helpline@fbr.gov.pk">helpline@fbr.gov.pk</a>. FBR states Monday–Friday, 8:00 AM–11:30 PM.</p>
+                <p lang="ur" dir="rtl">اس ویب سائٹ کے لیے اوپر والا گمنام فیڈبیک فارم یا اختیاری براہِ راست آزمائشی ای میل <a className="official-resource-hub__link" href="mailto:driris@gmail.com?subject=Tax%20Return%20Saathi%20pilot%20feedback">driris@gmail.com</a> استعمال کریں۔ براہِ راست ای میل گمنام نہیں؛ حساس تفصیل شامل نہ کریں۔ کوئی بھی راستہ انفرادی ٹیکس مشورہ نہیں دیتا۔ سرکاری ٹیکس یا آئرس مدد کے لیے ایف بی آر ہیلپ لائن سے رابطہ کریں۔</p>
                 <a className="official-resource-hub__link" href="https://www.fbr.gov.pk/contact-us/142252/173964" {...linkProps}>Official FBR contact page ↗</a>
               </div>
             </section>
