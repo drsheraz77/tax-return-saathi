@@ -266,3 +266,6 @@
 - [x] Add focused coverage and verify escalation wording, official-link boundary, Urdu/English presentation, responsive layout, full suite, and production build before publication.
 - [x] Add a compact bilingual manual review-date note beside the qualified industry escalation card’s approved FBR support link, using the existing review source without suggesting a live check.
 - [x] Add focused coverage and verify the support-link date note, manual/non-live boundary, Urdu/English presentation, responsive layout, full suite, and production build before publication.
+- [x] Consolidate the competing fixed bottom launchers into a calmer, accessible responsive navigation pattern that preserves access to resources, preferences, Tax Year content, and feedback without obscuring preparation content.
+- [x] Reposition the privacy-consent notice and account for the consolidated launcher area so controls do not overlap or hide one another on desktop or mobile.
+- [x] Add focused coverage and verify launcher access, consent visibility, keyboard accessibility, Urdu/English presentation, desktop/mobile layout, full suite, and production build before publication.

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { startLogin } from "./const";
 import { trpc } from "./lib/trpc";
 import { formatPrototypeDraftSavedAt, getPrototypeChecklist, getPrototypeDraftSavedAtIso, getPrototypeQuestions, getPrototypeSources, loadPrototypeDraft, removePrototypeDraft, savePrototypeDraft } from "./personalisedChecklistPrototype.js";
@@ -162,13 +162,26 @@ export default function PersonalisedChecklistPrototype() {
     setIsOpen(true);
   };
 
+  useEffect(() => {
+    const openChecklist = () => {
+      const draft = readSavedDraft();
+      setSavedDraft(draft);
+      setDraftNotice(draft ? "A saved draft is available on this browser." : "");
+      setIsOpen(true);
+    };
+    const closeChecklist = () => setIsOpen(false);
+    window.addEventListener("tax-return-saathi:open-checklist", openChecklist);
+    window.addEventListener("tax-return-saathi:close-supplemental-panels", closeChecklist);
+    return () => {
+      window.removeEventListener("tax-return-saathi:open-checklist", openChecklist);
+      window.removeEventListener("tax-return-saathi:close-supplemental-panels", closeChecklist);
+    };
+  }, []);
+
   return (
     <aside className="filing-prototype" aria-label="Personalised filing checklist prototype">
       <style>{`
-        .filing-prototype { position: fixed; z-index: 59; left: 16px; bottom: 16px; font-family: Georgia, 'Times New Roman', serif; color: #173b31; }
-        .filing-prototype__launch { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #b99116; border-radius: 999px; background: #fffdf2; color: #0B3D2E; box-shadow: 0 8px 24px rgba(11, 61, 46, .18); cursor: pointer; padding: 11px 15px; font: 700 14px/1.15 inherit; }
-        .filing-prototype__launch:hover, .filing-prototype__launch:focus-visible { background: #f7efcb; outline: 3px solid rgba(202, 165, 24, .34); outline-offset: 2px; }
-        .filing-prototype__spark { display: inline-grid; place-items: center; width: 19px; height: 19px; border-radius: 50%; background: #0B3D2E; color: #ecd46e; font-size: 12px; }
+        .filing-prototype { position: fixed; z-index: 59; left: 16px; bottom: 84px; font-family: Georgia, 'Times New Roman', serif; color: #173b31; }
         .filing-prototype__panel { width: min(535px, calc(100vw - 32px)); max-height: calc(100vh - 100px); margin-bottom: 10px; overflow: auto; border: 1px solid #d6bd67; border-radius: 16px; background: #fffdf7; box-shadow: 0 20px 50px rgba(10, 43, 33, .28); }
         .filing-prototype__header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 17px 18px 14px; background: #0B3D2E; color: #fffdf2; }
         .filing-prototype__eyebrow { margin: 0 0 4px; color: #ead675; font: 700 11px/1.25 Arial, sans-serif; letter-spacing: .06em; text-transform: uppercase; }
@@ -226,7 +239,7 @@ export default function PersonalisedChecklistPrototype() {
         .filing-prototype__source a { color: #075c48; font-size: 13px; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
         .filing-prototype__source span { display: block; margin-top: 3px; color: #5b5c49; font-size: 11px; line-height: 1.4; }
         .filing-prototype__disclaimer { margin: 16px 0 0; color: #605c43; font-size: 11px; line-height: 1.4; }
-        @media (max-width: 640px) { .filing-prototype { left: 12px; bottom: 67px; } .filing-prototype__panel { width: min(100vw - 24px, 535px); } .filing-prototype__actions { flex-wrap: wrap; } .filing-prototype__metrics { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .filing-prototype { left: 12px; bottom: 74px; } .filing-prototype__panel { width: min(100vw - 24px, 535px); } .filing-prototype__actions { flex-wrap: wrap; } .filing-prototype__metrics { grid-template-columns: 1fr; } }
       `}</style>
 
       {isOpen && (
@@ -341,10 +354,6 @@ export default function PersonalisedChecklistPrototype() {
         </section>
       )}
 
-      <button className="filing-prototype__launch" type="button" onClick={openPrototype} aria-expanded={isOpen}>
-        <span className="filing-prototype__spark" aria-hidden="true">✓</span>
-        Try filing checklist prototype
-      </button>
     </aside>
   );
 }

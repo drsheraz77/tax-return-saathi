@@ -8,6 +8,7 @@ import { trpc } from "./lib/trpc";
 import { COOKIE_NAME, UNAUTHED_ERR_MSG } from "@shared/const";
 import { startLogin } from "./const";
 import PrivacyConsentNotice from "./PrivacyConsentNotice.jsx";
+import QuickToolsDock from "./QuickToolsDock.jsx";
 
 const OfficialResourceHub = React.lazy(() => import("./OfficialResourceHub.jsx"));
 const PersonalisedChecklistPrototype = React.lazy(() => import("./PersonalisedChecklistPrototype.jsx"));
@@ -51,6 +52,7 @@ function SiteContent() {
       <OfficialResourceHub />
       <TaxpayerPreparationProfile />
     </Suspense>
+    <QuickToolsDock />
     <PrivacyConsentNotice />
   </>;
 }

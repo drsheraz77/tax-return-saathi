@@ -79,6 +79,20 @@ export default function TaxpayerPreparationProfile() {
     setNotice("");
     if (!isOpen) setForm(formFromProfile(profileQuery.data));
   };
+  useEffect(() => {
+    const openPreferences = () => {
+      setIsOpen(true);
+      setNotice("");
+      setForm(formFromProfile(profileQuery.data));
+    };
+    const closePreferences = () => setIsOpen(false);
+    window.addEventListener("tax-return-saathi:open-preferences", openPreferences);
+    window.addEventListener("tax-return-saathi:close-supplemental-panels", closePreferences);
+    return () => {
+      window.removeEventListener("tax-return-saathi:open-preferences", openPreferences);
+      window.removeEventListener("tax-return-saathi:close-supplemental-panels", closePreferences);
+    };
+  }, [profileQuery.data]);
   const togglePath = (path) => setForm((current) => ({ ...current, preparationPaths: current.preparationPaths.includes(path) ? current.preparationPaths.filter((item) => item !== path) : [...current.preparationPaths, path] }));
   const save = () => {
     const payload = payloadFromForm(form);
@@ -89,9 +103,8 @@ export default function TaxpayerPreparationProfile() {
   return (
     <aside className="taxpayer-profile" aria-label="Optional taxpayer preparation profile">
       <style>{`
-        .taxpayer-profile { position: fixed; z-index: 80; right: 16px; bottom: 78px; font-family: Georgia, 'Times New Roman', serif; color: #173b31; }
-        .taxpayer-profile__launch { display:inline-flex; align-items:center; gap:8px; border:1px solid #b99116; border-radius:999px; background:#fffdf2; color:#0B3D2E; box-shadow:0 8px 24px rgba(11,61,46,.18); cursor:pointer; padding:10px 14px; font:700 13px/1.2 inherit; }
-        .taxpayer-profile__launch:hover, .taxpayer-profile__launch:focus-visible, .taxpayer-profile__button:hover, .taxpayer-profile__button:focus-visible { outline:3px solid rgba(202,165,24,.35); outline-offset:2px; }
+        .taxpayer-profile { position: fixed; z-index: 80; right: 16px; bottom: 84px; font-family: Georgia, 'Times New Roman', serif; color: #173b31; }
+        .taxpayer-profile__button:hover, .taxpayer-profile__button:focus-visible { outline:3px solid rgba(202,165,24,.35); outline-offset:2px; }
         .taxpayer-profile__panel { width:min(430px, calc(100vw - 32px)); max-height:calc(100vh - 160px); margin-bottom:10px; overflow:auto; border:1px solid #d6bd67; border-radius:14px; background:#fffdf7; box-shadow:0 20px 50px rgba(10,43,33,.28); }
         .taxpayer-profile__header { display:flex; justify-content:space-between; gap:10px; padding:15px 16px 13px; background:#0B3D2E; color:#fffdf2; }
         .taxpayer-profile__eyebrow { margin:0 0 4px; color:#ead675; font:700 10px/1.25 Arial,sans-serif; letter-spacing:.06em; text-transform:uppercase; }
@@ -101,7 +114,7 @@ export default function TaxpayerPreparationProfile() {
         .taxpayer-profile__notice { border-left-color:#0B3D2E; background:#edf5ee; }.taxpayer-profile__group { margin:14px 0 0; border:0; padding:0; }.taxpayer-profile__legend { margin:0 0 6px; color:#0B3D2E; font-size:14px; font-weight:700; }.taxpayer-profile__hint { margin:0 0 8px; color:#5b5b46; font-size:12px; line-height:1.4; }
         .taxpayer-profile__choices { display:grid; gap:6px; }.taxpayer-profile__choice { display:flex; align-items:flex-start; gap:8px; border:1px solid #e0d6aa; border-radius:9px; background:#fffefb; padding:8px; color:#173b31; font-size:12px; line-height:1.3; }.taxpayer-profile__choice:focus-within { outline:3px solid rgba(202,165,24,.3); outline-offset:2px; }.taxpayer-profile__choice input { margin-top:2px; accent-color:#0B3D2E; }
         .taxpayer-profile__actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }.taxpayer-profile__button { border:1px solid #0B3D2E; border-radius:8px; background:#0B3D2E; color:#fffdf2; cursor:pointer; padding:9px 11px; font:700 12px/1.2 inherit; }.taxpayer-profile__button--secondary { background:#fffdf7; color:#0B3D2E; }.taxpayer-profile__button--danger { border-color:#8b2e26; color:#8b2e26; }.taxpayer-profile__button:disabled { cursor:not-allowed; opacity:.5; }
-        @media (max-width:520px) { .taxpayer-profile { right:12px; bottom:190px; }.taxpayer-profile__panel { max-height:calc(100vh - 158px); } }
+        @media (max-width:520px) { .taxpayer-profile { right:12px; bottom:74px; }.taxpayer-profile__panel { max-height:calc(100vh - 158px); } }
       `}</style>
       <style>{`
         .taxpayer-profile__route { margin:16px 0 0; border-top:1px solid #e0d6aa; padding-top:14px; }.taxpayer-profile__route-title { margin:0 0 8px; color:#0B3D2E; font-size:15px; }.taxpayer-profile__route-list { display:grid; gap:8px; margin:0; padding:0; list-style:none; }.taxpayer-profile__route-card { border:1px solid #e0d6aa; border-radius:9px; background:#fffefb; padding:9px; color:#24483d; font-size:12px; line-height:1.4; }.taxpayer-profile__route-card p { margin:5px 0; }.taxpayer-profile__route-card a { color:#0B3D2E; font-weight:700; }.taxpayer-profile__route-card small { display:block; margin-top:6px; color:#5b5b46; }.taxpayer-profile__why { margin-top:10px; border:1px solid #d6bd67; border-radius:8px; padding:8px; color:#4c503c; font-size:12px; line-height:1.4; }.taxpayer-profile__why summary { cursor:pointer; color:#0B3D2E; font-weight:700; }.taxpayer-profile__why ul { padding-left:18px; }
@@ -128,7 +141,6 @@ export default function TaxpayerPreparationProfile() {
           </>}
         </div>
       </section>}
-      <button className="taxpayer-profile__launch" type="button" onClick={open} aria-expanded={isOpen}><span aria-hidden="true">◌</span> My preferences <span lang="ur" dir="rtl">میری ترجیحات</span></button>
     </aside>
   );
 }

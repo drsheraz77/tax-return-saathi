@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FBR_NOTICE_ARCHIVE } from "./fbrNoticeArchive.js";
 import { FBR_NOTICE_PREPARATION_TYPES, FBR_NOTICE_SUPPORT_URL, getNoticeDocumentChecklist, getNoticePreparationSteps } from "./fbrNoticePreparation.js";
 import { getLearningPath, getPlanningReflection, getStarterKnowledgeTopics, TAX_KNOWLEDGE_FOUNDATION, TAX_LEARNING_PATHS, TAX_PLANNING_REFLECTIONS, TAX_PREPARATION_VISUAL_JOURNEY, TAX_SOURCE_TOPIC_BRIEFS } from "./taxKnowledgeFoundation.js";
@@ -28,13 +28,21 @@ export default function TaxYear2026Update() {
   const activePlanningReflection = getPlanningReflection(planningReflectionId);
   const activePlanningTopic = TAX_KNOWLEDGE_FOUNDATION.topics.find((topic) => topic.id === activePlanningReflection.topicId);
 
+  useEffect(() => {
+    const openTaxYear = () => setIsOpen(true);
+    const closeTaxYear = () => { setIsOpen(false); setArchiveOpen(false); };
+    window.addEventListener("tax-return-saathi:open-tax-year", openTaxYear);
+    window.addEventListener("tax-return-saathi:close-supplemental-panels", closeTaxYear);
+    return () => {
+      window.removeEventListener("tax-return-saathi:open-tax-year", openTaxYear);
+      window.removeEventListener("tax-return-saathi:close-supplemental-panels", closeTaxYear);
+    };
+  }, []);
+
   return (
     <aside className="tax-year-update" aria-label="Verified Tax Year 2026 filing updates">
       <style>{`
-        .tax-year-update { position: fixed; z-index: 60; right: 16px; bottom: 16px; font-family: Georgia, 'Times New Roman', serif; }
-        .tax-year-update__toggle { display: flex; align-items: center; gap: 8px; border: 1px solid #b99116; border-radius: 999px; background: #0B3D2E; color: #fffdf2; box-shadow: 0 8px 24px rgba(11, 61, 46, .23); cursor: pointer; padding: 11px 15px; font: 700 14px/1.15 inherit; }
-        .tax-year-update__toggle:hover, .tax-year-update__toggle:focus-visible { background: #12543f; outline: 3px solid rgba(202, 165, 24, .36); outline-offset: 2px; }
-        .tax-year-update__status { display: inline-flex; width: 8px; height: 8px; border-radius: 50%; background: #e4bd35; }
+        .tax-year-update { position: fixed; z-index: 60; right: 16px; bottom: 84px; font-family: Georgia, 'Times New Roman', serif; }
         .tax-year-update__panel { width: min(390px, calc(100vw - 32px)); max-height: calc(100vh - 104px); margin-bottom: 10px; overflow-x: hidden; overflow-y: auto; border: 1px solid #d6bd67; border-radius: 14px; background: #fffdf5; color: #173b31; box-shadow: 0 16px 40px rgba(10, 43, 33, .24); }
         .tax-year-update__header { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; padding: 15px 16px 13px; background: #0B3D2E; color: #fffdf2; }
         .tax-year-update__eyebrow { margin: 0 0 4px; color: #ecd46e; font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
@@ -90,7 +98,7 @@ export default function TaxYear2026Update() {
         .tax-year-update__journey-step { display: grid; grid-template-columns: 23px 1fr; gap: 7px; align-items: start; border-left: 3px solid #caa518; padding: 7px 0 7px 8px; }
         .tax-year-update__journey-number { display: grid; place-items: center; width: 21px; height: 21px; border-radius: 50%; background: #0B3D2E; color: #fffdf2; font: 700 11px/1 sans-serif; }
         .tax-year-update__journey-copy { margin: 2px 0 0 !important; color: #4d513c; font-size: 12px; }
-        @media (max-width: 520px) { .tax-year-update { right: 12px; bottom: 12px; } .tax-year-update__facts { grid-template-columns: 1fr; } .tax-year-update__fact--wide { grid-column: auto; } }
+        @media (max-width: 520px) { .tax-year-update { right: 12px; bottom: 74px; } .tax-year-update__facts { grid-template-columns: 1fr; } .tax-year-update__fact--wide { grid-column: auto; } }
       `}</style>
 
       {isOpen && (
@@ -326,10 +334,6 @@ export default function TaxYear2026Update() {
         </section>
       )}
 
-      <button className="tax-year-update__toggle" type="button" onClick={() => { setIsOpen((open) => !open); if (isOpen) setArchiveOpen(false); }} aria-expanded={isOpen} aria-controls="tax-year-update-panel">
-        <span className="tax-year-update__status" aria-hidden="true" />
-        Tax Year 2026 update · <span lang="ur" dir="rtl">ٹیکس سال 2026</span>
-      </button>
     </aside>
   );
 }

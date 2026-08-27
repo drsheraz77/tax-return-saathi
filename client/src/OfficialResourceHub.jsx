@@ -79,9 +79,21 @@ export default function OfficialResourceHub() {
       setIsOpen(true);
       window.requestAnimationFrame(() => document.getElementById("pilot-feedback-form")?.focus());
     }
+    function openResourceHub() {
+      setIsOpen(true);
+    }
+    function closeResourceHub() {
+      setIsOpen(false);
+    }
 
     window.addEventListener("tax-return-saathi:open-pilot-feedback", openPilotFeedback);
-    return () => window.removeEventListener("tax-return-saathi:open-pilot-feedback", openPilotFeedback);
+    window.addEventListener("tax-return-saathi:open-resources", openResourceHub);
+    window.addEventListener("tax-return-saathi:close-supplemental-panels", closeResourceHub);
+    return () => {
+      window.removeEventListener("tax-return-saathi:open-pilot-feedback", openPilotFeedback);
+      window.removeEventListener("tax-return-saathi:open-resources", openResourceHub);
+      window.removeEventListener("tax-return-saathi:close-supplemental-panels", closeResourceHub);
+    };
   }, []);
 
   function toggleChecklistItem(itemId) {
@@ -710,10 +722,6 @@ export default function OfficialResourceHub() {
         </section>
       )}
 
-      <button className="official-resource-hub__toggle" type="button" onClick={() => setIsOpen((open) => !open)} aria-expanded={isOpen} aria-controls="official-resource-hub-panel">
-        <span className="official-resource-hub__icon" aria-hidden="true">i</span>
-        Tax & investment resources · <span lang="ur" dir="rtl">ٹیکس اور سرمایہ کاری وسائل</span>
-      </button>
     </aside>
   );
 }

@@ -2865,7 +2865,7 @@ export default function TaxReturnSaathi() {
           <button
             id="pilot-feedback-button"
             type="button"
-            onClick={() => window.dispatchEvent(new Event("tax-return-saathi:open-pilot-feedback"))}
+            onClick={() => { window.dispatchEvent(new Event("tax-return-saathi:close-supplemental-panels")); window.dispatchEvent(new Event("tax-return-saathi:open-pilot-feedback")); }}
             className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-bold shadow-sm"
             style={{ background: "#0B3D2E", color: "#fffdf2", borderColor: "#0B3D2E" }}
           >

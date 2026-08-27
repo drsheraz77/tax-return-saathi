@@ -8,6 +8,8 @@ const resourceHub = readFileSync(resolve(projectRoot, "client/src/OfficialResour
 const taxpayerProfile = readFileSync(resolve(projectRoot, "client/src/TaxpayerPreparationProfile.jsx"), "utf8");
 const appEntry = readFileSync(resolve(projectRoot, "client/src/main.jsx"), "utf8");
 const authoredApp = readFileSync(resolve(projectRoot, "client/src/App.jsx"), "utf8");
+const quickToolsDock = readFileSync(resolve(projectRoot, "client/src/QuickToolsDock.jsx"), "utf8");
+const privacyConsent = readFileSync(resolve(projectRoot, "client/src/PrivacyConsentNotice.jsx"), "utf8");
 
 describe("priority preparation workflow wiring", () => {
   it("renders the limited source foundation and structured FBR-notice preparation guide", () => {
@@ -177,5 +179,21 @@ describe("priority preparation workflow wiring", () => {
     expect(resourceHub).toContain("official-resource-hub__industry-support-meta");
     expect(resourceHub).toContain("LARGE_BUSINESS_QUALIFIED_ESCALATION.supportReviewNote");
     expect(resourceHub).toContain("LARGE_BUSINESS_QUALIFIED_ESCALATION.supportReviewNoteUrdu");
+  });
+
+  it("consolidates supplemental panels into an accessible quick-tools dock and reserves privacy space above it", () => {
+    expect(appEntry).toContain("QuickToolsDock");
+    expect(quickToolsDock).toContain("tax-return-saathi:close-supplemental-panels");
+    expect(quickToolsDock).toContain("tax-return-saathi:open-checklist");
+    expect(quickToolsDock).toContain("tax-return-saathi:open-resources");
+    expect(quickToolsDock).toContain("tax-return-saathi:open-tax-year");
+    expect(quickToolsDock).toContain("tax-return-saathi:open-preferences");
+    expect(quickToolsDock).toContain("tax-return-saathi:open-privacy-consent");
+    expect(resourceHub).toContain("tax-return-saathi:open-resources");
+    expect(taxYearPanel).toContain("tax-return-saathi:open-tax-year");
+    expect(taxpayerProfile).toContain("tax-return-saathi:open-preferences");
+    expect(taxpayerProfile).toContain("tax-return-saathi:close-supplemental-panels");
+    expect(privacyConsent).toContain("tax-return-saathi:open-privacy-consent");
+    expect(privacyConsent).toContain("inset: auto 16px 84px");
   });
 });

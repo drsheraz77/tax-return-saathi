@@ -41,6 +41,12 @@ export default function PrivacyConsentNotice() {
     setChoice(getStoredPrivacyConsent());
   }, []);
 
+  useEffect(() => {
+    const openPrivacyNotice = () => setOpen(true);
+    window.addEventListener("tax-return-saathi:open-privacy-consent", openPrivacyNotice);
+    return () => window.removeEventListener("tax-return-saathi:open-privacy-consent", openPrivacyNotice);
+  }, []);
+
   function choose(nextChoice) {
     const saved = savePrivacyConsent(nextChoice);
     setChoice(saved ?? nextChoice);
@@ -79,32 +85,26 @@ export default function PrivacyConsentNotice() {
   return (
     <>
       <style>{`
-        .privacy-consent-notice { position: fixed; z-index: 80; inset: auto 16px 16px; max-width: 700px; margin: 0 auto; }
+        .privacy-consent-notice { position: fixed; z-index: 90; inset: auto 16px 84px; max-width: 700px; margin: 0 auto; }
         .privacy-consent-notice__panel { border: 1px solid #b7ab79; border-radius: 14px; padding: 16px; background: #fffdf5; box-shadow: 0 14px 34px rgba(11,61,46,.2); color: #173b31; font-family: Georgia, 'Times New Roman', serif; }
         .privacy-consent-notice__heading-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
         .privacy-consent-notice__eyebrow { margin: 0 0 4px; color: #7a6210; font: 700 11px/1.25 system-ui, sans-serif; letter-spacing: .03em; }
         .privacy-consent-notice__panel h2 { margin: 0; color: #0b3d2e; font-size: 18px; }
         .privacy-consent-notice__panel p { margin: 10px 0 0; font-size: 13px; line-height: 1.55; }
         .privacy-consent-notice__boundary { color: #625f4e; font-size: 12px !important; }
-        .privacy-consent-notice__language, .privacy-consent-notice__primary, .privacy-consent-notice__secondary, .privacy-consent-notice__manage { min-height: 38px; border-radius: 8px; padding: 8px 10px; font: 700 12px/1.2 system-ui, sans-serif; cursor: pointer; }
+        .privacy-consent-notice__language, .privacy-consent-notice__primary, .privacy-consent-notice__secondary { min-height: 38px; border-radius: 8px; padding: 8px 10px; font: 700 12px/1.2 system-ui, sans-serif; cursor: pointer; }
         .privacy-consent-notice__language { border: 1px solid #b7ab79; background: #fffef9; color: #173b31; }
         .privacy-consent-notice__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; }
         .privacy-consent-notice__primary { border: 1px solid #0b3d2e; background: #0b3d2e; color: #fffdf5; }
         .privacy-consent-notice__secondary { border: 1px solid #0b3d2e; background: #fffdf5; color: #0b3d2e; }
         .privacy-consent-notice__link { color: #0b3d2e; font: 700 12px/1.2 system-ui, sans-serif; text-decoration: underline; }
-        .privacy-consent-notice__manage { position: fixed; z-index: 79; inset: auto 16px 16px auto; border: 1px solid #0b3d2e; background: #fffdf5; color: #0b3d2e; box-shadow: 0 5px 16px rgba(11,61,46,.18); }
-        .privacy-consent-notice__dialog { position: fixed; z-index: 80; inset: auto 16px 16px; max-width: 700px; margin: 0 auto; }
+        .privacy-consent-notice__dialog { position: fixed; z-index: 90; inset: auto 16px 84px; max-width: 700px; margin: 0 auto; }
         .privacy-consent-notice__saved { margin-top: 10px !important; color: #075c48; font-weight: 700; }
         .privacy-consent-notice button:focus-visible, .privacy-consent-notice a:focus-visible { outline: 3px solid rgba(202,165,24,.55); outline-offset: 3px; }
-        @media (max-width: 560px) { .privacy-consent-notice { inset: auto 10px 10px; } .privacy-consent-notice__dialog { inset: auto 10px 10px; } .privacy-consent-notice__manage { inset: auto 10px 10px auto; } .privacy-consent-notice__heading-row { align-items: center; } }
+        @media (max-width: 560px) { .privacy-consent-notice { inset: auto 10px 74px; } .privacy-consent-notice__dialog { inset: auto 10px 74px; } .privacy-consent-notice__heading-row { align-items: center; } }
       `}</style>
       {!choice ? <aside id="privacy-consent-notice" className="privacy-consent-notice" role="dialog" aria-modal="false">{panel}</aside> : null}
-      {choice ? (
-        <>
-          <button type="button" className="privacy-consent-notice__manage" onClick={() => setOpen(true)}>{t.manage}</button>
-          {open ? <aside className="privacy-consent-notice__dialog privacy-consent-notice" role="dialog" aria-modal="false">{panel}<p className="privacy-consent-notice__saved">{t.saved}</p><div className="privacy-consent-notice__actions"><button type="button" className="privacy-consent-notice__secondary" onClick={resetChoice}>{t.reset}</button><button type="button" className="privacy-consent-notice__secondary" onClick={() => setOpen(false)}>{t.close}</button></div></aside> : null}
-        </>
-      ) : null}
+      {choice && open ? <aside className="privacy-consent-notice__dialog privacy-consent-notice" role="dialog" aria-modal="false">{panel}<p className="privacy-consent-notice__saved">{t.saved}</p><div className="privacy-consent-notice__actions"><button type="button" className="privacy-consent-notice__secondary" onClick={resetChoice}>{t.reset}</button><button type="button" className="privacy-consent-notice__secondary" onClick={() => setOpen(false)}>{t.close}</button></div></aside> : null}
     </>
   );
 }
