@@ -27,6 +27,15 @@ describe("pilot privacy and public policy interface", () => {
     expect(privacyNotice).toContain("not a Google-certified CMP");
   });
 
+  it("uses a compact first step and an optional accessible details step without hiding consent choices", () => {
+    expect(privacyNotice).toContain("Why this choice?");
+    expect(privacyNotice).toContain('aria-controls="privacy-consent-details"');
+    expect(privacyNotice).toContain('aria-expanded={showDetails}');
+    expect(privacyNotice).toContain('id="privacy-consent-details"');
+    expect(privacyNotice).toContain("Return to compact view");
+    expect(privacyNotice).toContain("No advertising or analytics tracking");
+  });
+
   it("states the material policy limits without claiming advertising approval or GDPR certification", () => {
     expect(privacyPolicy).toContain("Anonymous feedback is scheduled for automatic deletion after 30 days");
     expect(privacyPolicy).toContain("does not currently run Google Ads, AdSense tags, or analytics tags");

@@ -269,3 +269,6 @@
 - [x] Consolidate the competing fixed bottom launchers into a calmer, accessible responsive navigation pattern that preserves access to resources, preferences, Tax Year content, and feedback without obscuring preparation content.
 - [x] Reposition the privacy-consent notice and account for the consolidated launcher area so controls do not overlap or hide one another on desktop or mobile.
 - [x] Add focused coverage and verify launcher access, consent visibility, keyboard accessibility, Urdu/English presentation, desktop/mobile layout, full suite, and production build before publication.
+- [x] Redesign the initial privacy-choice card into a compact bilingual first step with equal accept and decline actions, keeping the choice local-only and without advertising, analytics, or legal-certification claims.
+- [x] Add an optional second details step that exposes the full privacy explanation, policy link, and explicit non-certified/non-AdSense boundary without hiding choice or withdrawal controls.
+- [x] Add focused coverage and verify compact and details states, accept/decline persistence, keyboard access, Urdu/English presentation, responsive layout, full suite, and production build before publication.
