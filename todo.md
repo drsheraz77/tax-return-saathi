@@ -278,3 +278,8 @@
 - [x] Add a privacy-safe bilingual pre-filled subject to the direct Pilot Feedback email link so users can categorise a general feedback message without auto-populating personal, tax, financial, credential, notice, or document data.
 - [x] Add a bilingual Report a broken link shortcut near the feedback section that opens the existing anonymous feedback flow with a safe, non-sensitive category prompt.
 - [x] Add focused coverage and verify email-subject encoding, broken-link shortcut/focus behaviour, privacy boundaries, keyboard access, Urdu/English presentation, responsive layout, full suite, and production build before publication.
+- [x] Review Google Analytics consent-mode requirements, the existing public privacy commitments, and viable privacy-safe approaches for weekly aggregate visitor summaries before enabling any analytics code.
+- [x] Add the supplied Google Analytics measurement ID only after explicit visitor consent, with no custom events, user identifiers, tax/form content, or feedback data sent to Google.
+- [x] Update the Urdu-first privacy choice and public privacy policy to accurately explain the optional analytics purpose, provider, withdrawal/reset behavior, and that analytics are not a Google-certified CMP.
+- [ ] Establish a weekly aggregate visitor-summary delivery method after confirming the owner’s preferred destination and required Google Analytics reporting access; do not create or schedule an automated report without that confirmation.
+- [x] Add focused tests and verify consent gating, withdrawal behavior, public disclosures, no premature third-party request, responsive layout, full suite, and production build before publication.

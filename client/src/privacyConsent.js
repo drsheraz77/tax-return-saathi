@@ -1,4 +1,6 @@
-export const PRIVACY_CONSENT_STORAGE_KEY = "tax-return-saathi-privacy-choice-v1";
+export const PRIVACY_CONSENT_STORAGE_KEY = "tax-return-saathi-privacy-choice-v2";
+export const LEGACY_PRIVACY_CONSENT_STORAGE_KEY = "tax-return-saathi-privacy-choice-v1";
+export const PRIVACY_CONSENT_CHANGE_EVENT = "tax-return-saathi:privacy-consent-changed";
 
 export const PRIVACY_CONSENT_CHOICES = Object.freeze({
   accepted: "accepted_optional",
@@ -29,6 +31,7 @@ export function savePrivacyConsent(choice, storage = globalThis.localStorage) {
 export function clearPrivacyConsent(storage = globalThis.localStorage) {
   try {
     storage.removeItem(PRIVACY_CONSENT_STORAGE_KEY);
+    storage.removeItem(LEGACY_PRIVACY_CONSENT_STORAGE_KEY);
   } catch {
     // Local-only preference controls must never interrupt access to the service.
   }

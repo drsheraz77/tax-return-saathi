@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   PRIVACY_CONSENT_CHOICES,
+  LEGACY_PRIVACY_CONSENT_STORAGE_KEY,
   PRIVACY_CONSENT_STORAGE_KEY,
   clearPrivacyConsent,
   getStoredPrivacyConsent,
@@ -17,6 +18,13 @@ function createStorage() {
 }
 
 describe("local privacy-choice safeguards", () => {
+  it("uses a new explicit consent version rather than reusing the earlier generic optional-use choice", () => {
+    const storage = createStorage();
+    storage.setItem(LEGACY_PRIVACY_CONSENT_STORAGE_KEY, PRIVACY_CONSENT_CHOICES.accepted);
+    expect(PRIVACY_CONSENT_STORAGE_KEY).toBe("tax-return-saathi-privacy-choice-v2");
+    expect(getStoredPrivacyConsent(storage)).toBeNull();
+  });
+
   it("persists an explicit optional-use refusal without enabling any service", () => {
     const storage = createStorage();
     expect(savePrivacyConsent(PRIVACY_CONSENT_CHOICES.declined, storage)).toBe(PRIVACY_CONSENT_CHOICES.declined);
@@ -31,5 +39,6 @@ describe("local privacy-choice safeguards", () => {
     savePrivacyConsent(PRIVACY_CONSENT_CHOICES.accepted, storage);
     clearPrivacyConsent(storage);
     expect(getStoredPrivacyConsent(storage)).toBeNull();
+    expect(storage.getItem(LEGACY_PRIVACY_CONSENT_STORAGE_KEY)).toBeNull();
   });
 });

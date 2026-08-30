@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   PRIVACY_CONSENT_CHOICES,
+  PRIVACY_CONSENT_CHANGE_EVENT,
   clearPrivacyConsent,
   getStoredPrivacyConsent,
   savePrivacyConsent,
@@ -10,18 +11,18 @@ const copy = {
   ur: {
     title: "رازداری کا انتخاب",
     eyebrow: "آزمائشی رازداری نوٹس · Pilot privacy notice",
-    summary: "انتخاب صرف اسی براؤزر میں رہے گا؛ اسے کسی بھی وقت بدلیں۔",
-    compactBoundary: "اشتہاری یا تجزیاتی ٹریکنگ نہیں؛ Google-certified CMP یا قانونی سرٹیفکیشن نہیں۔",
+    summary: "یہ انتخاب صرف اسی براؤزر میں رہے گا؛ اسے کسی بھی وقت بدلیں۔",
+    compactBoundary: "اختیاری Google Analytics صرف واضح اجازت کے بعد؛ اشتہار نہیں۔ یہ Google-certified CMP یا قانونی سرٹیفکیشن نہیں۔",
     detailsTitle: "تفصیلات اور انتخاب کی وجہ",
-    body: "یہ نوٹس ہر وزیٹر کو دکھایا جاتا ہے، بشمول EU/EEA/UK، اور آپ کے مقام کا تعین نہیں کرتا۔ انتخاب صرف اسی براؤزر میں یاد رکھا جاتا ہے۔",
+    body: "یہ نوٹس ہر وزیٹر کو دکھایا جاتا ہے، بشمول EU/EEA/UK، اور آپ کے مقام کا تعین نہیں کرتا۔ اجازت پر Google Analytics مجموعی وزٹ پیمائش کے لیے لوڈ ہو سکتی ہے؛ ایپ ٹیکس/فارم، فیڈبیک متن، اکاؤنٹ شناخت، یا اشتہاری سگنل نہیں بھیجتی۔",
     boundary: "یہ مقامی انتخاب Google-certified CMP، قانونی سرٹیفکیشن، یا AdSense کی منظوری نہیں ہے۔",
-    accept: "اختیاری استعمال منظور کریں",
-    decline: "اختیاری استعمال مسترد کریں",
+    accept: "وزیٹر پیمائش منظور کریں",
+    decline: "وزیٹر پیمائش مسترد کریں",
     details: "تفصیلات دیکھیں",
     back: "مختصر منظر پر واپس",
     policy: "پرائیویسی پالیسی پڑھیں",
     manage: "رازداری کا انتخاب تبدیل کریں",
-    saved: "رازداری کا انتخاب مقامی طور پر محفوظ ہے۔ آپ اسے کسی بھی وقت تبدیل کر سکتے ہیں۔",
+    saved: "وزیٹر پیمائش کا انتخاب مقامی طور پر محفوظ ہے۔ آپ اسے کسی بھی وقت تبدیل کر سکتے ہیں۔",
     close: "بند کریں",
     reset: "انتخاب دوبارہ کریں",
   },
@@ -29,17 +30,17 @@ const copy = {
     title: "Privacy choice",
     eyebrow: "Pilot privacy notice · آزمائشی رازداری نوٹس",
     summary: "This browser remembers your choice; change it any time.",
-    compactBoundary: "No advertising or analytics tracking; not a Google-certified CMP or legal certification.",
+    compactBoundary: "Optional Google Analytics only after clear permission; no advertising. This is not a Google-certified CMP or legal certification.",
     detailsTitle: "Details and why this choice appears",
-    body: "This notice is shown to every visitor, including people in the EU/EEA/UK, without determining your location. Your choice is remembered only in this browser.",
+    body: "This notice is shown to every visitor, including people in the EU/EEA/UK, without determining your location. If you allow it, Google Analytics may load for aggregate visit measurement; the app does not send tax/form data, feedback text, account identifiers, or advertising signals.",
     boundary: "This local choice is not a Google-certified CMP, legal certification, or AdSense approval.",
-    accept: "Allow optional use",
-    decline: "Decline optional use",
+    accept: "Allow visitor measurement",
+    decline: "Decline visitor measurement",
     details: "Why this choice?",
     back: "Return to compact view",
     policy: "Read the privacy policy",
     manage: "Change privacy choice",
-    saved: "Your privacy choice is stored locally. You can change it at any time.",
+    saved: "Your visitor-measurement choice is stored locally. You can change it at any time.",
     close: "Close",
     reset: "Choose again",
   },
@@ -68,6 +69,7 @@ export default function PrivacyConsentNotice() {
   function choose(nextChoice) {
     const saved = savePrivacyConsent(nextChoice);
     setChoice(saved ?? nextChoice);
+    window.dispatchEvent(new CustomEvent(PRIVACY_CONSENT_CHANGE_EVENT, { detail: { choice: saved ?? nextChoice } }));
     setShowDetails(false);
     setOpen(false);
   }
@@ -75,6 +77,7 @@ export default function PrivacyConsentNotice() {
   function resetChoice() {
     clearPrivacyConsent();
     setChoice(null);
+    window.dispatchEvent(new CustomEvent(PRIVACY_CONSENT_CHANGE_EVENT, { detail: { choice: null } }));
     setShowDetails(false);
     setOpen(true);
   }

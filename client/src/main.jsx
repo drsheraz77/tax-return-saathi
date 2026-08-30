@@ -9,6 +9,7 @@ import { COOKIE_NAME, UNAUTHED_ERR_MSG } from "@shared/const";
 import { startLogin } from "./const";
 import PrivacyConsentNotice from "./PrivacyConsentNotice.jsx";
 import QuickToolsDock from "./QuickToolsDock.jsx";
+import OptionalGoogleAnalytics from "./OptionalGoogleAnalytics.jsx";
 
 const OfficialResourceHub = React.lazy(() => import("./OfficialResourceHub.jsx"));
 const PersonalisedChecklistPrototype = React.lazy(() => import("./PersonalisedChecklistPrototype.jsx"));
@@ -45,6 +46,7 @@ function SiteContent() {
   }
 
   return <>
+    <OptionalGoogleAnalytics />
     <App />
     <Suspense fallback={<span className="supplemental-panel-loading" role="status">Loading preparation tools…</span>}>
       <PersonalisedChecklistPrototype />
