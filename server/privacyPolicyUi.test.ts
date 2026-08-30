@@ -9,13 +9,15 @@ const privacyNotice = readFileSync(resolve(projectRoot, "client/src/PrivacyConse
 const privacyPolicy = readFileSync(resolve(projectRoot, "client/src/PublicPrivacyPolicy.jsx"), "utf8");
 const resourceHub = readFileSync(resolve(projectRoot, "client/src/OfficialResourceHub.jsx"), "utf8");
 const optionalAnalytics = readFileSync(resolve(projectRoot, "client/src/OptionalGoogleAnalytics.jsx"), "utf8");
+const firstPartyAggregate = readFileSync(resolve(projectRoot, "client/src/FirstPartyVisitorAggregate.jsx"), "utf8");
+const ownerVisitorSummary = readFileSync(resolve(projectRoot, "client/src/OwnerVisitorSummary.jsx"), "utf8");
 
 describe("pilot privacy and public policy interface", () => {
   it("makes pilot status and a shareable public privacy route visible", () => {
     expect(app).toContain('id="pilot-testing-notice"');
     expect(app).toContain('href="/privacy"');
     expect(appEntry).toContain('React.lazy(() => import("./PublicPrivacyPolicy.jsx"))');
-    expect(appEntry).toContain('window.location.pathname === "/privacy"');
+    expect(appEntry).toContain('route === "/privacy"');
     expect(appEntry.match(/<PrivacyConsentNotice \/>/g)).toHaveLength(2);
     expect(privacyPolicy).toContain("Public privacy policy · pilot release");
     expect(privacyPolicy).toContain("Last operational review: 30 August 2026");
@@ -35,12 +37,14 @@ describe("pilot privacy and public policy interface", () => {
     expect(privacyNotice).toContain('aria-expanded={showDetails}');
     expect(privacyNotice).toContain('id="privacy-consent-details"');
     expect(privacyNotice).toContain("Return to compact view");
-    expect(privacyNotice).toContain("Optional Google Analytics only after clear permission");
+    expect(privacyNotice).toContain("Optional Google Analytics and a first-party aggregate visit counter only after clear permission");
   });
 
   it("states the material analytics and advertising limits without claiming certification", () => {
     expect(privacyPolicy).toContain("Anonymous feedback is scheduled for automatic deletion after 30 days");
     expect(privacyPolicy).toContain("Only after clear permission may Google Analytics load for aggregate visitor measurement");
+    expect(privacyPolicy).toContain("aggregate count of browser-session signals for each UTC day");
+    expect(privacyPolicy).toContain("no IP address, cookie, account, page URL, tax/form data, document, or feedback content");
     expect(privacyPolicy).toContain("Google Ads and AdSense tags are not enabled");
     expect(privacyPolicy).toContain("not a Google-certified CMP");
     expect(privacyPolicy).toContain("not a legal certification");
@@ -57,6 +61,18 @@ describe("pilot privacy and public policy interface", () => {
     expect(optionalAnalytics).toContain("allow_ad_personalization_signals: false");
     expect(optionalAnalytics).not.toContain("user_id");
     expect(optionalAnalytics).not.toMatch(/gtag\("event"/);
+  });
+
+  it("records only a consent-gated first-party aggregate session signal and keeps the summary behind a dedicated owner route", () => {
+    expect(appEntry).toContain('import FirstPartyVisitorAggregate from "./FirstPartyVisitorAggregate.jsx"');
+    expect(appEntry).toContain("<FirstPartyVisitorAggregate />");
+    expect(appEntry).toContain('route === "/owner-visitor-summary"');
+    expect(firstPartyAggregate).toContain('choice !== PRIVACY_CONSENT_CHOICES.accepted');
+    expect(firstPartyAggregate).toContain("VISIT_RECORDED_SESSION_KEY");
+    expect(firstPartyAggregate).toContain("recordConsentedVisit.useMutation");
+    expect(firstPartyAggregate).not.toMatch(/pageUrl|userId|ipAddress|feedbackMessage|taxAmount/);
+    expect(ownerVisitorSummary).toContain('user?.role !== "admin"');
+    expect(ownerVisitorSummary).toContain("approximate aggregate of consented browser-session signals");
   });
 
   it("offers the supplied pilot email as an optional non-anonymous contact route with a sensitive-data warning", () => {

@@ -75,7 +75,21 @@ export const feedbackRetentionSchedules = mysqlTable("feedbackRetentionSchedules
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 }, (table) => [uniqueIndex("feedbackRetentionSchedules_taskUid_unique").on(table.scheduleCronTaskUid)]);
 
+/**
+ * Consent-gated, first-party aggregate visit totals. Each row is one UTC
+ * calendar day and contains only a counter—never a visitor identifier, IP
+ * address, cookie, user account, URL, tax data, document, or feedback text.
+ */
+export const aggregateVisitorDays = mysqlTable("aggregateVisitorDays", {
+  id: int("id").autoincrement().primaryKey(),
+  day: varchar("day", { length: 10 }).notNull(),
+  pageViews: int("pageViews").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => [uniqueIndex("aggregateVisitorDays_day_unique").on(table.day)]);
+
 export type ChecklistDraft = typeof checklistDrafts.$inferSelect;
 export type TaxpayerProfile = typeof taxpayerProfiles.$inferSelect;
 export type FeedbackSubmission = typeof feedbackSubmissions.$inferSelect;
 export type FeedbackRetentionSchedule = typeof feedbackRetentionSchedules.$inferSelect;
+export type AggregateVisitorDay = typeof aggregateVisitorDays.$inferSelect;

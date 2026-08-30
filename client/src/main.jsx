@@ -10,12 +10,14 @@ import { startLogin } from "./const";
 import PrivacyConsentNotice from "./PrivacyConsentNotice.jsx";
 import QuickToolsDock from "./QuickToolsDock.jsx";
 import OptionalGoogleAnalytics from "./OptionalGoogleAnalytics.jsx";
+import FirstPartyVisitorAggregate from "./FirstPartyVisitorAggregate.jsx";
 
 const OfficialResourceHub = React.lazy(() => import("./OfficialResourceHub.jsx"));
 const PersonalisedChecklistPrototype = React.lazy(() => import("./PersonalisedChecklistPrototype.jsx"));
 const TaxYear2026Update = React.lazy(() => import("./TaxYear2026Update.jsx"));
 const TaxpayerPreparationProfile = React.lazy(() => import("./TaxpayerPreparationProfile.jsx"));
 const PublicPrivacyPolicy = React.lazy(() => import("./PublicPrivacyPolicy.jsx"));
+const OwnerVisitorSummary = React.lazy(() => import("./OwnerVisitorSummary.jsx"));
 
 document.title = "Tax Return Saathi | Pakistan FBR Tax Assistant";
 
@@ -26,27 +28,32 @@ function SupplementalMotionPreferences() {
 }
 
 function SiteContent() {
-  const [isPrivacyRoute, setIsPrivacyRoute] = React.useState(() => window.location.pathname === "/privacy");
+  const [route, setRoute] = React.useState(() => window.location.pathname);
 
   React.useEffect(() => {
-    const updateRoute = () => setIsPrivacyRoute(window.location.pathname === "/privacy");
+    const updateRoute = () => setRoute(window.location.pathname);
     window.addEventListener("popstate", updateRoute);
     return () => window.removeEventListener("popstate", updateRoute);
   }, []);
 
   React.useEffect(() => {
-    document.title = isPrivacyRoute ? "Privacy Policy | Tax Return Saathi" : "Tax Return Saathi | Pakistan FBR Tax Assistant";
-  }, [isPrivacyRoute]);
+    document.title = route === "/privacy" ? "Privacy Policy | Tax Return Saathi" : route === "/owner-visitor-summary" ? "Owner Visitor Summary | Tax Return Saathi" : "Tax Return Saathi | Pakistan FBR Tax Assistant";
+  }, [route]);
 
-  if (isPrivacyRoute) {
+  if (route === "/privacy") {
     return <>
       <Suspense fallback={<span className="supplemental-panel-loading" role="status">Loading privacy policy…</span>}><PublicPrivacyPolicy /></Suspense>
       <PrivacyConsentNotice />
     </>;
   }
 
+  if (route === "/owner-visitor-summary") {
+    return <Suspense fallback={<span className="supplemental-panel-loading" role="status">Loading owner summary…</span>}><OwnerVisitorSummary /></Suspense>;
+  }
+
   return <>
     <OptionalGoogleAnalytics />
+    <FirstPartyVisitorAggregate />
     <App />
     <Suspense fallback={<span className="supplemental-panel-loading" role="status">Loading preparation tools…</span>}>
       <PersonalisedChecklistPrototype />

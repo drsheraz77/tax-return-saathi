@@ -281,5 +281,10 @@
 - [x] Review Google Analytics consent-mode requirements, the existing public privacy commitments, and viable privacy-safe approaches for weekly aggregate visitor summaries before enabling any analytics code.
 - [x] Add the supplied Google Analytics measurement ID only after explicit visitor consent, with no custom events, user identifiers, tax/form content, or feedback data sent to Google.
 - [x] Update the Urdu-first privacy choice and public privacy policy to accurately explain the optional analytics purpose, provider, withdrawal/reset behavior, and that analytics are not a Google-certified CMP.
-- [ ] Establish a weekly aggregate visitor-summary delivery method after confirming the owner’s preferred destination and required Google Analytics reporting access; do not create or schedule an automated report without that confirmation.
+- [x] Establish a weekly aggregate visitor-summary delivery method after confirming the owner’s preferred destination and required Google Analytics reporting access; use the approved owner-only dashboard and manual email workflow without a schedule.
 - [x] Add focused tests and verify consent gating, withdrawal behavior, public disclosures, no premature third-party request, responsive layout, full suite, and production build before publication.
+- [x] Define and document the first-party measurement boundary: a consent-gated daily aggregate page-view counter only, with no IP, cookie, account, URL, tax, form, uploaded-document, or feedback data stored.
+- [x] Add a database-backed, concurrency-safe daily aggregate counter and a public consent-gated recording endpoint that accepts no visitor metadata or free-text data.
+- [x] Implement an authenticated owner-only dashboard that displays the current weekly aggregate page-view total and does not expose individual visitor data.
+- [x] Defer automatic email delivery to driris@gmail.com at the owner’s direction; do not create a schedule, email provider integration, or background worker for this dashboard-only release.
+- [x] Update bilingual privacy disclosures and focused tests, then validate opt-in/decline/reset behavior, aggregation, owner-only access, full suite, production build, and responsive layout before publication.

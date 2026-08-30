@@ -1,6 +1,6 @@
-import { eq, lt } from "drizzle-orm";
+import { and, eq, gte, lte, lt, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { checklistDrafts, feedbackRetentionSchedules, feedbackSubmissions, InsertUser, taxpayerProfiles, users } from "../drizzle/schema";
+import { aggregateVisitorDays, checklistDrafts, feedbackRetentionSchedules, feedbackSubmissions, InsertUser, taxpayerProfiles, users } from "../drizzle/schema";
 import type { ChecklistDraftPayload, FeedbackInput, TaxpayerProfilePayload } from "./draftValidation";
 import { ENV } from './_core/env';
 
@@ -159,4 +159,28 @@ export async function deleteFeedbackOlderThan(cutoff: Date): Promise<number> {
   if (!db) throw new Error("Database is unavailable");
   const result = await db.delete(feedbackSubmissions).where(lt(feedbackSubmissions.createdAt, cutoff));
   return Number((result as unknown as { affectedRows?: number }).affectedRows ?? 0);
+}
+
+/**
+ * Atomically increments one UTC daily counter. The caller supplies no visitor
+ * identifier or request metadata, so this table remains aggregate-only.
+ */
+export async function recordAggregateVisitorPageView(day: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable");
+  await db.insert(aggregateVisitorDays).values({ day, pageViews: 1 }).onDuplicateKeyUpdate({
+    set: {
+      pageViews: sql`${aggregateVisitorDays.pageViews} + 1`,
+      updatedAt: new Date(),
+    },
+  });
+}
+
+/** Returns only daily totals in an inclusive UTC date range. */
+export async function getAggregateVisitorDays(fromDay: string, throughDay: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable");
+  return db.select({ day: aggregateVisitorDays.day, pageViews: aggregateVisitorDays.pageViews })
+    .from(aggregateVisitorDays)
+    .where(and(gte(aggregateVisitorDays.day, fromDay), lte(aggregateVisitorDays.day, throughDay)));
 }

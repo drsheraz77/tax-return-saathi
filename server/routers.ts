@@ -2,10 +2,10 @@ import { COOKIE_NAME } from "@shared/const";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { getSessionCookieOptions } from "./_core/cookies";
-import { createFeedbackSubmission, createTaxpayerProfileForUser, deleteChecklistDraftForUser, deleteTaxpayerProfileForUser, getChecklistDraftForUser, getTaxpayerProfileForUser, saveChecklistDraftForUser, updateTaxpayerProfileForUser } from "./db";
+import { createFeedbackSubmission, createTaxpayerProfileForUser, deleteChecklistDraftForUser, deleteTaxpayerProfileForUser, getAggregateVisitorDays, getChecklistDraftForUser, getTaxpayerProfileForUser, recordAggregateVisitorPageView, saveChecklistDraftForUser, updateTaxpayerProfileForUser } from "./db";
 import { checklistDraftPayloadSchema, feedbackInputSchema, taxpayerProfileCreateSchema, taxpayerProfilePayloadSchema } from "./draftValidation";
 import { systemRouter } from "./_core/systemRouter";
-import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
+import { adminProcedure, protectedProcedure, publicProcedure, router } from "./_core/trpc";
 
 function toDraftResponse(row: Awaited<ReturnType<typeof getChecklistDraftForUser>>) {
   if (!row) return null;
@@ -29,6 +29,17 @@ function toProfileResponse(row: Awaited<ReturnType<typeof getTaxpayerProfileForU
   } catch {
     return null;
   }
+}
+
+function utcDay(date: Date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function currentWeeklyRange(now = new Date()) {
+  const end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  const start = new Date(end);
+  start.setUTCDate(start.getUTCDate() - 6);
+  return { fromDay: utcDay(start), throughDay: utcDay(end) };
 }
 
 export const appRouter = router({
@@ -131,6 +142,44 @@ export const appRouter = router({
       } catch (error) {
         console.error("[Feedback] submission failed", error);
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Feedback could not be sent. Please try again later." });
+      }
+    }),
+  }),
+
+  visitorAnalytics: router({
+    /**
+     * The browser sends no input. It reaches this mutation only after the
+     * local visitor-measurement choice has been explicitly accepted.
+     */
+    recordConsentedVisit: publicProcedure.mutation(async () => {
+      try {
+        await recordAggregateVisitorPageView(utcDay(new Date()));
+        return { recorded: true } as const;
+      } catch (error) {
+        console.error("[Aggregate visitor analytics] recording failed", error);
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Aggregate visitor measurement could not be recorded." });
+      }
+    }),
+    weeklySummary: adminProcedure.query(async () => {
+      try {
+        const { fromDay, throughDay } = currentWeeklyRange();
+        const rows = await getAggregateVisitorDays(fromDay, throughDay);
+        const dayTotals = new Map(rows.map((row) => [row.day, row.pageViews]));
+        const days = Array.from({ length: 7 }, (_, index) => {
+          const date = new Date(`${fromDay}T00:00:00.000Z`);
+          date.setUTCDate(date.getUTCDate() + index);
+          const day = utcDay(date);
+          return { day, pageViews: dayTotals.get(day) ?? 0 };
+        });
+        return {
+          fromDay,
+          throughDay,
+          totalPageViews: days.reduce((total, day) => total + day.pageViews, 0),
+          days,
+        } as const;
+      } catch (error) {
+        console.error("[Aggregate visitor analytics] summary failed", error);
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Aggregate visitor summary could not be loaded." });
       }
     }),
   }),
