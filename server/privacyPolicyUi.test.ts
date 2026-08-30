@@ -45,8 +45,11 @@ describe("pilot privacy and public policy interface", () => {
   });
 
   it("offers the supplied pilot email as an optional non-anonymous contact route with a sensitive-data warning", () => {
-    expect(resourceHub).toContain('mailto:driris@gmail.com?subject=Tax%20Return%20Saathi%20pilot%20feedback');
-    expect(resourceHub).toContain("Email is not anonymous and is separate from this form");
+    expect(resourceHub).toContain('const PILOT_FEEDBACK_EMAIL_HREF = "mailto:driris@gmail.com?subject=Tax%20Return%20Saathi%20pilot%20feedback%20%E2%80%94%20%5Bcategory%5D"');
+    expect(resourceHub).toContain('href={PILOT_FEEDBACK_EMAIL_HREF}');
+    expect(resourceHub).not.toContain('mailto:driris@gmail.com?subject=Tax%20Return%20Saathi%20pilot%20feedback"');
+    expect(resourceHub).not.toContain('mailto:driris@gmail.com?body=');
+    expect(resourceHub).toContain("email is not anonymous and is separate from this form");
     expect(resourceHub).toContain("do not send tax, identity, financial, credential, notice, or document details");
     expect(privacyPolicy).toContain("Optional direct pilot feedback may be emailed to driris@gmail.com");
     expect(privacyPolicy).toContain("email is not anonymous and is separate from the form");

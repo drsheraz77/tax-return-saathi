@@ -275,3 +275,6 @@
 - [x] Add driris@gmail.com as the public pilot-feedback contact route and make the email link accessible without changing the existing anonymous in-app feedback flow.
 - [x] Align feedback acknowledgements and the public privacy policy with the new optional direct-contact route, including a clear warning not to send tax, identity, financial, credential, notice, or document details by email.
 - [x] Add focused coverage and verify contact wording, mailto safety, Urdu/English presentation, responsive layout, full suite, and production build before publication.
+- [x] Add a privacy-safe bilingual pre-filled subject to the direct Pilot Feedback email link so users can categorise a general feedback message without auto-populating personal, tax, financial, credential, notice, or document data.
+- [x] Add a bilingual Report a broken link shortcut near the feedback section that opens the existing anonymous feedback flow with a safe, non-sensitive category prompt.
+- [x] Add focused coverage and verify email-subject encoding, broken-link shortcut/focus behaviour, privacy boundaries, keyboard access, Urdu/English presentation, responsive layout, full suite, and production build before publication.

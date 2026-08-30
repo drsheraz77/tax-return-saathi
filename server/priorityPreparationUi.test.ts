@@ -158,6 +158,16 @@ describe("priority preparation workflow wiring", () => {
     expect(resourceHub).toContain("scheduled for deletion after 30 days");
   });
 
+  it("adds an Urdu-first broken-link shortcut that reuses anonymous technical feedback without capturing navigation data", () => {
+    expect(resourceHub).toContain('id="report-broken-link-shortcut"');
+    expect(resourceHub).toContain("ٹوٹا ہوا لنک رپورٹ کریں / Report a broken link");
+    expect(resourceHub).toContain('setFeedbackCategory("technical")');
+    expect(resourceHub).toContain('setFeedbackAcknowledged(false)');
+    expect(resourceHub).toContain('document.getElementById("feedback-message")?.focus()');
+    expect(resourceHub).toContain("No link, page, or browser information is collected automatically.");
+    expect(resourceHub).toContain('<option value="technical">Technical issue</option>');
+  });
+
   it("renders local-only industry preparation controls with a per-card manual review date", () => {
     expect(resourceHub).toContain("large-business-resource-filter");
     expect(resourceHub).toContain("LARGE_BUSINESS_PREPARATION_FILTERS");
