@@ -3,6 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { createFeedbackSubmission, createTaxpayerProfileForUser, deleteChecklistDraftForUser, deleteTaxpayerProfileForUser, getAggregateVisitorDays, getChecklistDraftForUser, getTaxpayerProfileForUser, recordAggregateVisitorPageView, saveChecklistDraftForUser, updateTaxpayerProfileForUser } from "./db";
+import { notifyOwner } from "./_core/notification";
 import { checklistDraftPayloadSchema, feedbackInputSchema, taxpayerProfileCreateSchema, taxpayerProfilePayloadSchema } from "./draftValidation";
 import { systemRouter } from "./_core/systemRouter";
 import { adminProcedure, protectedProcedure, publicProcedure, router } from "./_core/trpc";
@@ -138,6 +139,16 @@ export const appRouter = router({
     submit: publicProcedure.input(feedbackInputSchema).mutation(async ({ input }) => {
       try {
         await createFeedbackSubmission(input);
+        try {
+          const ownerNotified = await notifyOwner({
+            title: "New anonymous pilot feedback",
+            content: "A new anonymous feedback entry was received. This operational alert includes no feedback content or visitor details.",
+          });
+          if (!ownerNotified) console.warn("[Feedback] owner alert was unavailable after feedback was saved.");
+        } catch {
+          // Feedback is already saved. Alert delivery must never affect the visitor acknowledgement.
+          console.warn("[Feedback] owner alert could not be sent after feedback was saved.");
+        }
         return { success: true, acknowledgement: "Thank you. Your feedback was received without account or contact information." } as const;
       } catch (error) {
         console.error("[Feedback] submission failed", error);

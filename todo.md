@@ -288,3 +288,6 @@
 - [x] Implement an authenticated owner-only dashboard that displays the current weekly aggregate page-view total and does not expose individual visitor data.
 - [x] Defer automatic email delivery to driris@gmail.com at the owner’s direction; do not create a schedule, email provider integration, or background worker for this dashboard-only release.
 - [x] Update bilingual privacy disclosures and focused tests, then validate opt-in/decline/reset behavior, aggregation, owner-only access, full suite, production build, and responsive layout before publication.
+- [x] Define the new-feedback owner-alert boundary: operational notification only, containing no message text, category, account data, contact information, tax/financial information, notices, documents, credentials, or visitor identifiers.
+- [x] Trigger a best-effort owner notification after successful anonymous feedback storage without changing the visitor acknowledgement or making feedback submission depend on notification delivery.
+- [x] Add focused coverage for notification content, successful feedback behavior, and notification-service failure resilience; validate the full test suite and production build before publication.
