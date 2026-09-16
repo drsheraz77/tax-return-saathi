@@ -5,11 +5,12 @@ import {
   type ImageContent,
   type Message,
   type MessageContent,
+  type ResponseFormat,
   type TextContent,
 } from "./_core/llm";
 
 export const BUILT_IN_MODEL = "gemini-3-flash-preview";
-const MAX_TOKENS = 2000;
+const MAX_TOKENS = 4096;
 
 export const TAX_REVIEW_QUALITY_PROTOCOL = `Tax Return Saathi response-quality protocol:
 This is educational preparation support, not FBR, a tax adviser, or a return-submission service. Do not state or imply that FBR will accept, reject, flag, or agree with a return.
@@ -30,6 +31,7 @@ type ClientMessage = {
 
 type ClientPayload = {
   max_tokens?: unknown;
+  response_format?: unknown;
   system?: unknown;
   messages?: unknown;
 };
@@ -131,6 +133,34 @@ function boundedMaxTokens(value: unknown): number {
     : 1000;
 }
 
+function toResponseFormat(value: unknown): ResponseFormat | undefined {
+  if (!isRecord(value) || typeof value.type !== "string") return undefined;
+
+  if (value.type === "text" || value.type === "json_object") {
+    return { type: value.type };
+  }
+
+  if (
+    value.type === "json_schema" &&
+    isRecord(value.json_schema) &&
+    typeof value.json_schema.name === "string" &&
+    isRecord(value.json_schema.schema)
+  ) {
+    return {
+      type: "json_schema",
+      json_schema: {
+        name: value.json_schema.name,
+        schema: value.json_schema.schema,
+        ...(typeof value.json_schema.strict === "boolean"
+          ? { strict: value.json_schema.strict }
+          : {}),
+      },
+    };
+  }
+
+  return undefined;
+}
+
 /**
  * Keeps the uploaded browser's Anthropic Messages-shaped request and response
  * contract while dispatching only through the project-managed server AI proxy.
@@ -152,6 +182,7 @@ export async function manusLlmProxy(req: Request, res: Response) {
   }
 
   try {
+    const responseFormat = toResponseFormat(payload.response_format);
     const messages: Message[] = [
       ...(typeof payload.system === "string" ? [{ role: "system" as const, content: payload.system }] : []),
       { role: "system" as const, content: TAX_REVIEW_QUALITY_PROTOCOL },
@@ -161,6 +192,7 @@ export async function manusLlmProxy(req: Request, res: Response) {
       model: BUILT_IN_MODEL,
       max_tokens: boundedMaxTokens(payload.max_tokens),
       messages,
+      ...(responseFormat ? { response_format: responseFormat } : {}),
     });
     const choice = completion.choices[0];
 

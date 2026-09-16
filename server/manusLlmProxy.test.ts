@@ -55,6 +55,7 @@ describe("built-in AI adapter", () => {
         body: {
           model: "claude-sonnet-4-6",
           max_tokens: 9000,
+          response_format: { type: "json_object" },
           system: "Be concise.",
           messages: [{
             role: "user",
@@ -71,7 +72,8 @@ describe("built-in AI adapter", () => {
 
     expect(mockedInvokeLLM).toHaveBeenCalledWith({
       model: BUILT_IN_MODEL,
-      max_tokens: 2000,
+      max_tokens: 4096,
+      response_format: { type: "json_object" },
       messages: [
         { role: "system", content: "Be concise." },
         { role: "system", content: TAX_REVIEW_QUALITY_PROTOCOL },
@@ -109,6 +111,34 @@ describe("built-in AI adapter", () => {
     );
 
     expect(recorded).toEqual({ statusCode: 500, body: { error: "Upstream request failed" } });
+  });
+
+  it("forwards a strict JSON schema for the client-side return-review parser", async () => {
+    mockedInvokeLLM.mockResolvedValue({
+      id: "chatcmpl_schema",
+      created: 1,
+      model: BUILT_IN_MODEL,
+      choices: [{ index: 0, message: { role: "assistant", content: "{}" }, finish_reason: "stop" }],
+      usage: { prompt_tokens: 2, completion_tokens: 1, total_tokens: 3 },
+    });
+    const { response } = createResponseRecorder();
+    const responseFormat = {
+      type: "json_schema" as const,
+      json_schema: {
+        name: "return_review",
+        strict: true,
+        schema: { type: "object", properties: {}, additionalProperties: false },
+      },
+    };
+
+    await manusLlmProxy(
+      { method: "POST", body: { messages: [{ role: "user", content: "Review." }], response_format: responseFormat } } as Request,
+      response
+    );
+
+    expect(mockedInvokeLLM).toHaveBeenCalledWith(expect.objectContaining({
+      response_format: responseFormat,
+    }));
   });
 
   it("enforces tax-year awareness, uncertainty, official verification, and no-fabrication boundaries for every request", () => {

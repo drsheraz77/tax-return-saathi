@@ -2077,11 +2077,43 @@ RESPOND ONLY with JSON, no markdown fences, no preamble, in ${lang === "ur" ? "U
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "claude-sonnet-4-6",
-          max_tokens: 2000,
+          max_tokens: 4096,
+          response_format: {
+            type: "json_schema",
+            json_schema: {
+              name: "return_review",
+              strict: true,
+              schema: {
+                type: "object",
+                properties: {
+                  summary: { type: "string" },
+                  found: { type: "array", items: { type: "string" } },
+                  missing: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        item: { type: "string" },
+                        why: { type: "string" },
+                        severity: { type: "string", enum: ["high", "medium"] },
+                      },
+                      required: ["item", "why", "severity"],
+                      additionalProperties: false,
+                    },
+                  },
+                  warnings: { type: "array", items: { type: "string" } },
+                  askUser: { type: "array", items: { type: "string" } },
+                },
+                required: ["summary", "found", "missing", "warnings", "askUser"],
+                additionalProperties: false,
+              },
+            },
+          },
           messages: [{ role: "user", content: blocks }],
         }),
       });
       const data = await res.json();
+      if (!res.ok) throw new Error("return review request failed");
       const text = (data.content || [])
         .filter((b) => b.type === "text")
         .map((b) => b.text)

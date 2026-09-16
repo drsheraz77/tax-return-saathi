@@ -291,3 +291,10 @@
 - [x] Define the new-feedback owner-alert boundary: operational notification only, containing no message text, category, account data, contact information, tax/financial information, notices, documents, credentials, or visitor identifiers.
 - [x] Trigger a best-effort owner notification after successful anonymous feedback storage without changing the visitor acknowledgement or making feedback submission depend on notification delivery.
 - [x] Add focused coverage for notification content, successful feedback behavior, and notification-service failure resilience; validate the full test suite and production build before publication.
+- [x] Review the existing Vite build, asset paths, environment dependencies, and API calls to identify the exact static-only GitHub Pages boundary.
+- [x] Add a GitHub Actions workflow that builds and deploys only the Vite frontend to GitHub Pages with the required Pages permissions and artifact upload flow.
+- [x] Add deployment documentation that explains repository Pages configuration, the base-path setting, and the unavailable server/database/authentication/feedback/owner-dashboard capabilities on static hosting.
+- [x] Validate the frontend build and workflow syntax, then document the verification result before publication.
+- [x] Inspect only privacy-safe runtime diagnostics and the upload-analysis request path for the reported failed redacted-return review; do not access or retain the submitted document.
+- [x] Fix the identified request, model, or failure-handling issue without adding document persistence, identifiers, tracking, or broader data collection.
+- [x] Add focused regression coverage using synthetic non-sensitive inputs and validate the complete analysis workflow, full test suite, production build, and responsive UI before publication.
