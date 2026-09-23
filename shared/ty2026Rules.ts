@@ -35,6 +35,10 @@ type Inputs = {
     taxDeducted?: number;
     salaryIncome?: number;
     otherTaxableIncome?: number;
+    deductionsClaimed?: { zakat?: number; workersWelfareFund?: number; educationalExpenses?: number };
+    deductionsSupported?: { zakat?: boolean; workersWelfareFund?: boolean; educationalExpenses?: boolean };
+    withholdingCertificatesTotal?: number;
+    declaredWithholdingTotal?: number;
   };
   transactionAnalysis?: {
     duplicateTransfers?: Array<unknown>;
@@ -69,6 +73,21 @@ export function evaluateTy2026Rules(input: Inputs): Ty2026RuleFinding[] {
       const balance = profile.declaredTaxChargeable - profile.taxDeducted;
       findings.push({ ruleId: "T2", title: "Tax payable/refund cross-check", detail: `Declared tax chargeable ${money(profile.declaredTaxChargeable)} minus tax deducted ${money(profile.taxDeducted)} gives a calculated balance of ${money(balance)}.`, question: "Verify withholding credits against certificates and the return's final tax computation.", severity: "low", evidenceClass: "CALCULATED", confidence: "high" });
     }
+  }
+
+  const deductions = profile?.deductionsClaimed;
+  const deductionSupport = profile?.deductionsSupported;
+  if (deductions && deductionSupport) {
+    for (const [key, label] of [["zakat", "Zakat"], ["workersWelfareFund", "Workers' Welfare Fund"], ["educationalExpenses", "Educational Expenses"]] as const) {
+      const amount = deductions[key] ?? 0;
+      if (amount > 0 && deductionSupport[key] === false) {
+        findings.push({ ruleId: "D20", title: `${label} deduction lacks established supporting basis`, detail: `${label} of ${money(amount)} is claimed, but supporting evidence/basis was not established.`, question: `Verify the supporting document and applicable eligibility before claiming the ${label} deduction.`, severity: "medium", evidenceClass: "REQUIRES_VERIFICATION", confidence: "high" });
+      }
+    }
+  }
+
+  if (profile?.withholdingCertificatesTotal !== undefined && profile.declaredWithholdingTotal !== undefined && Math.abs(profile.withholdingCertificatesTotal - profile.declaredWithholdingTotal) > 1) {
+    findings.push({ ruleId: "W1", title: "Withholding tax total differs from submitted certificates", detail: `Certificates support ${money(profile.withholdingCertificatesTotal)}, while the declared withholding total is ${money(profile.declaredWithholdingTotal)}.`, question: "Reconcile each withholding certificate with the corresponding IRIS withholding entry before claiming the credit.", severity: "high", evidenceClass: "CALCULATED", confidence: "high" });
   }
 
   if (profile?.returnType === "simplified_salaried" && sources.some((source) => ["Business", "Foreign Sources", "Capital Gain"].includes(source))) {
