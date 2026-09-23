@@ -44,6 +44,8 @@ const extraction = {
     otherApplications: 0,
     declaredClosingWealth: 5_000_000,
     bankChecks: [],
+    bankTransactions: [],
+    priorYearProperties: [],
     fundsTrace: {
       openingFunds: 11_000_000,
       saleProceeds: 8_000_000,
