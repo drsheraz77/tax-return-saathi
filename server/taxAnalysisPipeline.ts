@@ -11,25 +11,7 @@ const MAX_CHAT_TOKENS = 1200;
 
 const EXTRACTION_SCHEMA = {
   type: "object",
-  bankTransactions: {
-          type: "array",
-          items: {
-            type: "object",
-            properties: { rowNumber: { type: "number" }, date: { type: "string" }, description: { type: "string" }, amount: { type: "number" }, direction: { type: "string", enum: ["credit", "debit", "unknown"] } },
-            required: ["rowNumber", "date", "description", "amount", "direction"],
-            additionalProperties: false,
-          },
-        },
-        priorYearProperties: {
-          type: "array",
-          items: {
-            type: "object",
-            properties: { key: { type: "string" }, label: { type: "string" }, priorYearValue: { type: "number" }, currentYearValue: { type: "number" }, priorYearStatus: { type: "string", enum: ["present", "sold", "transferred", "unknown"] }, currentYearStatus: { type: "string", enum: ["present", "sold", "transferred", "unknown"] } },
-            required: ["key", "label", "priorYearValue", "currentYearValue"],
-            additionalProperties: false,
-          },
-        },
-        properties: {
+  properties: {
     status: { type: "string", enum: ["extracted", "insufficient"] },
     facts: {
       type: "object",
@@ -59,6 +41,24 @@ const EXTRACTION_SCHEMA = {
               declaredWealthBalance: { type: "number" },
             },
             required: ["accountRef", "statementClosingBalance", "declaredWealthBalance"],
+            additionalProperties: false,
+          },
+        },
+        bankTransactions: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: { rowNumber: { type: "number" }, date: { type: "string" }, description: { type: "string" }, amount: { type: "number" }, direction: { type: "string", enum: ["credit", "debit", "unknown"] } },
+            required: ["rowNumber", "date", "description", "amount", "direction"],
+            additionalProperties: false,
+          },
+        },
+        priorYearProperties: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: { key: { type: "string" }, label: { type: "string" }, priorYearValue: { type: "number" }, currentYearValue: { type: "number" }, priorYearStatus: { type: "string", enum: ["present", "sold", "transferred", "unknown"] }, currentYearStatus: { type: "string", enum: ["present", "sold", "transferred", "unknown"] } },
+            required: ["key", "label", "priorYearValue", "currentYearValue"],
             additionalProperties: false,
           },
         },
