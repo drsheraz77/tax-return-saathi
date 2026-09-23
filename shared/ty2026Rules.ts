@@ -38,6 +38,7 @@ type Inputs = {
     deductionsClaimed?: { zakat?: number; workersWelfareFund?: number; educationalExpenses?: number };
     deductionsSupported?: { zakat?: boolean; workersWelfareFund?: boolean; educationalExpenses?: boolean };
     withholdingCertificatesTotal?: number;
+    declaredCapitalGains?: Array<{ description?: string; purchasePrice?: number; improvementCost?: number; purchaseExpenses?: number; salePrice?: number; saleExpenses?: number; declaredGain?: number; ownershipPercent?: number; acquisitionDate?: string; saleDate?: string; declaredNetFundsReceived?: number; mortgageOrLoanRepaid?: number; mortgageDrawdown?: number; ownFundsUsed?: number; declaredValueOrFbrValue?: number }>;
     declaredWithholdingTotal?: number;
   };
   transactionAnalysis?: {
@@ -72,6 +73,28 @@ export function evaluateTy2026Rules(input: Inputs): Ty2026RuleFinding[] {
     if (profile.taxDeducted !== undefined) {
       const balance = profile.declaredTaxChargeable - profile.taxDeducted;
       findings.push({ ruleId: "T2", title: "Tax payable/refund cross-check", detail: `Declared tax chargeable ${money(profile.declaredTaxChargeable)} minus tax deducted ${money(profile.taxDeducted)} gives a calculated balance of ${money(balance)}.`, question: "Verify withholding credits against certificates and the return's final tax computation.", severity: "low", evidenceClass: "CALCULATED", confidence: "high" });
+    }
+  }
+
+  for (const asset of profile?.declaredCapitalGains ?? []) {
+    const purchase = (asset.purchasePrice ?? 0) + (asset.improvementCost ?? 0) + (asset.purchaseExpenses ?? 0);
+    const netSale = (asset.salePrice ?? 0) - (asset.saleExpenses ?? 0);
+    const ownership = Math.max(0, Math.min(100, asset.ownershipPercent ?? 100)) / 100;
+    const calculatedGain = (netSale - purchase) * ownership;
+    if ((asset.salePrice ?? 0) > 0 && (asset.purchasePrice ?? 0) > 0 && asset.declaredGain !== undefined && Math.abs(calculatedGain - asset.declaredGain) > 1) {
+      findings.push({ ruleId: "CG26", title: `Capital gain does not reconcile: ${asset.description || "property"}`, detail: `Calculated gain/loss is ${money(calculatedGain)} after documented cost components and sale expenses; declared gain/loss is ${money(asset.declaredGain)}.`, question: "Verify purchase cost, documented improvements/expenses, sale consideration, ownership share and the gain calculation.", severity: "high", evidenceClass: "CALCULATED", confidence: "high" });
+    }
+    if ((asset.salePrice ?? 0) > 0 && asset.declaredNetFundsReceived !== undefined) {
+      const expectedReceipt = netSale - (asset.mortgageOrLoanRepaid ?? 0);
+      if (Math.abs(expectedReceipt - asset.declaredNetFundsReceived) > 1) findings.push({ ruleId: "CG27", title: `Property sale proceeds do not reconcile: ${asset.description || "property"}`, detail: `Net sale proceeds after the supplied loan repayment are ${money(expectedReceipt)}, while declared funds received are ${money(asset.declaredNetFundsReceived)}.`, question: "Trace the actual receipt through bank, cheque or cash evidence and document any loan settlement or selling expenses.", severity: "high", evidenceClass: "CALCULATED", confidence: "high" });
+    }
+    if ((asset.purchasePrice ?? 0) > 0 && (asset.ownFundsUsed ?? 0) + (asset.mortgageDrawdown ?? 0) > 0) {
+      const purchaseUses = (asset.purchasePrice ?? 0) + (asset.improvementCost ?? 0) + (asset.purchaseExpenses ?? 0);
+      const funding = (asset.ownFundsUsed ?? 0) + (asset.mortgageDrawdown ?? 0);
+      if (Math.abs(funding - purchaseUses) > 1) findings.push({ ruleId: "CG28", title: `Property purchase funding does not reconcile: ${asset.description || "property"}`, detail: `Documented purchase uses are ${money(purchaseUses)}, while identified own funds plus loan funding are ${money(funding)}.`, question: "Identify the missing documented funding source or correct the purchase-cost components.", severity: "high", evidenceClass: "CALCULATED", confidence: "high" });
+    }
+    if (asset.declaredValueOrFbrValue !== undefined && (asset.salePrice ?? 0) > 0 && Math.abs((asset.salePrice ?? 0) - asset.declaredValueOrFbrValue) > 1) {
+      findings.push({ ruleId: "CG29", title: `Sale consideration differs from comparison valuation: ${asset.description || "property"}`, detail: `Sale consideration is ${money(asset.salePrice ?? 0)} versus comparison value ${money(asset.declaredValueOrFbrValue)}.`, question: "Keep consideration and valuation distinct and verify which figure is required for the applicable return field.", severity: "medium", evidenceClass: "REQUIRES_VERIFICATION", confidence: "high" });
     }
   }
 
