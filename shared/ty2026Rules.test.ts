@@ -48,6 +48,21 @@ describe("evaluateTy2026Rules", () => {
     expect(clean.map((x) => x.ruleId)).not.toContain("T1");
   });
 
+  it("flags capital gain arithmetic mismatch", () => {
+    const findings = evaluateTy2026Rules({ ...base, profile: { declaredCapitalGains: [{ description: "Plot", purchasePrice: 15000000, salePrice: 19000000, declaredGain: 10000000 }] } });
+    expect(findings.map((x) => x.ruleId)).toContain("CG26");
+  });
+
+  it("flags property sale receipt mismatch", () => {
+    const findings = evaluateTy2026Rules({ ...base, profile: { declaredCapitalGains: [{ description: "Plot", purchasePrice: 15000000, salePrice: 19000000, declaredNetFundsReceived: 15000000 }] } });
+    expect(findings.map((x) => x.ruleId)).toContain("CG27");
+  });
+
+  it("flags property purchase funding mismatch", () => {
+    const findings = evaluateTy2026Rules({ ...base, profile: { declaredCapitalGains: [{ description: "Palm IV", purchasePrice: 14000000, ownFundsUsed: 10000000 }] } });
+    expect(findings.map((x) => x.ruleId)).toContain("CG28");
+  });
+
   it("flags unsupported deductions", () => {
     const findings = evaluateTy2026Rules({ ...base, profile: { deductionsClaimed: { zakat: 10000 }, deductionsSupported: { zakat: false } } });
     expect(findings.map((x) => x.ruleId)).toContain("D20");
