@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculateWealthReconciliation, compareBankBalances, traceFunds } from "./taxReconciliation";
+import { calculateWealthReconciliation, compareBankBalances, parseTabularTransactions, traceFunds } from "./taxReconciliation";
 
 describe("deterministic tax reconciliation", () => {
   it("shows the exact wealth difference instead of asking the model to do arithmetic", () => {
@@ -57,5 +57,30 @@ describe("deterministic tax reconciliation", () => {
     expect(result.totalApplications).toBe(17_500_000);
     expect(result.remainingFunds).toBe(1_500_000);
     expect(result.status).toBe("traceable");
+  });
+
+  it("parses CSV rows locally and identifies transfer candidates without treating them as income", () => {
+    const result = parseTabularTransactions([
+      "Date,Description,Amount",
+      "2026-06-30,Internal transfer to own account,-500000",
+      "2026-06-30,Internal transfer from own account,500000",
+      "2026-06-30,Salary credit,200000",
+      "2026-06-30,Internal transfer to own account,-500000",
+    ].join("\n"));
+
+    expect(result.rows).toHaveLength(4);
+    expect(result.totalCredits).toBe(700000);
+    expect(result.totalDebits).toBe(1000000);
+    expect(result.internalTransferCandidates).toHaveLength(1);
+    expect(result.duplicateTransfers).toHaveLength(1);
+    expect(result.duplicateTransfers[0].rowNumbers).toEqual([2, 5]);
+  });
+
+  it("accepts tab-separated Excel-copied data and warns when columns are incomplete", () => {
+    const result = parseTabularTransactions("Date\tNarration\tCredit\tDebit\n2026-06-30\tBank profit\tRs. 1,500.50\t\n2026-06-30\tCash withdrawal\t\t500");
+
+    expect(result.totalCredits).toBe(1500.5);
+    expect(result.totalDebits).toBe(500);
+    expect(result.warnings).toEqual([]);
   });
 });

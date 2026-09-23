@@ -2,6 +2,7 @@ const QUICK_TOOLS = [
   { eventName: "tax-return-saathi:open-checklist", english: "Checklist", urdu: "چیک لسٹ", icon: "✓" },
   { eventName: "tax-return-saathi:open-resources", english: "Resources", urdu: "وسائل", icon: "i" },
   { eventName: "tax-return-saathi:open-tax-year", english: "Tax Year", urdu: "ٹیکس سال", icon: "•" },
+  { eventName: "tax-return-saathi:open-reconciliation", english: "Reconcile", urdu: "حساب", icon: "∑" },
   { eventName: "tax-return-saathi:open-preferences", english: "Preferences", urdu: "ترجیحات", icon: "◌" },
   { eventName: "tax-return-saathi:open-privacy-consent", english: "Privacy", urdu: "رازداری", icon: "◉" },
 ];

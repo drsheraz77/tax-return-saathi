@@ -18,6 +18,7 @@ const TaxYear2026Update = React.lazy(() => import("./TaxYear2026Update.jsx"));
 const TaxpayerPreparationProfile = React.lazy(() => import("./TaxpayerPreparationProfile.jsx"));
 const PublicPrivacyPolicy = React.lazy(() => import("./PublicPrivacyPolicy.jsx"));
 const OwnerVisitorSummary = React.lazy(() => import("./OwnerVisitorSummary.jsx"));
+const ReconciliationWorkbench = React.lazy(() => import("./ReconciliationWorkbench.jsx"));
 
 document.title = "Tax Return Saathi | Pakistan FBR Tax Assistant";
 
@@ -60,6 +61,7 @@ function SiteContent() {
       <TaxYear2026Update />
       <OfficialResourceHub />
       <TaxpayerPreparationProfile />
+      <ReconciliationWorkbench />
     </Suspense>
     <QuickToolsDock />
     <PrivacyConsentNotice />

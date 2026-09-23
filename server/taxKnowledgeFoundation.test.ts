@@ -10,7 +10,7 @@ describe("reviewed Tax Year 2026 starter knowledge catalogue", () => {
   });
 
   it("uses a bounded set of official FBR knowledge records with a visible scope and linked preparation tools", () => {
-    expect(TAX_KNOWLEDGE_FOUNDATION.topics.map((topic) => topic.id)).toEqual(["iris-access", "return-completion-records", "due-dates", "laws-index", "contact-support-route", "company-industry-preparation"]);
+    expect(TAX_KNOWLEDGE_FOUNDATION.topics.map((topic) => topic.id)).toEqual(["iris-access", "return-completion-records", "wealth-statement-reconciliation", "bank-record-cross-check", "due-dates", "laws-index", "contact-support-route", "company-industry-preparation"]);
     for (const topic of TAX_KNOWLEDGE_FOUNDATION.topics) {
       expect(new URL(topic.sourceUrl).hostname).toBe("www.fbr.gov.pk");
       expect(topic.purpose).toBeTruthy();
@@ -29,7 +29,8 @@ describe("reviewed Tax Year 2026 starter knowledge catalogue", () => {
 
   it("filters only the in-memory reviewed records without broadening the catalogue", () => {
     expect(getStarterKnowledgeTopics("IRIS").map((topic) => topic.id)).toEqual(["iris-access"]);
-    expect(getStarterKnowledgeTopics("records").map((topic) => topic.id)).toEqual(["return-completion-records"]);
+    expect(getStarterKnowledgeTopics("Wealth Statement").map((topic) => topic.id)).toEqual(["wealth-statement-reconciliation", "bank-record-cross-check"]);
+    expect(getStarterKnowledgeTopics("bank").map((topic) => topic.id)).toEqual(["bank-record-cross-check"]);
     expect(getStarterKnowledgeTopics("industry").map((topic) => topic.id)).toEqual(["company-industry-preparation"]);
     expect(getStarterKnowledgeTopics("no match")).toEqual([]);
     expect(getStarterKnowledgeTopics()).toBe(TAX_KNOWLEDGE_FOUNDATION.topics);

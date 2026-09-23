@@ -311,3 +311,12 @@
 - [x] Add visible review status, evidence classification, confidence, wealth arithmetic, and bank cross-check cues.
 - [x] Run the full test suite, production build, and responsive verification for this release.
 - [x] Save a release checkpoint and record remaining limitations, including lack of live FBR retrieval.
+
+
+## Reconciliation tools batch — 2026-09-23
+- [x] Add dated Wealth Statement and bank-record entries to the existing official FBR source catalogue, with explicit scope limits.
+- [x] Add a local-only guided Wealth Statement and generic bank-balance reconciliation workbench.
+- [x] Add local CSV/TSV and Excel-copied-tabular transaction parsing with duplicate and internal-transfer review candidates.
+- [x] Reuse the existing quick-tools dock rather than adding a new floating control.
+- [x] Run the full test suite, production build, and desktop/mobile verification for this batch.
+- [x] Save a release checkpoint and document the local-only / non-determination limitations.
