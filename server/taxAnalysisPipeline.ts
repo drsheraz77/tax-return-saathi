@@ -36,7 +36,26 @@ const EXTRACTION_SCHEMA = {
           type: "array",
           items: {
             type: "object",
-            properties: {
+            profile: {
+          type: "object",
+          properties: {
+            returnType: { type: "string", enum: ["simplified_salaried", "normal_individual", "unknown"] },
+            selectedSources: { type: "array", items: { type: "string" } },
+            resident: { type: "boolean" },
+            employerRecords: { type: "array", items: { type: "object", properties: { employerRegistrationNo: { type: "string" }, salaryTaxDeducted: { type: "number" }, certificateTaxDeducted: { type: "number" }, terminationBenefits: { type: "number" }, salaryArrears: { type: "number" }, averageTaxElectionMade: { type: "boolean" } }, required: [], additionalProperties: false } },
+            rentalPropertiesDeclared: { type: "number" },
+            foreignAssets: { type: "number" },
+            foreignIncome: { type: "number" },
+            foreignStatementPresent: { type: "boolean" },
+            motorVehicles: { type: "array", items: { type: "object", properties: { registrationNo: { type: "string" }, chassisNo: { type: "string" }, value: { type: "number" }, cc: { type: "number" } }, required: [], additionalProperties: false } },
+            filingDate: { type: "string" },
+            atlSurchargePaid: { type: "boolean" },
+            verificationComplete: { type: "boolean" },
+          },
+          required: [],
+          additionalProperties: false,
+        },
+        properties: {
               accountRef: { type: "string" },
               statementClosingBalance: { type: "number" },
               declaredWealthBalance: { type: "number" },
@@ -158,6 +177,7 @@ type ExtractedCase = {
     loanRepayment: number;
     otherApplications: number;
     declaredClosingWealth: number;
+    profile?: { returnType?: "simplified_salaried" | "normal_individual" | "unknown"; selectedSources?: string[]; resident?: boolean; employerRecords?: Array<{ employerRegistrationNo?: string; salaryTaxDeducted?: number; certificateTaxDeducted?: number; terminationBenefits?: number; salaryArrears?: number; averageTaxElectionMade?: boolean }>; rentalPropertiesDeclared?: number; foreignAssets?: number; foreignIncome?: number; foreignStatementPresent?: boolean; motorVehicles?: Array<{ registrationNo?: string; chassisNo?: string; value?: number; cc?: number }>; filingDate?: string; atlSurchargePaid?: boolean; verificationComplete?: boolean };
     bankChecks: Array<{ accountRef: string; statementClosingBalance: number; declaredWealthBalance: number }>;
     bankTransactions: Array<{ rowNumber: number; date: string; description: string; amount: number; direction: "credit" | "debit" | "unknown" }>;
     priorYearProperties: Array<{ key: string; label: string; priorYearValue: number; currentYearValue: number; priorYearStatus?: "present" | "sold" | "transferred" | "unknown"; currentYearStatus?: "present" | "sold" | "transferred" | "unknown" }>;
@@ -223,7 +243,7 @@ export async function returnReviewPipeline(req: Request, res: Response) {
     const transactionAnalysis = summarizeTransactionClassification({ rows: extracted.facts.bankTransactions, totalCredits: extracted.facts.bankTransactions.filter((row) => row.direction === "credit").reduce((sum, row) => sum + Math.abs(row.amount), 0), totalDebits: extracted.facts.bankTransactions.filter((row) => row.direction === "debit").reduce((sum, row) => sum + Math.abs(row.amount), 0), duplicateTransfers: [], internalTransferCandidates: [], warnings: [] });
     const currentAssets = extracted.facts.properties.map((asset) => ({ key: asset.label.toLocaleLowerCase().trim(), label: asset.label, priorYearValue: 0, currentYearValue: asset.acquisitionCost, currentYearStatus: "present" as const }));
     const assetContinuity = compareYearToYearAssets(extracted.facts.priorYearProperties, currentAssets);
-    const ty2026Rules = evaluateTy2026Rules({ wealth, banks, funds, properties: extracted.facts.properties, assetContinuity, transactionAnalysis });
+    const ty2026Rules = evaluateTy2026Rules({ wealth, banks, funds, properties: extracted.facts.properties, assetContinuity, transactionAnalysis, profile: extracted.facts.profile });
     const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, transactionAnalysis, assetContinuity, ty2026Rules, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
 
     const reasoning = await invokeLLM({
