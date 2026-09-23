@@ -55,7 +55,7 @@ const T = {
     langBtn: "اردو",
     disclaimer:
       "Education-only review — this AI cannot access or reproduce FBR checks, confirm figures, or predict notices. File your official return on IRIS (iris.fbr.gov.pk) and verify figures with a tax advisor.",
-    tabs: { check: "Review completed return", checklist: "Prepare my documents", guide: "Filing guide", mistakes: "Common errors", scenarios: "Examples", notice: "FBR notice guidance", shop: "For shopkeepers", calc: "Tax estimator", chat: "Ask a guide" },
+    tabs: { check: "Analyze Your Tax Return", checklist: "Prepare my documents", guide: "Filing guide", mistakes: "Common errors", scenarios: "Examples", notice: "FBR notice guidance", shop: "For shopkeepers", calc: "Tax estimator", chat: "Ask a guide" },
     noticeHeroTitle: "Got a letter or notice from FBR? Don't panic.",
     noticeHeroSub: "Upload a photo of it, or type what it says. We'll explain it in simple words — what it means, what you must do, and by when. Free, private, and in your language.",
     noticeHeroCalm: "A notice is not a punishment. Most are routine and can be sorted out by replying on time. We'll walk you through it.",
@@ -525,7 +525,7 @@ const T = {
     langBtn: "English",
     disclaimer:
       "یہ صرف تعلیمی جانچ ہے — یہ اے آئی ایف بی آر کی جانچ تک رسائی نہیں رکھتا، اسے نقل نہیں کر سکتا، اعداد کی تصدیق یا نوٹس کی پیش گوئی نہیں کر سکتا۔ سرکاری ریٹرن IRIS (iris.fbr.gov.pk) پر جمع کریں اور اعداد کی ٹیکس مشیر سے تصدیق کروائیں۔",
-    tabs: { check: "مکمل ریٹرن جانچیں", checklist: "دستاویزات تیار کریں", guide: "فائلنگ رہنمائی", mistakes: "عام غلطیاں", scenarios: "مثالیں", notice: "ایف بی آر نوٹس رہنمائی", shop: "دکانداروں کے لیے", calc: "ٹیکس اندازہ", chat: "رہنمائی پوچھیں" },
+    tabs: { check: "اپنا ٹیکس ریٹرن جانچیں · Analyze Your Tax Return", checklist: "دستاویزات تیار کریں", guide: "فائلنگ رہنمائی", mistakes: "عام غلطیاں", scenarios: "مثالیں", notice: "ایف بی آر نوٹس رہنمائی", shop: "دکانداروں کے لیے", calc: "ٹیکس اندازہ", chat: "رہنمائی پوچھیں" },
     noticeHeroTitle: "ایف بی آر سے خط یا نوٹس آیا ہے؟ گھبرائیں نہیں۔",
     noticeHeroSub: "اس کی تصویر اپ لوڈ کریں، یا جو لکھا ہے وہ ٹائپ کریں۔ ہم آسان الفاظ میں سمجھائیں گے — اس کا مطلب کیا ہے، آپ کو کیا کرنا ہے، اور کب تک۔ مفت، نجی، اور آپ کی زبان میں۔",
     noticeHeroCalm: "نوٹس کوئی سزا نہیں۔ زیادہ تر معمولی ہوتے ہیں اور وقت پر جواب دے کر حل ہو جاتے ہیں۔ ہم آپ کے ساتھ ہیں۔",
@@ -1924,7 +1924,7 @@ function Mistakes({ t }) {
 }
 
 // ── Return gap check (upload + screening + AI analysis) ─────
-function GapCheck({ lang, t }) {
+function GapCheck({ lang, t, dedicated = false }) {
   const [income, setIncome] = useState({});
   const [assets, setAssets] = useState({});
   const [firstTime, setFirstTime] = useState(null);
@@ -2128,10 +2128,11 @@ function GapCheck({ lang, t }) {
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-1" style={{ color: COLORS.green }}>
+      {!dedicated && <><h2 className="text-xl font-bold mb-1" style={{ color: COLORS.green }}>
         {t.checkTitle}
       </h2>
-      <p className="text-sm mb-2 opacity-70">{t.checkSub}</p>
+      <p className="text-sm mb-2 opacity-70">{t.checkSub}</p></>}
+      {dedicated && <p className="text-sm mb-2 opacity-70">{t.checkSub}</p>}
       <p className="text-xs mb-5" style={{ color: "#6B5A17" }}>🔒 {t.checkPrivacy}</p>
       <div className="rounded-xl border p-3 mb-4 text-xs leading-relaxed" style={{ borderColor: "#B5CDBD", background: "#F0F5F1", color: COLORS.green2 }}>
         <strong>{lang === "ur" ? "حد اور اگلا قدم:" : "Scope and next step:"}</strong> {t.reviewTrustBoundary}
@@ -2766,9 +2767,9 @@ function Privacy({ lang, t, onBack }) {
 }
 
 // ── App ──────────────────────────────────────────────────────
-export default function TaxReturnSaathi() {
+export default function TaxReturnSaathi({ initialTab = "check", dedicatedAnalysis = false }) {
   const [lang, setLang] = useState("ur");
-  const [tab, setTab] = useState("check");
+  const [tab, setTab] = useState(initialTab);
   const [showPrivacy, setShowPrivacy] = useState(false);
   const t = T[lang];
 
@@ -2843,13 +2844,21 @@ export default function TaxReturnSaathi() {
       {/* Tabs */}
       {!showPrivacy && (
       <nav className="max-w-3xl mx-auto px-4 mt-5 flex gap-2 flex-wrap">
+        {dedicatedAnalysis && <a href="/" className="rounded-full px-4 py-2 text-sm font-semibold border" style={{ background: "transparent", color: COLORS.green, borderColor: "#B9C9BF", textDecoration: "none" }}>← {lang === "ur" ? "مرکزی صفحہ" : "Home"}</a>}
         {Object.entries(t.tabs).map(([k, label]) => {
           const isHero = k === "check";
           const active = tab === k;
           return (
             <button
               key={k}
-              onClick={() => setTab(k)}
+              onClick={() => {
+                if (k === "check" && !dedicatedAnalysis) {
+                  window.history.pushState({}, "", "/analyze-tax-return");
+                  window.dispatchEvent(new PopStateEvent("popstate"));
+                  return;
+                }
+                setTab(k);
+              }}
               className="rounded-full px-4 py-2 text-sm font-semibold border"
               style={
                 active
@@ -2873,13 +2882,19 @@ export default function TaxReturnSaathi() {
         <Privacy t={t} lang={lang} onBack={() => setShowPrivacy(false)} />
       ) : (
       <main className="max-w-3xl mx-auto px-4 py-6">
+        {dedicatedAnalysis && <section className="rounded-2xl border p-5 mb-5" style={{ borderColor: COLORS.gold, background: "#FBF6E3" }}>
+          <p className="text-xs font-bold mb-1" style={{ color: "#7A6210" }}>{lang === "ur" ? "خصوصی فیچر · آزمائشی تیاری" : "Special feature · Pilot preparation"}</p>
+          <h2 className="text-2xl font-bold mb-1" style={{ color: COLORS.green }}>{lang === "ur" ? "اپنا ٹیکس ریٹرن جانچیں" : "Analyze Your Tax Return"}</h2>
+          <p className="text-sm leading-relaxed" style={{ color: COLORS.ink }}>{lang === "ur" ? "اپنا چھپایا ہوا مکمل ریٹرن اپ لوڈ کر کے IRIS پر جمع کرانے سے پہلے نظر آنے والی کمی اور ممکنہ تضاد کی جانچ کریں۔" : "Upload your redacted complete return to review visible gaps and possible inconsistencies before submitting in IRIS."}</p>
+          <p className="text-xs mt-2" style={{ color: "#6B5A17" }}>{lang === "ur" ? "یہ آزاد تعلیمی جانچ ہے، ایف بی آر کی جانچ، حتمی ٹیکس فیصلہ یا فائلنگ نہیں۔" : "This is independent educational screening, not an FBR check, final tax decision, or filing service."}</p>
+        </section>}
         {tab === "notice" && <NoticeExplainer t={t} lang={lang} />}
         {tab === "checklist" && <DocChecklist t={t} lang={lang} />}
         {tab === "shop" && <Shopkeeper t={t} lang={lang} />}
         {tab === "guide" && <Guide t={t} lang={lang} />}
         {tab === "scenarios" && <Scenarios t={t} />}
         {tab === "mistakes" && <Mistakes t={t} />}
-        {tab === "check" && <GapCheck t={t} lang={lang} />}
+        {tab === "check" && <GapCheck t={t} lang={lang} dedicated={dedicatedAnalysis} />}
         {tab === "calc" && <Calculator t={t} lang={lang} />}
         {tab === "chat" && <Chat t={t} lang={lang} />}
       </main>

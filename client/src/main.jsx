@@ -38,7 +38,7 @@ function SiteContent() {
   }, []);
 
   React.useEffect(() => {
-    document.title = route === "/privacy" ? "Privacy Policy | Tax Return Saathi" : route === "/owner-visitor-summary" ? "Owner Visitor Summary | Tax Return Saathi" : "Tax Return Saathi | Pakistan FBR Tax Assistant";
+    document.title = route === "/privacy" ? "Privacy Policy | Tax Return Saathi" : route === "/owner-visitor-summary" ? "Owner Visitor Summary | Tax Return Saathi" : route === "/analyze-tax-return" ? "Analyze Your Tax Return | Tax Return Saathi" : "Tax Return Saathi | Pakistan FBR Tax Assistant";
   }, [route]);
 
   if (route === "/privacy") {
@@ -50,6 +50,13 @@ function SiteContent() {
 
   if (route === "/owner-visitor-summary") {
     return <Suspense fallback={<span className="supplemental-panel-loading" role="status">Loading owner summary…</span>}><OwnerVisitorSummary /></Suspense>;
+  }
+
+  if (route === "/analyze-tax-return") {
+    return <>
+      <App initialTab="check" dedicatedAnalysis />
+      <PrivacyConsentNotice key="dedicated-analysis" />
+    </>;
   }
 
   return <>

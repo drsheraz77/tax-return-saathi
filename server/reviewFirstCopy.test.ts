@@ -11,10 +11,10 @@ describe("review-first application copy", () => {
   });
 
   it("opens the completed-return review as the starred first journey", () => {
-    expect(appSource).toContain('const [tab, setTab] = useState("check")');
+    expect(appSource).toContain('const [tab, setTab] = useState(initialTab)');
     expect(appSource).toContain('const isHero = k === "check"');
-    expect(appSource).toContain('check: "Review completed return"');
-    expect(appSource).toContain('check: "مکمل ریٹرن جانچیں"');
+    expect(appSource).toContain('check: "Analyze Your Tax Return"');
+    expect(appSource).toContain('check: "اپنا ٹیکس ریٹرن جانچیں · Analyze Your Tax Return"');
   });
 
   it("keeps the English review limited to visible educational guidance", () => {
