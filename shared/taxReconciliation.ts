@@ -253,3 +253,43 @@ export function parseTabularTransactions(input: string, maxRows = 1000): Transac
     warnings,
   };
 }
+
+export function analyzeParsedTransactions(rows: ParsedTransaction[]): TransactionAnalysis {
+  const normalizedRows = rows.map((row) => ({
+    ...row,
+    amount: money(row.amount),
+    description: String(row.description || ""),
+    date: String(row.date || ""),
+  }));
+  const transferRows = normalizedRows.filter((row) => TRANSFER_WORDS.test(row.description));
+  const duplicateMap = new Map<string, ParsedTransaction[]>();
+  for (const row of transferRows) {
+    const key = `${row.date}|${Math.abs(row.amount).toFixed(2)}|${row.description.toLocaleLowerCase().replace(/\\s+/g, " ").trim()}`;
+    duplicateMap.set(key, [...(duplicateMap.get(key) || []), row]);
+  }
+  const duplicateTransfers = Array.from(duplicateMap.entries())
+    .filter(([, grouped]) => grouped.length > 1)
+    .map(([key, grouped]) => ({ key, rowNumbers: grouped.map((row) => row.rowNumber), amount: Math.abs(grouped[0].amount), description: grouped[0].description }));
+  const byDateAndAmount = new Map<string, ParsedTransaction[]>();
+  for (const row of normalizedRows) {
+    const key = `${row.date}|${Math.abs(row.amount).toFixed(2)}`;
+    byDateAndAmount.set(key, [...(byDateAndAmount.get(key) || []), row]);
+  }
+  const internalTransferCandidates: TransactionAnalysis["internalTransferCandidates"] = [];
+  for (const [key, grouped] of byDateAndAmount.entries()) {
+    const debitRow = grouped.find((row) => row.direction === "debit");
+    const creditRow = grouped.find((row) => row.direction === "credit");
+    if (debitRow && creditRow && (TRANSFER_WORDS.test(debitRow.description) || TRANSFER_WORDS.test(creditRow.description))) {
+      const [date, amount] = key.split("|");
+      internalTransferCandidates.push({ debitRow: debitRow.rowNumber, creditRow: creditRow.rowNumber, date, amount: Number(amount) });
+    }
+  }
+  return {
+    rows: normalizedRows,
+    totalCredits: money(normalizedRows.filter((row) => row.amount > 0).reduce((sumValue, row) => sumValue + row.amount, 0)),
+    totalDebits: money(Math.abs(normalizedRows.filter((row) => row.amount < 0).reduce((sumValue, row) => sumValue + row.amount, 0))),
+    duplicateTransfers,
+    internalTransferCandidates,
+    warnings: [],
+  };
+}
