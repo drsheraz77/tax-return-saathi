@@ -36,6 +36,18 @@ describe("evaluateTy2026Rules", () => {
     expect(findings.map((x) => x.ruleId)).toContain("J26");
   });
 
+  it("flags an incorrect salaried tax calculation", () => {
+    const findings = evaluateTy2026Rules({ ...base, profile: { returnType: "simplified_salaried", taxableIncome: 5_000_000, declaredTaxChargeable: 500_000 } });
+    expect(findings.map((x) => x.ruleId)).toContain("T1");
+  });
+
+  it("applies the TY2026 9% surcharge above Rs 10 million", () => {
+    const findings = evaluateTy2026Rules({ ...base, profile: { returnType: "simplified_salaried", taxableIncome: 11_000_000, declaredTaxChargeable: 3_025_000 } });
+    expect(findings.map((x) => x.ruleId)).toContain("T1");
+    const clean = evaluateTy2026Rules({ ...base, profile: { returnType: "simplified_salaried", taxableIncome: 11_000_000, declaredTaxChargeable: 2_772_500 } });
+    expect(clean.map((x) => x.ruleId)).not.toContain("T1");
+  });
+
   it("flags salary certificate mismatch", () => {
     const findings = evaluateTy2026Rules({ ...base, profile: { employerRecords: [{ salaryTaxDeducted: 120000, certificateTaxDeducted: 110000 }] } });
     expect(findings.map((x) => x.ruleId)).toContain("B6");
