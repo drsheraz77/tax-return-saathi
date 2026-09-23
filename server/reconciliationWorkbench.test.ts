@@ -33,6 +33,8 @@ describe("local reconciliation workbench", () => {
     expect(capitalGains).toContain("does not calculate tax due");
     expect(capitalGains).toContain("Property funds flow");
     expect(capitalGains).toContain('aria-label={label}');
+    expect(capitalGains).toContain("Official {TAX_YEAR_CAPITAL_GAINS} source notes");
+    expect(capitalGains).toContain("TAX_YEAR_CAPITAL_GAINS_SOURCES.map");
     expect(capitalGains).toContain("capitalGainDocumentChecklist");
     expect(capitalGains).not.toContain("fetch(");
   });
