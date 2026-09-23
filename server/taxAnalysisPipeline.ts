@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { invokeLLM, type FileContent, type ImageContent, type Message, type TextContent } from "./_core/llm";
-import { compareBankBalances, calculateWealthReconciliation, traceFunds } from "./taxReconciliation";
+import { compareBankBalances, calculateWealthReconciliation, traceFunds, analyzeParsedTransactions } from "./taxReconciliation";
 import { buildDeterministicFindings } from "../shared/taxReviewFindings";
 import { summarizeTransactionClassification } from "../shared/transactionClassification";
 import { compareYearToYearAssets } from "../shared/assetContinuity";
@@ -32,11 +32,7 @@ const EXTRACTION_SCHEMA = {
         loanRepayment: { type: "number" },
         otherApplications: { type: "number" },
         declaredClosingWealth: { type: "number" },
-        bankChecks: {
-          type: "array",
-          items: {
-            type: "object",
-            profile: {
+        profile: {
           type: "object",
           properties: {
             returnType: { type: "string", enum: ["simplified_salaried", "normal_individual", "unknown"] },
@@ -51,10 +47,22 @@ const EXTRACTION_SCHEMA = {
             filingDate: { type: "string" },
             atlSurchargePaid: { type: "boolean" },
             verificationComplete: { type: "boolean" },
+            taxableIncome: { type: "number" },
+            declaredTaxChargeable: { type: "number" },
+            taxDeducted: { type: "number" },
+            deductionsClaimed: { type: "object", properties: { zakat: { type: "number" }, workersWelfareFund: { type: "number" }, educationalExpenses: { type: "number" } }, required: [], additionalProperties: false },
+            deductionsSupported: { type: "object", properties: { zakat: { type: "boolean" }, workersWelfareFund: { type: "boolean" }, educationalExpenses: { type: "boolean" } }, required: [], additionalProperties: false },
+            withholdingCertificatesTotal: { type: "number" },
+            declaredWithholdingTotal: { type: "number" },
+            declaredCapitalGains: { type: "array", items: { type: "object", properties: { description: { type: "string" }, purchasePrice: { type: "number" }, improvementCost: { type: "number" }, purchaseExpenses: { type: "number" }, salePrice: { type: "number" }, saleExpenses: { type: "number" }, declaredGain: { type: "number" }, ownershipPercent: { type: "number" }, acquisitionDate: { type: "string" }, saleDate: { type: "string" }, declaredNetFundsReceived: { type: "number" }, mortgageOrLoanRepaid: { type: "number" }, mortgageDrawdown: { type: "number" }, ownFundsUsed: { type: "number" }, declaredValueOrFbrValue: { type: "number" } }, required: [], additionalProperties: false } },
           },
           required: [],
           additionalProperties: false,
         },
+        bankChecks: {
+          type: "array",
+          items: {
+            type: "object",
         properties: {
               accountRef: { type: "string" },
               statementClosingBalance: { type: "number" },
