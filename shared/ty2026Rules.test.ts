@@ -36,7 +36,22 @@ describe("evaluateTy2026Rules", () => {
     expect(findings.map((x) => x.ruleId)).toContain("J26");
   });
 
-  it("does not flag a clean case", () => {
+  it("flags salary certificate mismatch", () => {
+    const findings = evaluateTy2026Rules({ ...base, profile: { employerRecords: [{ salaryTaxDeducted: 120000, certificateTaxDeducted: 110000 }] } });
+    expect(findings.map((x) => x.ruleId)).toContain("B6");
+  });
+
+  it("flags missing chassis number only when a vehicle record is established", () => {
+    const findings = evaluateTy2026Rules({ ...base, profile: { motorVehicles: [{ registrationNo: "ABC-123" }] } });
+    expect(findings.map((x) => x.ruleId)).toContain("E18");
+  });
+
+  it("flags rental source without a property record", () => {
+    const findings = evaluateTy2026Rules({ ...base, profile: { selectedSources: ["Property Rental"], rentalPropertiesDeclared: 0 } });
+    expect(findings.map((x) => x.ruleId)).toContain("C8");
+  });
+
+  it("does not flag profile rules when evidence is absent", () => {
     expect(evaluateTy2026Rules(base)).toEqual([]);
   });
 });
