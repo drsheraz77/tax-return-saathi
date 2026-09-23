@@ -1933,14 +1933,21 @@ function GapCheck({ lang, t, dedicated = false }) {
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState(null);
   const [err, setErr] = useState("");
+  const [uploadStage, setUploadStage] = useState("idle");
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [encodedCount, setEncodedCount] = useState(0);
 
   const toggle = (state, setState, id) =>
     setState({ ...state, [id]: !state[id] });
 
   const onFiles = (e) => {
     setErr("");
+    setUploadStage("validating");
+    setUploadProgress(20);
     if (!redactionConfirmed) {
       setErr(t.redactionRequired);
+      setUploadStage("error");
+      setUploadProgress(0);
       e.target.value = "";
       return;
     }
@@ -1948,16 +1955,23 @@ function GapCheck({ lang, t, dedicated = false }) {
     for (const f of picked) {
       if (f.size > 4 * 1024 * 1024) {
         setErr(`"${f.name}" ${t.tooBig}`);
+        setUploadStage("error");
+        setUploadProgress(0);
         return;
       }
       const ok =
         f.type === "application/pdf" || f.type.startsWith("image/");
       if (!ok) {
         setErr(`"${f.name}" ${t.badType}`);
+        setUploadStage("error");
+        setUploadProgress(0);
         return;
       }
     }
     setFiles(picked);
+    setEncodedCount(0);
+    setUploadProgress(picked.length > 0 ? 100 : 0);
+    setUploadStage(picked.length > 0 ? "ready" : "idle");
   };
 
   const readB64 = (file) =>
@@ -1980,10 +1994,15 @@ function GapCheck({ lang, t, dedicated = false }) {
     }
     setBusy(true);
     setResult(null);
+    setUploadStage("encoding");
+    setUploadProgress(0);
+    setEncodedCount(0);
     try {
       const blocks = [];
-      for (const f of files) {
+      for (const [index, f] of files.entries()) {
         const data = await readB64(f);
+        setEncodedCount(index + 1);
+        setUploadProgress(Math.round(((index + 1) / files.length) * 65));
         if (f.type === "application/pdf") {
           blocks.push({
             type: "document",
@@ -2008,6 +2027,8 @@ function GapCheck({ lang, t, dedicated = false }) {
         type: "text",
         text: `Screening answers (context only; do not treat as document evidence): income sources=${incomeList}; assets=${assetList}; first-time filer=${firstTime === true ? "yes" : firstTime === false ? "no" : "not answered"}.`,
       });
+      setUploadStage("analyzing");
+      setUploadProgress(85);
 
       const res = await fetch("/api/return-review", {
         method: "POST",
@@ -2016,9 +2037,12 @@ function GapCheck({ lang, t, dedicated = false }) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error("return review request failed");
+      setUploadProgress(100);
+      setUploadStage("complete");
       setResult({ ...(data.review || data), calculations: data.calculations });
     } catch (e) {
       setErr(t.analyzeError);
+      setUploadStage("error");
     } finally {
       setBusy(false);
     }
@@ -2116,7 +2140,7 @@ function GapCheck({ lang, t, dedicated = false }) {
         )}
 
         <button
-          onClick={() => { setResult(null); setFiles([]); setRedactionConfirmed(false); }}
+          onClick={() => { setResult(null); setFiles([]); setRedactionConfirmed(false); setUploadStage("idle"); setUploadProgress(0); setEncodedCount(0); }}
           className="rounded-lg px-5 py-2 text-sm font-semibold"
           style={{ background: COLORS.green, color: "#F6F4EC" }}
         >
@@ -2194,7 +2218,12 @@ function GapCheck({ lang, t, dedicated = false }) {
               onChange={(event) => {
                 const confirmed = event.target.checked;
                 setRedactionConfirmed(confirmed);
-                if (!confirmed) setFiles([]);
+                if (!confirmed) {
+                  setFiles([]);
+                  setUploadStage("idle");
+                  setUploadProgress(0);
+                  setEncodedCount(0);
+                }
               }}
             />
             <span>{t.redactionConfirm}</span>
@@ -2217,10 +2246,15 @@ function GapCheck({ lang, t, dedicated = false }) {
         {files.length > 0 && (
           <ul className="text-xs mt-3 opacity-70" style={{ direction: "ltr" }}>
             {files.map((f, i) => (
-              <li key={i}>📄 {f.name} ({(f.size / 1024 / 1024).toFixed(1)} MB)</li>
+              <li key={i} className="flex items-center justify-between gap-2"><span>📄 {f.name} ({(f.size / 1024 / 1024).toFixed(1)} MB)</span><span className="font-semibold" style={{ color: COLORS.green2 }}>✓ {lang === "ur" ? "تیار" : "Ready"}</span></li>
             ))}
           </ul>
         )}
+        {files.length > 0 && <div className="mt-3 text-start" aria-live="polite">
+          <div className="flex items-center justify-between text-[11px] font-semibold mb-1"><span>{lang === "ur" ? (uploadStage === "ready" ? "تمام فائلیں جانچ کے لیے تیار ہیں" : uploadStage === "encoding" ? `فائلیں محفوظ انداز میں تیار کی جا رہی ہیں (${encodedCount}/${files.length})` : uploadStage === "analyzing" ? "اے آئی جانچ جاری ہے…" : uploadStage === "complete" ? "جانچ مکمل" : "فائل کی حالت") : (uploadStage === "ready" ? "All files ready for analysis" : uploadStage === "encoding" ? `Preparing files securely (${encodedCount}/${files.length})` : uploadStage === "analyzing" ? "AI analysis in progress…" : uploadStage === "complete" ? "Analysis complete" : "File status")}</span><span dir="ltr">{uploadProgress}%</span></div>
+          <div className="h-2 rounded-full overflow-hidden" style={{ background: "#E8E1CC" }}><div role="progressbar" aria-label={lang === "ur" ? "فائل تجزیہ پیش رفت" : "File analysis progress"} aria-valuemin="0" aria-valuemax="100" aria-valuenow={uploadProgress} className="h-full rounded-full transition-all" style={{ width: `${uploadProgress}%`, background: uploadStage === "error" ? COLORS.red : COLORS.green }} /></div>
+          <div className="flex flex-wrap gap-2 mt-2 text-[10px] opacity-75"><span style={{ color: uploadStage !== "idle" && uploadStage !== "error" ? COLORS.green2 : undefined }}>1. {lang === "ur" ? "فائل منتخب" : "Selected"}</span><span style={{ color: ["encoding", "analyzing", "complete"].includes(uploadStage) ? COLORS.green2 : undefined }}>2. {lang === "ur" ? "تیار" : "Prepared"}</span><span style={{ color: ["analyzing", "complete"].includes(uploadStage) ? COLORS.green2 : undefined }}>3. {lang === "ur" ? "جانچ" : "Analysis"}</span></div>
+        </div>}
       </div>
 
       {err && <p className="text-sm mb-3" style={{ color: COLORS.red }}>{err}</p>}

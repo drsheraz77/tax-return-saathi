@@ -19,4 +19,13 @@ describe("dedicated Analyze Your Tax Return page", () => {
     expect(main).toContain('Analyze Your Tax Return | Tax Return Saathi');
     expect(main).toContain('<App initialTab="check" dedicatedAnalysis />');
   });
+
+  it("shows privacy-safe file readiness and staged progress indicators", () => {
+    expect(app).toContain("uploadStage");
+    expect(app).toContain("All files ready for analysis");
+    expect(app).toContain('role="progressbar"');
+    expect(app).toContain("aria-valuenow={uploadProgress}");
+    expect(app).toContain("Preparing files securely");
+    expect(app).toContain("Analysis complete");
+  });
 });
