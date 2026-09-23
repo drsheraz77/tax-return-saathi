@@ -48,6 +48,16 @@ describe("evaluateTy2026Rules", () => {
     expect(clean.map((x) => x.ruleId)).not.toContain("T1");
   });
 
+  it("flags unsupported deductions", () => {
+    const findings = evaluateTy2026Rules({ ...base, profile: { deductionsClaimed: { zakat: 10000 }, deductionsSupported: { zakat: false } } });
+    expect(findings.map((x) => x.ruleId)).toContain("D20");
+  });
+
+  it("flags withholding certificate mismatch", () => {
+    const findings = evaluateTy2026Rules({ ...base, profile: { withholdingCertificatesTotal: 100000, declaredWithholdingTotal: 90000 } });
+    expect(findings.map((x) => x.ruleId)).toContain("W1");
+  });
+
   it("flags salary certificate mismatch", () => {
     const findings = evaluateTy2026Rules({ ...base, profile: { employerRecords: [{ salaryTaxDeducted: 120000, certificateTaxDeducted: 110000 }] } });
     expect(findings.map((x) => x.ruleId)).toContain("B6");
