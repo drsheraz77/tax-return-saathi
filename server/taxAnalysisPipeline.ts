@@ -4,6 +4,7 @@ import { compareBankBalances, calculateWealthReconciliation, traceFunds } from "
 import { buildDeterministicFindings } from "../shared/taxReviewFindings";
 import { summarizeTransactionClassification } from "../shared/transactionClassification";
 import { compareYearToYearAssets } from "../shared/assetContinuity";
+import { evaluateTy2026Rules } from "../shared/ty2026Rules";
 
 const MODEL = "gemini-3-flash-preview";
 const MAX_REVIEW_TOKENS = 4096;
@@ -222,7 +223,8 @@ export async function returnReviewPipeline(req: Request, res: Response) {
     const transactionAnalysis = summarizeTransactionClassification({ rows: extracted.facts.bankTransactions, totalCredits: 0, totalDebits: 0, duplicateTransfers: [], internalTransferCandidates: [], warnings: [] });
     const currentAssets = extracted.facts.properties.map((asset) => ({ key: asset.label.toLocaleLowerCase().trim(), label: asset.label, priorYearValue: 0, currentYearValue: asset.acquisitionCost, currentYearStatus: "present" as const }));
     const assetContinuity = compareYearToYearAssets(extracted.facts.priorYearProperties, currentAssets);
-    const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, transactionAnalysis, assetContinuity, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
+    const ty2026Rules = evaluateTy2026Rules({ wealth, banks, funds, properties: extracted.facts.properties, assetContinuity, transactionAnalysis });
+    const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, transactionAnalysis, assetContinuity, ty2026Rules, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
 
     const reasoning = await invokeLLM({
       model: MODEL,
