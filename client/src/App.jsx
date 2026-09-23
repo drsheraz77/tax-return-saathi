@@ -2089,6 +2089,26 @@ function GapCheck({ lang, t, dedicated = false }) {
           </div>
         )}
 
+        {result.calculations?.ty2026Rules?.length > 0 && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: COLORS.gold, background: "#FFF9E8" }}>
+            <div className="font-bold text-sm mb-2" style={{ color: "#7A6210" }}>{lang === "ur" ? "TY2026 قواعد پر مبنی جانچ" : "TY2026 rule-based checks"}</div>
+            <div className="text-xs opacity-75 mb-3">{lang === "ur" ? "یہ نتائج صرف ان قواعد کو دکھاتے ہیں جن کے لیے فراہم کردہ ریکارڈ میں قابلِ جانچ اشارہ موجود ہے۔" : "Only rules supported by the submitted evidence are shown; the AI does not invent additional findings."}</div>
+            <div className="space-y-3">
+              {result.calculations.ty2026Rules.map((rule, i) => (
+                <div key={i} className="rounded-lg border p-3" style={{ borderColor: "#E3D7AE", background: "#fff" }}>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="font-semibold text-sm">{rule.ruleId}: {rule.title}</div>
+                    <span className="text-xs rounded-full px-2 py-0.5" style={{ background: rule.severity === "high" ? "#F7D9D0" : "#FBF6E3", color: rule.severity === "high" ? COLORS.red : "#7A6210" }}>{rule.severity}</span>
+                  </div>
+                  <div className="text-sm mt-1">{rule.detail}</div>
+                  {rule.question && <div className="text-xs mt-2 opacity-75">{rule.question}</div>}
+                  <div className="text-xs mt-1 opacity-55">{rule.evidenceClass} · {rule.confidence} confidence</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {result.calculations?.deterministicFindings?.length > 0 && (
           <div className="rounded-xl border p-4 mb-4" style={{ borderColor: COLORS.gold, background: "#FBF6E3" }}>
             <div className="font-bold text-sm mb-2" style={{ color: "#7A6210" }}>{lang === "ur" ? "خودکار عملی جانچ" : "Deterministic practical checks"}</div>
