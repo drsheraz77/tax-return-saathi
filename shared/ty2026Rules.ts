@@ -30,6 +30,11 @@ type Inputs = {
     filingDate?: string;
     atlSurchargePaid?: boolean;
     verificationComplete?: boolean;
+    taxableIncome?: number;
+    declaredTaxChargeable?: number;
+    taxDeducted?: number;
+    salaryIncome?: number;
+    otherTaxableIncome?: number;
   };
   transactionAnalysis?: {
     duplicateTransfers?: Array<unknown>;
@@ -43,6 +48,28 @@ export function evaluateTy2026Rules(input: Inputs): Ty2026RuleFinding[] {
   const findings: Ty2026RuleFinding[] = [];
   const profile = input.profile;
   const sources = profile?.selectedSources ?? [];
+
+  const calculateSalariedTax = (income: number) => {
+    if (income <= 600_000) return 0;
+    if (income <= 1_200_000) return (income - 600_000) * 0.01;
+    if (income <= 2_200_000) return 6_000 + (income - 1_200_000) * 0.11;
+    if (income <= 3_200_000) return 116_000 + (income - 2_200_000) * 0.23;
+    if (income <= 4_100_000) return 346_000 + (income - 3_200_000) * 0.30;
+    return 616_000 + (income - 4_100_000) * 0.35;
+  };
+
+  if (profile?.taxableIncome !== undefined && profile.declaredTaxChargeable !== undefined && profile.returnType === "simplified_salaried") {
+    const baseTax = calculateSalariedTax(profile.taxableIncome);
+    const surcharge = profile.taxableIncome > 10_000_000 ? baseTax * 0.09 : 0;
+    const expectedTax = baseTax + surcharge;
+    if (Math.abs(expectedTax - profile.declaredTaxChargeable) > 1) {
+      findings.push({ ruleId: "T1", title: "Declared salary tax does not match the TY2026 slab calculation", detail: `For taxable income of ${money(profile.taxableIncome)}, the calculated TY2026 salary tax is ${money(expectedTax)} including the applicable 9% surcharge where relevant; the submitted figure is ${money(profile.declaredTaxChargeable)}.`, question: "Verify taxable income, deductions/allowances, the applicable salary slab and any surcharge before filing.", severity: "high", evidenceClass: "CALCULATED", confidence: "high" });
+    }
+    if (profile.taxDeducted !== undefined) {
+      const balance = profile.declaredTaxChargeable - profile.taxDeducted;
+      findings.push({ ruleId: "T2", title: "Tax payable/refund cross-check", detail: `Declared tax chargeable ${money(profile.declaredTaxChargeable)} minus tax deducted ${money(profile.taxDeducted)} gives a calculated balance of ${money(balance)}.`, question: "Verify withholding credits against certificates and the return's final tax computation.", severity: "low", evidenceClass: "CALCULATED", confidence: "high" });
+    }
+  }
 
   if (profile?.returnType === "simplified_salaried" && sources.some((source) => ["Business", "Foreign Sources", "Capital Gain"].includes(source))) {
     findings.push({ ruleId: "A1", title: "Return type may not match selected income sources", detail: "Business, foreign-source, or capital-gain income is indicated while the return is marked simplified salaried.", question: "Confirm the taxpayer's return type and selected income sources before filing.", severity: "high", evidenceClass: "REQUIRES_VERIFICATION", confidence: "high" });
