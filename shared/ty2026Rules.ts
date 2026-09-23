@@ -17,6 +17,20 @@ type Inputs = {
   funds: { remainingFunds: number };
   properties: Array<{ label: string; acquisitionCost: number; fbrValuation: number }>;
   assetContinuity: Array<{ key: string; label: string; status: string; detail: string }>;
+  profile?: {
+    returnType?: "simplified_salaried" | "normal_individual" | "unknown";
+    selectedSources?: string[];
+    resident?: boolean;
+    employerRecords?: Array<{ employerRegistrationNo?: string; salaryTaxDeducted?: number; certificateTaxDeducted?: number; terminationBenefits?: number; salaryArrears?: number; averageTaxElectionMade?: boolean }>;
+    rentalPropertiesDeclared?: number;
+    foreignAssets?: number;
+    foreignIncome?: number;
+    foreignStatementPresent?: boolean;
+    motorVehicles?: Array<{ registrationNo?: string; chassisNo?: string; value?: number; cc?: number }>;
+    filingDate?: string;
+    atlSurchargePaid?: boolean;
+    verificationComplete?: boolean;
+  };
   transactionAnalysis?: {
     duplicateTransfers?: Array<unknown>;
     internalTransferCandidates?: Array<unknown>;
@@ -27,6 +41,37 @@ const money = (n: number) => `Rs ${Math.round(n).toLocaleString("en-PK")}`;
 
 export function evaluateTy2026Rules(input: Inputs): Ty2026RuleFinding[] {
   const findings: Ty2026RuleFinding[] = [];
+  const profile = input.profile;
+  const sources = profile?.selectedSources ?? [];
+
+  if (profile?.returnType === "simplified_salaried" && sources.some((source) => ["Business", "Foreign Sources", "Capital Gain"].includes(source))) {
+    findings.push({ ruleId: "A1", title: "Return type may not match selected income sources", detail: "Business, foreign-source, or capital-gain income is indicated while the return is marked simplified salaried.", question: "Confirm the taxpayer's return type and selected income sources before filing.", severity: "high", evidenceClass: "REQUIRES_VERIFICATION", confidence: "high" });
+  }
+
+  for (const employer of profile?.employerRecords ?? []) {
+    if (employer.salaryTaxDeducted !== undefined && employer.certificateTaxDeducted !== undefined && Math.abs(employer.salaryTaxDeducted - employer.certificateTaxDeducted) > 1) {
+      findings.push({ ruleId: "B6", title: "Salary tax deduction differs from the salary certificate", detail: `Recorded salary tax deducted is ${money(employer.salaryTaxDeducted)} versus certificate tax deducted of ${money(employer.certificateTaxDeducted)}.`, question: "Verify the employer certificate and the pre-filled withholding figure before submission.", severity: "high", evidenceClass: "CALCULATED", confidence: "high" });
+    }
+    if ((employer.terminationBenefits ?? 0) > 0 || (employer.salaryArrears ?? 0) > 0) {
+      if (employer.averageTaxElectionMade === false) findings.push({ ruleId: "B7", title: "Average-tax election may be missing", detail: "Termination benefits or salary arrears are reported without a corresponding average-tax election.", question: "Verify whether the applicable average-tax treatment has been completed.", severity: "medium", evidenceClass: "REQUIRES_VERIFICATION", confidence: "high" });
+    }
+    if (!employer.employerRegistrationNo) findings.push({ ruleId: "B4", title: "Employer registration number is missing", detail: "Salary is reported but the employer registration number was not established from the submitted evidence.", question: "Verify the employer NTN/registration number from the salary certificate or employer record.", severity: "medium", evidenceClass: "REQUIRES_VERIFICATION", confidence: "medium" });
+  }
+
+  if (sources.includes("Property Rental") && (profile?.rentalPropertiesDeclared ?? 0) === 0) {
+    findings.push({ ruleId: "C8", title: "Rental income is selected but no rental property is declared", detail: "The extracted profile indicates property/rental income but no property record was established.", question: "Add or verify the property record associated with the rental income.", severity: "high", evidenceClass: "REQUIRES_VERIFICATION", confidence: "high" });
+  }
+
+  if (profile?.foreignStatementPresent === false && ((profile.foreignAssets ?? 0) >= 100000 || (profile.foreignIncome ?? 0) >= 10000)) {
+    findings.push({ ruleId: "E17", title: "Foreign income/assets statement may be required", detail: "The supplied profile crosses the configured foreign-asset or foreign-income screening threshold while no foreign statement was established.", question: "Verify the foreign asset/income amounts and whether the separate statement is required.", severity: "high", evidenceClass: "REQUIRES_VERIFICATION", confidence: "high" });
+  }
+
+  for (const vehicle of profile?.motorVehicles ?? []) {
+    if (vehicle.registrationNo && !vehicle.chassisNo) findings.push({ ruleId: "E18", title: "Motor vehicle chassis number is missing", detail: `Vehicle ${vehicle.registrationNo} has a registration number but no chassis number was established.`, question: "Verify and enter the chassis number from the vehicle registration record.", severity: "medium", evidenceClass: "REQUIRES_VERIFICATION", confidence: "high" });
+  }
+
+  if (profile?.verificationComplete === false) findings.push({ ruleId: "I29", title: "IRIS verification/e-sign confirmation is not established", detail: "The submitted evidence does not establish that the completed return was finally verified.", question: "Confirm the IRIS verification/e-sign step and retain the filing acknowledgement.", severity: "high", evidenceClass: "REQUIRES_VERIFICATION", confidence: "medium" });
+
 
   if (Math.abs(input.wealth.unexplainedDifference) > 1) {
     findings.push({
