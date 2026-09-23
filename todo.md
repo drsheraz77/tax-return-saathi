@@ -298,3 +298,16 @@
 - [x] Inspect only privacy-safe runtime diagnostics and the upload-analysis request path for the reported failed redacted-return review; do not access or retain the submitted document.
 - [x] Fix the identified request, model, or failure-handling issue without adding document persistence, identifiers, tracking, or broader data collection.
 - [x] Add focused regression coverage using synthetic non-sensitive inputs and validate the complete analysis workflow, full test suite, production build, and responsive UI before publication.
+- [x] Retry the repaired review flow with only the user-provided screenshot as a controlled technical test, without extracting or recording return or personal-document content.
+- [x] Confirm the request outcome using only status metadata and remove any temporary test artifact after reporting the result.
+
+
+## Structured AI upgrade — 2026-09-23
+- [x] Define the first safe AI upgrade slice and privacy boundaries.
+- [x] Implement synthetic deterministic wealth, bank, and cross-year funds reconciliation helpers.
+- [x] Add server-side two-stage extraction and reasoning pipelines with strict schemas and prompt-injection boundaries.
+- [x] Route the chatbot through a bounded server-owned prompt with session-only context.
+- [x] Route return review through structured extraction and deterministic calculations without changing authored tax rules.
+- [x] Add visible review status, evidence classification, confidence, wealth arithmetic, and bank cross-check cues.
+- [x] Run the full test suite, production build, and responsive verification for this release.
+- [x] Save a release checkpoint and record remaining limitations, including lack of live FBR retrieval.

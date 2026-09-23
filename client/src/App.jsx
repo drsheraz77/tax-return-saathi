@@ -1204,22 +1204,16 @@ function Chat({ lang, t }) {
     setInput("");
     setBusy(true);
     try {
-      const res = await fetch("/api/claude", {
+      const res = await fetch("/api/tax-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-6",
-          max_tokens: 1000,
-          system:
-            SYSTEM_PROMPT +
-            `\n\nCurrent interface language: ${lang === "ur" ? "Urdu" : "English"}.` +
-            (speakOnRef.current
-              ? " The reply may be read aloud by text-to-speech, so keep it concise and avoid markdown formatting, bullets and tables — plain short sentences."
-              : ""),
+          language: lang,
           messages: next.map((m) => ({ role: m.role, content: m.content })),
         }),
       });
       const data = await res.json();
+      if (!res.ok) throw new Error("tax chatbot request failed");
       const reply = (data.content || [])
         .filter((b) => b.type === "text")
         .map((b) => b.text)
@@ -2010,118 +2004,19 @@ function GapCheck({ lang, t }) {
         .filter((o) => assets[o.id])
         .map((o) => o.id)
         .join(", ") || "none selected";
-
       blocks.push({
         type: "text",
-        text: `TASK: Audit a Pakistani taxpayer's documents for their FBR Tax Year 2026 return, applying a FIXED RULESET derived directly from the gazetted draft S.R.O. 835(I)/2026 "Electronic Return for Individuals for Tax Year 2026" (income Jul 2025–Jun 2026). Do not reason freely — check each rule below against the documents and screening answers, and only report a finding when a specific rule fires.
-
-TAXPAYER'S SCREENING ANSWERS:
-- Income sources this year: ${incomeList}
-- Assets owned: ${assetList}
-- First-time filer: ${firstTime === true ? "yes" : firstTime === false ? "no" : "not answered"}
-
-CONFIRMED TY2026 FORM STRUCTURE (from the actual gazette): landing page asks income-source checkboxes plus "stayed >183 days in Pakistan?"; Salary requires Employer Registration No. (NTN) AND Employer Name, with Adjustable/Final/Average tax shown separately; Property requires per-property selection (prior-year properties carry forward and must be confirmed or marked disposed) with s.236C (seller) / s.236K (buyer) advance tax lines; Business has a dedicated "Income from Social Media Content" line separate from other revenue, plus Admissible/Inadmissible Deductions; Wealth Statement splits 9.1 Foreign Assets/Liabilities (IBAN+Country, separate from local) and 9.2 Personal Assets/Liabilities (with a Motor Vehicle sub-form requiring BOTH Registration No. and Chassis No.), plus 9.3 Reconciliation of Net Assets; Deductible allowances (Zakat s.60, WWF s.60A, Educational Expenses s.60D) and Exclusions require selecting a specific legal reason, not free text.
-
-RULESET — check each; report ONLY rules that actually fire:
-A1: business/foreign/capital-gain income selected but a simplified salaried-only return is implied -> wrong return type.
-A2: non-resident (≤183 days) but foreign income treated as fully taxable worldwide income -> possible over-declaration.
-A3: resident claiming large foreign-income exemption with no supporting contract/certificate -> unsubstantiated exemption.
-B4: salary selected but no employer NTN/registration number visible -> missing employer NTN (will fail FBR auto-match).
-B5: termination benefits/arrears present but only one employer record -> possible missing second employer.
-B6: tax-deducted figure in the document doesn't match a salary certificate also provided -> mismatch, verify against certificate.
-B7: termination benefits/arrears amounts present but no average-tax treatment visible -> incomplete average-tax computation.
-C8: rental income selected but no property record -> rental claimed without a declared property.
-C9: a property implied as owned/previously-declared is absent this year with no disposal record -> property disappeared without disposal (high severity).
-C10: property sold but no s.236C entry -> missing seller advance-tax credit (money left unclaimed).
-C11: property purchased but no s.236K entry -> missing buyer advance-tax credit.
-D12: business/freelance/platform income implied but no "Income from Social Media Content" or export line used -> platform income may be misclassified or omitted.
-D13: opening stock this year doesn't match prior year's closing stock (only if prior return provided) -> stock discontinuity.
-D14: large discretionary business expenses with zero inadmissible-deductions add-back -> possible missing add-back.
-E15: (closing net assets − opening net assets) does not plausibly equal (income − personal expenses) -> reconciliation gap (IRIS will block submission on this).
-E16: an asset category from screening answers (vehicle/gold/multiple accounts/foreign assets) is absent from the wealth statement -> likely omitted asset.
-E17: foreign assets ≥ USD 100,000 or foreign income ≥ USD 10,000 but no Foreign Assets/Liabilities section entries -> missing mandatory Foreign Income & Assets Statement (s.116A).
-E18: motor vehicle listed with registration number but no chassis number -> incomplete mandatory sub-field.
-E19: personal expenses implausibly low versus declared income/assets -> understated expenditure, common audit trigger.
-F20: Zakat/WWF/Educational Expenses claimed with no clear legal basis -> unsupported allowance claim.
-F21: an exclusion (e.g. deemed-income tax) claimed with no stated legal reason or supporting file -> exclusion likely rejected.
-F22: teacher/researcher 25% rebate claimed for TY2026 -> not available this year (only TY2023–2025).
-G23: filing implied after 30 Sep 2026 with no Rs 25,000 ATL late-surcharge payment -> ATL restoration payment missing.
-H24: CNIC/NTN on the document doesn't match a clearly legible pattern, or taxpayer profile fields (mobile/email/address) look stale/placeholder -> outdated taxpayer profile risk.
-H25: business income implied alongside signs of a structure change (AOP/partnership mentioned) but document appears to be an individual profile -> possible wrong taxpayer category.
-H26: property sale shown with only sale proceeds or only purchase price, no computed gain -> capital gain miscalculated, should be sale price minus cost.
-H27: a large asset purchase appears in the wealth statement with no corresponding bank withdrawal, loan, or transfer visible in provided bank documents -> source-of-funds not traceable.
-H28: source of funds field says only "savings" or "personal income" with no supporting document type identifiable -> vague source of funds, likely to draw a query.
-H29: document shows unresolved IRIS validation warnings, or no verification/e-sign confirmation visible -> return may be incomplete despite appearing filled.
-I30: business/freelance income selected and screening implies e-commerce/online-marketplace selling and declared income looks lower than what payment-gateway/courier receipts would suggest from bank documents -> possible income under-declaration versus third-party-reported WHT data (high audit risk).
-I31: a refund appears calculated in the document but no separate refund-application confirmation or IBAN-match confirmation is visible -> refund may not actually be claimed/payable yet.
-I32: document indicates a CNIC or email correction was attempted purely within IRIS self-service -> flag that CNIC/email changes require an in-person RTO visit, not self-service.
-J34: screening/documents imply annual salary above Rs 600,000, a motor vehicle 1000cc+, property/assets worth Rs 5 million+, or a commercial/industrial utility connection, but the person's framing suggests they think filing is optional due to low tax -> flag: filing is mandatory on these criteria alone, regardless of tax payable.
-K35: return appears filed without an accompanying wealth statement (s.116) where one is required -> flag: return legally incomplete; s.182 penalty for missing wealth statement is 0.1% of tax payable per day, minimum Rs 500, maximum 25% of tax payable.
-K36: resident individual with foreign income or foreign assets meeting the threshold, but no foreign income & assets statement (s.116A) -> flag: separate statutory statement missing, with its own s.182 penalty.
-K37: salary tax deducted per the document doesn't reconcile with the employer's deposited/withheld figure (s.149) -> flag: employer under-deduction exposes the withholding agent to a 12% p.a. default surcharge plus a penalty of 10% of tax not deducted; the employee's own return may also be flagged.
-K38: an error is discovered after filing and the person intends to ignore it rather than revise -> flag: s.114(6A) allows a voluntary revised return with reduced/zero penalty IF filed before a s.177 audit or s.122(9) notice; after a notice, 25-50% of leviable penalties apply. Revising early is materially cheaper.
-K39: filing is implied to be late -> flag: s.182 penalty is the higher of 0.1% of tax payable per day or Rs 1,000/day; minimum Rs 10,000 (salaried 75%+ income) / Rs 50,000 (all other cases); maximum 200% of tax payable; reduced 75%/50%/25% if filed within 1/2/3 months of the due date; plus loss of ATL until the late-filer surcharge is paid.
-L40: the person mentions a tax demand that was stayed by a court, or an ongoing High Court/Supreme Court matter, and assumes the stay protects them from recovery -> flag: under s.138(3A)/s.140(6A) (Tax Laws (Amendment) Ordinance 2025), once the underlying issue is decided by a High Court or Supreme Court the tax becomes immediately recoverable even if a demand was previously stayed; this is a legal-advice situation — direct them to a tax practitioner, do not reassure them the stay is protective.
-
-INSTRUCTIONS:
-1. Read the attached document(s).
-2. Evaluate each ruleset item against the documents + screening answers. Do not invent details not visible; if a document is unreadable, say so in warnings.
-3. For every rule that fires, include its ID (e.g. "C9") at the start of the relevant "missing" or "warnings" entry so the finding is traceable.
-
-RESPOND ONLY with JSON, no markdown fences, no preamble, in ${lang === "ur" ? "Urdu" : "English"}:
-{"summary":"2-3 sentence overall assessment","found":["item visible in documents",...],"missing":[{"item":"[RuleID] what is missing","why":"why it matters / risk","severity":"high or medium"},...],"warnings":["[RuleID] caution or mismatch",...],"askUser":["clarifying question tied to a fired rule",...]}`,
+        text: `Screening answers (context only; do not treat as document evidence): income sources=${incomeList}; assets=${assetList}; first-time filer=${firstTime === true ? "yes" : firstTime === false ? "no" : "not answered"}.`,
       });
 
-      const res = await fetch("/api/claude", {
+      const res = await fetch("/api/return-review", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-6",
-          max_tokens: 4096,
-          response_format: {
-            type: "json_schema",
-            json_schema: {
-              name: "return_review",
-              strict: true,
-              schema: {
-                type: "object",
-                properties: {
-                  summary: { type: "string" },
-                  found: { type: "array", items: { type: "string" } },
-                  missing: {
-                    type: "array",
-                    items: {
-                      type: "object",
-                      properties: {
-                        item: { type: "string" },
-                        why: { type: "string" },
-                        severity: { type: "string", enum: ["high", "medium"] },
-                      },
-                      required: ["item", "why", "severity"],
-                      additionalProperties: false,
-                    },
-                  },
-                  warnings: { type: "array", items: { type: "string" } },
-                  askUser: { type: "array", items: { type: "string" } },
-                },
-                required: ["summary", "found", "missing", "warnings", "askUser"],
-                additionalProperties: false,
-              },
-            },
-          },
-          messages: [{ role: "user", content: blocks }],
-        }),
+        body: JSON.stringify({ language: lang, documents: blocks }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error("return review request failed");
-      const text = (data.content || [])
-        .filter((b) => b.type === "text")
-        .map((b) => b.text)
-        .join("\n")
-        .replace(/```json|```/g, "")
-        .trim();
-      const parsed = JSON.parse(text);
-      setResult(parsed);
+      setResult({ ...(data.review || data), calculations: data.calculations });
     } catch (e) {
       setErr(t.analyzeError);
     } finally {
@@ -2135,12 +2030,40 @@ RESPOND ONLY with JSON, no markdown fences, no preamble, in ${lang === "ur" ? "U
         <h2 className="text-xl font-bold mb-3" style={{ color: COLORS.green }}>
           {t.checkTitle}
         </h2>
+        {result.status && (
+          <div className="inline-flex rounded-full px-3 py-1 text-xs font-bold mb-3" style={{ background: result.status === "reconciled" ? "#DCEFE2" : result.status === "major_issues" ? "#F7D9D0" : "#FBF6E3", color: result.status === "reconciled" ? COLORS.green2 : result.status === "major_issues" ? COLORS.red : "#7A6210" }}>
+            {result.status === "reconciled" ? (lang === "ur" ? "حساب مل گیا" : "Reconciled") : result.status === "major_issues" ? (lang === "ur" ? "اہم مسائل" : "Major issues") : (lang === "ur" ? "مزید جانچ ضروری" : "Needs review")}
+          </div>
+        )}
         <div
           className="rounded-xl p-4 mb-4 text-sm leading-relaxed"
           style={{ background: COLORS.green, color: "#F6F4EC" }}
         >
           {result.summary}
         </div>
+
+        {result.calculations?.wealth && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: result.calculations.wealth.status === "reconciled" ? "#B5CDBD" : "#E0B4A8", background: result.calculations.wealth.status === "reconciled" ? "#F0F5F1" : "#FBF1EE" }}>
+            <div className="font-bold text-sm mb-2" style={{ color: result.calculations.wealth.status === "reconciled" ? COLORS.green2 : COLORS.red }}>
+              {lang === "ur" ? "ویلتھ اسٹیٹمنٹ کا حساب" : "Wealth Statement calculation"}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm">
+              <div><span className="opacity-70">{lang === "ur" ? "متوقع اختتامی دولت" : "Expected closing wealth"}</span><div className="font-semibold" dir="ltr">Rs. {new Intl.NumberFormat(lang === "ur" ? "ur-PK" : "en-PK", { maximumFractionDigits: 2 }).format(result.calculations.wealth.expectedClosingWealth || 0)}</div></div>
+              <div><span className="opacity-70">{lang === "ur" ? "اعلان کردہ اختتامی دولت" : "Declared closing wealth"}</span><div className="font-semibold" dir="ltr">Rs. {new Intl.NumberFormat(lang === "ur" ? "ur-PK" : "en-PK", { maximumFractionDigits: 2 }).format(result.calculations.wealth.declaredClosingWealth || 0)}</div></div>
+              <div><span className="opacity-70">{lang === "ur" ? "غیر واضح فرق" : "Unexplained difference"}</span><div className="font-semibold" dir="ltr">Rs. {new Intl.NumberFormat(lang === "ur" ? "ur-PK" : "en-PK", { maximumFractionDigits: 2 }).format(result.calculations.wealth.unexplainedDifference || 0)}</div></div>
+            </div>
+            <p className="text-xs mt-3 opacity-75">{lang === "ur" ? "یہ حساب فراہم کردہ اعداد سے خودکار طور پر نکالا گیا ہے؛ حتمی درجہ بندی کے لیے اصل ریکارڈ کی تصدیق کریں۔" : "This arithmetic is calculated from the extracted figures; verify source records before making a filing decision."}</p>
+          </div>
+        )}
+
+        {result.calculations?.banks?.some((bank) => bank.status === "needs_review") && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: COLORS.gold, background: "#FBF6E3" }}>
+            <div className="font-bold text-sm mb-2" style={{ color: "#7A6210" }}>{lang === "ur" ? "بینک بیلنس کا کراس چیک" : "Bank balance cross-check"}</div>
+            <ul className="text-sm space-y-1 opacity-85">
+              {result.calculations.banks.filter((bank) => bank.status === "needs_review").map((bank, i) => <li key={i}>• {bank.accountRef}: {lang === "ur" ? "اعلان کردہ ویلتھ بیلنس اور اسٹیٹمنٹ کلوزنگ بیلنس میں فرق" : "the declared Wealth Statement balance differs from the statement closing balance"} ({bank.difference})</li>)}
+            </ul>
+          </div>
+        )}
 
         {result.found?.length > 0 && (
           <div className="rounded-xl border p-4 mb-3" style={{ borderColor: "#B5CDBD", background: "#F0F5F1" }}>
@@ -2158,6 +2081,12 @@ RESPOND ONLY with JSON, no markdown fences, no preamble, in ${lang === "ur" ? "U
               {result.missing.map((m, i) => (
                 <div key={i} className="text-sm">
                   <span className="font-bold">{m.item}</span>
+                  {(m.evidenceClass || m.confidence) && (
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {m.evidenceClass && <span className="text-[10px] rounded px-1.5 py-0.5 font-semibold" style={{ background: "#EDE7D6", color: COLORS.ink }}>{m.evidenceClass}</span>}
+                      {m.confidence && <span className="text-[10px] rounded px-1.5 py-0.5 font-semibold" style={{ background: "#F1EDE0", color: COLORS.ink }}>{lang === "ur" ? `اعتماد: ${m.confidence}` : `confidence: ${m.confidence}`}</span>}
+                    </div>
+                  )}
                   {m.severity === "high" && (
                     <span className="ms-2 text-[10px] font-bold rounded px-1.5 py-0.5" style={{ background: COLORS.red, color: "#FFF" }}>!</span>
                   )}

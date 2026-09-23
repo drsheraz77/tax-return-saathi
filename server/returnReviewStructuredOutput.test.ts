@@ -6,13 +6,18 @@ const appSource = fs.readFileSync(
   path.resolve(import.meta.dirname, "../client/src/App.jsx"),
   "utf8"
 );
+const pipelineSource = fs.readFileSync(
+  path.resolve(import.meta.dirname, "./taxAnalysisPipeline.ts"),
+  "utf8"
+);
 
 describe("return-review structured output request", () => {
   it("requests a strict JSON schema and a budget suitable for multimodal analysis", () => {
-    expect(appSource).toContain('name: "return_review"');
-    expect(appSource).toContain("strict: true");
-    expect(appSource).toContain("max_tokens: 4096");
-    expect(appSource).toContain("additionalProperties: false");
+    expect(appSource).toContain('fetch("/api/return-review"');
+    expect(pipelineSource).toContain('name: "return_review"');
+    expect(pipelineSource).toContain("strict: true");
+    expect(pipelineSource).toContain("MAX_REVIEW_TOKENS = 4096");
+    expect(pipelineSource).toContain("additionalProperties: false");
   });
 
   it("checks the managed response status before parsing the review result", () => {

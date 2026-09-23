@@ -4,6 +4,7 @@ import { createServer } from "http";
 import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { manusLlmProxy } from "../manusLlmProxy";
+import { returnReviewPipeline, taxChatPipeline } from "../taxAnalysisPipeline";
 import { feedbackRetentionHandler } from "../feedbackRetention";
 import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
@@ -40,6 +41,10 @@ async function startServer() {
   registerOAuthRoutes(app);
   // Retain the uploaded browser route while the server uses the managed AI proxy.
   app.all("/api/claude", manusLlmProxy);
+  // New bounded pipelines: documents are extracted once, calculations are deterministic,
+  // and the reasoning model receives structured facts rather than raw documents.
+  app.all("/api/return-review", returnReviewPipeline);
+  app.all("/api/tax-chat", taxChatPipeline);
   // Platform-managed scheduled callback; it authenticates cron sessions itself.
   app.post("/api/scheduled/feedback-retention", feedbackRetentionHandler);
   // tRPC API
