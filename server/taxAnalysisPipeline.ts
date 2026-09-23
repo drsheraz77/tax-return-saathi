@@ -248,7 +248,7 @@ export async function returnReviewPipeline(req: Request, res: Response) {
     const banks = compareBankBalances(extracted.facts.bankChecks);
     const funds = traceFunds(extracted.facts.fundsTrace);
     const deterministicFindings = buildDeterministicFindings({ wealth, banks, funds, properties: extracted.facts.properties });
-    const transactionAnalysis = summarizeTransactionClassification({ rows: extracted.facts.bankTransactions, totalCredits: extracted.facts.bankTransactions.filter((row) => row.direction === "credit").reduce((sum, row) => sum + Math.abs(row.amount), 0), totalDebits: extracted.facts.bankTransactions.filter((row) => row.direction === "debit").reduce((sum, row) => sum + Math.abs(row.amount), 0), duplicateTransfers: [], internalTransferCandidates: [], warnings: [] });
+    const parsedTransactionAnalysis = analyzeParsedTransactions(extracted.facts.bankTransactions);\n    const transactionAnalysis = summarizeTransactionClassification(parsedTransactionAnalysis);
     const currentAssets = extracted.facts.properties.map((asset) => ({ key: asset.label.toLocaleLowerCase().trim(), label: asset.label, priorYearValue: 0, currentYearValue: asset.acquisitionCost, currentYearStatus: "present" as const }));
     const assetContinuity = compareYearToYearAssets(extracted.facts.priorYearProperties, currentAssets);
     const ty2026Rules = evaluateTy2026Rules({ wealth, banks, funds, properties: extracted.facts.properties, assetContinuity, transactionAnalysis, profile: extracted.facts.profile });
