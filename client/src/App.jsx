@@ -2089,6 +2089,42 @@ function GapCheck({ lang, t, dedicated = false }) {
           </div>
         )}
 
+        {result.calculations?.deterministicFindings?.length > 0 && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: COLORS.gold, background: "#FBF6E3" }}>
+            <div className="font-bold text-sm mb-2" style={{ color: "#7A6210" }}>{lang === "ur" ? "خودکار عملی جانچ" : "Deterministic practical checks"}</div>
+            <div className="space-y-2">
+              {result.calculations.deterministicFindings.map((finding, i) => (
+                <div key={i} className="text-sm">
+                  <div className="font-semibold">{finding.title}</div>
+                  <div className="opacity-80">{finding.detail}</div>
+                  <div className="text-xs mt-1 opacity-65">{finding.evidenceClass} · {finding.confidence} confidence · {finding.severity} priority</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {result.calculations?.transactionAnalysis?.classifications?.length > 0 && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#B9C9BF", background: "#F7FAF7" }}>
+            <div className="font-bold text-sm mb-2" style={{ color: COLORS.green2 }}>{lang === "ur" ? "بینک لین دین کی درجہ بندی" : "Bank transaction classification"}</div>
+            <div className="text-xs opacity-75 mb-2">{lang === "ur" ? "یہ درجہ بندیاں صرف لین دین کی تفصیل سے حاصل ہونے والے اشارے ہیں؛ اصل دستاویز سے تصدیق ضروری ہے۔" : "These are description-based signals only; confirm each material classification against the underlying record."}</div>
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(result.calculations.transactionAnalysis.counts || {}).map(([category, count]) => (
+                <span key={category} className="rounded-full border px-2 py-1 text-xs" style={{ borderColor: "#B9C9BF" }}>{category}: {count}</span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {result.calculations?.assetContinuity?.length > 0 && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#B9C9BF", background: "#F7FAF7" }}>
+            <div className="font-bold text-sm mb-2" style={{ color: COLORS.green2 }}>{lang === "ur" ? "پچھلے سال کے اثاثوں کا تسلسل" : "Year-to-year asset continuity"}</div>
+            <ul className="text-sm space-y-2">
+              {result.calculations.assetContinuity.map((item, i) => <li key={i}>• <span className="font-semibold">{item.label}</span>: {item.detail}</li>)}
+            </ul>
+          </div>
+        )}
+
         {result.found?.length > 0 && (
           <div className="rounded-xl border p-4 mb-3" style={{ borderColor: "#B5CDBD", background: "#F0F5F1" }}>
             <div className="font-bold text-sm mb-2" style={{ color: COLORS.green2 }}>{t.resFound}</div>
