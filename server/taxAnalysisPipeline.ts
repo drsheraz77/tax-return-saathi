@@ -220,7 +220,8 @@ export async function returnReviewPipeline(req: Request, res: Response) {
     const funds = traceFunds(extracted.facts.fundsTrace);
     const deterministicFindings = buildDeterministicFindings({ wealth, banks, funds, properties: extracted.facts.properties });
     const transactionAnalysis = summarizeTransactionClassification({ rows: extracted.facts.bankTransactions, totalCredits: 0, totalDebits: 0, duplicateTransfers: [], internalTransferCandidates: [], warnings: [] });
-    const assetContinuity = compareYearToYearAssets(extracted.facts.priorYearProperties, extracted.facts.priorYearProperties.map((asset) => asset));
+    const currentAssets = extracted.facts.properties.map((asset) => ({ key: asset.label.toLocaleLowerCase().trim(), label: asset.label, priorYearValue: 0, currentYearValue: asset.acquisitionCost, currentYearStatus: "present" as const }));
+    const assetContinuity = compareYearToYearAssets(extracted.facts.priorYearProperties, currentAssets);
     const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, transactionAnalysis, assetContinuity, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
 
     const reasoning = await invokeLLM({
