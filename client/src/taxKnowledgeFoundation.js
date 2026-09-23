@@ -71,6 +71,22 @@ export const TAX_KNOWLEDGE_FOUNDATION = {
       ],
     },
     {
+      id: "capital-gains-property-records",
+      title: "Capital gains and property transaction records",
+      titleUrdu: "کیپٹل گین اور جائیداد لین دین کے ریکارڈ",
+      purpose: "Start with the official FBR laws and filing resources when reviewing property or investment transactions; keep contracts, costs, proceeds, ownership, and supporting records privately organised.",
+      purposeUrdu: "جائیداد یا سرمایہ کاری کے لین دین کا جائزہ لیتے وقت ایف بی آر کے سرکاری قوانین اور فائلنگ وسائل سے آغاز کریں؛ معاہدے، لاگت، وصولی، ملکیت اور معاون ریکارڈ نجی طور پر منظم رکھیں۔",
+      sourceLabel: "FBR: Laws and official filing resources",
+      sourceUrl: "https://www.fbr.gov.pk/laws",
+      reviewedOn: "26 August 2026",
+      scope: "Preparation record only; this site does not select a tax rate, exemption, valuation rule, gain treatment, or filing position.",
+      scopeUrdu: "صرف تیاری کا ریکارڈ؛ یہ سائٹ ٹیکس ریٹ، استثنا، قدر، گین ٹریٹمنٹ یا فائلنگ مؤقف منتخب نہیں کرتی۔",
+      preparationLinks: [
+        { id: "capital-gains-worksheet", label: "Local capital-gains worksheet", labelUrdu: "مقامی کیپٹل گین ورک شیٹ" },
+        { id: "property-records", label: "Property transaction records", labelUrdu: "جائیداد لین دین ریکارڈ" },
+      ],
+    },
+    {
       id: "due-dates",
       title: "Published due-date categories",
       titleUrdu: "شائع شدہ ڈیڈ لائن کی اقسام",

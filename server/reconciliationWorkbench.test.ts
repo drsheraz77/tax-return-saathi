@@ -3,6 +3,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 const component = fs.readFileSync(path.resolve(import.meta.dirname, "../client/src/ReconciliationWorkbench.jsx"), "utf8");
+const capitalGains = fs.readFileSync(path.resolve(import.meta.dirname, "../client/src/CapitalGainsWorksheet.jsx"), "utf8");
 const main = fs.readFileSync(path.resolve(import.meta.dirname, "../client/src/main.jsx"), "utf8");
 const dock = fs.readFileSync(path.resolve(import.meta.dirname, "../client/src/QuickToolsDock.jsx"), "utf8");
 
@@ -24,5 +25,15 @@ describe("local reconciliation workbench", () => {
   it("does not ask for account identifiers in the bank cross-check", () => {
     expect(component).toContain("Generic account label");
     expect(component).toContain("Do not enter account numbers, CNIC, NTN, IBAN");
+  });
+
+  it("exposes a capital-gains tab without claiming to calculate tax liability", () => {
+    expect(component).toContain("Capital gains / کیپٹل گین");
+    expect(component).toContain("<CapitalGainsWorksheet />");
+    expect(capitalGains).toContain("does not calculate tax due");
+    expect(capitalGains).toContain("Property funds flow");
+    expect(capitalGains).toContain('aria-label={label}');
+    expect(capitalGains).toContain("capitalGainDocumentChecklist");
+    expect(capitalGains).not.toContain("fetch(");
   });
 });

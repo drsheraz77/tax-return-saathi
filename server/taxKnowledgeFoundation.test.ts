@@ -10,7 +10,7 @@ describe("reviewed Tax Year 2026 starter knowledge catalogue", () => {
   });
 
   it("uses a bounded set of official FBR knowledge records with a visible scope and linked preparation tools", () => {
-    expect(TAX_KNOWLEDGE_FOUNDATION.topics.map((topic) => topic.id)).toEqual(["iris-access", "return-completion-records", "wealth-statement-reconciliation", "bank-record-cross-check", "due-dates", "laws-index", "contact-support-route", "company-industry-preparation"]);
+    expect(TAX_KNOWLEDGE_FOUNDATION.topics.map((topic) => topic.id)).toEqual(["iris-access", "return-completion-records", "wealth-statement-reconciliation", "bank-record-cross-check", "capital-gains-property-records", "due-dates", "laws-index", "contact-support-route", "company-industry-preparation"]);
     for (const topic of TAX_KNOWLEDGE_FOUNDATION.topics) {
       expect(new URL(topic.sourceUrl).hostname).toBe("www.fbr.gov.pk");
       expect(topic.purpose).toBeTruthy();
