@@ -2,6 +2,8 @@ import type { Request, Response } from "express";
 import { invokeLLM, type FileContent, type ImageContent, type Message, type TextContent } from "./_core/llm";
 import { compareBankBalances, calculateWealthReconciliation, traceFunds } from "./taxReconciliation";
 import { buildDeterministicFindings } from "../shared/taxReviewFindings";
+import { summarizeTransactionClassification } from "../shared/transactionClassification";
+import { compareYearToYearAssets } from "../shared/assetContinuity";
 
 const MODEL = "gemini-3-flash-preview";
 const MAX_REVIEW_TOKENS = 4096;
@@ -9,7 +11,25 @@ const MAX_CHAT_TOKENS = 1200;
 
 const EXTRACTION_SCHEMA = {
   type: "object",
-  properties: {
+  bankTransactions: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: { rowNumber: { type: "number" }, date: { type: "string" }, description: { type: "string" }, amount: { type: "number" }, direction: { type: "string", enum: ["credit", "debit", "unknown"] } },
+            required: ["rowNumber", "date", "description", "amount", "direction"],
+            additionalProperties: false,
+          },
+        },
+        priorYearProperties: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: { key: { type: "string" }, label: { type: "string" }, priorYearValue: { type: "number" }, currentYearValue: { type: "number" }, priorYearStatus: { type: "string", enum: ["present", "sold", "transferred", "unknown"] }, currentYearStatus: { type: "string", enum: ["present", "sold", "transferred", "unknown"] } },
+            required: ["key", "label", "priorYearValue", "currentYearValue"],
+            additionalProperties: false,
+          },
+        },
+        properties: {
     status: { type: "string", enum: ["extracted", "insufficient"] },
     facts: {
       type: "object",
@@ -75,7 +95,7 @@ const EXTRACTION_SCHEMA = {
           },
         },
       },
-      required: ["taxYear", "openingWealth", "income", "capitalReceipts", "assetSaleProceeds", "loans", "gifts", "otherSources", "personalExpenditure", "taxPaid", "assetPurchases", "investments", "loanRepayment", "otherApplications", "declaredClosingWealth", "bankChecks", "fundsTrace", "properties"],
+      required: ["taxYear", "openingWealth", "income", "capitalReceipts", "assetSaleProceeds", "loans", "gifts", "otherSources", "personalExpenditure", "taxPaid", "assetPurchases", "investments", "loanRepayment", "otherApplications", "declaredClosingWealth", "bankChecks", "bankTransactions", "priorYearProperties", "fundsTrace", "properties"],
       additionalProperties: false,
     },
     observations: { type: "array", items: { type: "string" } },
@@ -138,6 +158,8 @@ type ExtractedCase = {
     otherApplications: number;
     declaredClosingWealth: number;
     bankChecks: Array<{ accountRef: string; statementClosingBalance: number; declaredWealthBalance: number }>;
+    bankTransactions: Array<{ rowNumber: number; date: string; description: string; amount: number; direction: "credit" | "debit" | "unknown" }>;
+    priorYearProperties: Array<{ key: string; label: string; priorYearValue: number; currentYearValue: number; priorYearStatus?: "present" | "sold" | "transferred" | "unknown"; currentYearStatus?: "present" | "sold" | "transferred" | "unknown" }>;
     fundsTrace: Record<string, number>;
     properties: Array<{ label: string; acquisitionCost: number; fbrValuation: number; saleProceeds: number; evidenceRef: string }>;
   };
@@ -197,7 +219,9 @@ export async function returnReviewPipeline(req: Request, res: Response) {
     const banks = compareBankBalances(extracted.facts.bankChecks);
     const funds = traceFunds(extracted.facts.fundsTrace);
     const deterministicFindings = buildDeterministicFindings({ wealth, banks, funds, properties: extracted.facts.properties });
-    const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
+    const transactionAnalysis = summarizeTransactionClassification({ rows: extracted.facts.bankTransactions, totalCredits: 0, totalDebits: 0, duplicateTransfers: [], internalTransferCandidates: [], warnings: [] });
+    const assetContinuity = compareYearToYearAssets(extracted.facts.priorYearProperties, extracted.facts.priorYearProperties.map((asset) => asset));
+    const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, transactionAnalysis, assetContinuity, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
 
     const reasoning = await invokeLLM({
       model: MODEL,
