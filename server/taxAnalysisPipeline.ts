@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { invokeLLM, type FileContent, type ImageContent, type Message, type TextContent } from "./_core/llm";
 import { compareBankBalances, calculateWealthReconciliation, traceFunds } from "./taxReconciliation";
+import { buildDeterministicFindings } from "../shared/taxReviewFindings";
 
 const MODEL = "gemini-3-flash-preview";
 const MAX_REVIEW_TOKENS = 4096;
@@ -195,14 +196,15 @@ export async function returnReviewPipeline(req: Request, res: Response) {
     const wealth = calculateWealthReconciliation(extracted.facts);
     const banks = compareBankBalances(extracted.facts.bankChecks);
     const funds = traceFunds(extracted.facts.fundsTrace);
-    const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
+    const deterministicFindings = buildDeterministicFindings({ wealth, banks, funds, properties: extracted.facts.properties });
+    const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
 
     const reasoning = await invokeLLM({
       model: MODEL,
       max_tokens: MAX_REVIEW_TOKENS,
       messages: [
         { role: "system", content: REVIEW_INSTRUCTIONS },
-        { role: "user", content: `Prepare the return review in ${language}. Return only JSON matching the schema. Structured case facts and deterministic calculations follow:\n${JSON.stringify({ facts: extracted.facts, calculations: calculationPack })}` },
+        { role: "user", content: `Prepare the return review in ${language}. Return only JSON matching the schema. Structured case facts, deterministic calculations, and deterministic findings follow. Treat deterministic findings as higher-confidence arithmetic/consistency signals; explain them without inventing facts:\n${JSON.stringify({ facts: extracted.facts, calculations: calculationPack })}` },
       ],
       response_format: { type: "json_schema", json_schema: { name: "return_review", strict: true, schema: REVIEW_SCHEMA } },
     });
