@@ -97,8 +97,8 @@ export function traceFundsAcrossAccounts(rows: Array<ParsedTransaction & { accou
 
     const outgoing = crossAccountTransfers.find((transfer) =>
       transfer.creditRow !== source.rowNumber &&
-      transfer.creditAccount === source.accountRef &&
-      transfer.debitAccount !== source.accountRef &&
+      transfer.debitAccount === source.accountRef &&
+      transfer.creditAccount !== source.accountRef &&
       Math.abs(transfer.amount - sourceAmount) <= MONEY_TOLERANCE &&
       withinWindow(source.date, transfer.date),
     );
