@@ -35,7 +35,7 @@ describe("built-in AI adapter", () => {
 
     await manusLlmProxy({ method: "POST", body: {} } as Request, response);
 
-    expect(recorded).toEqual({ statusCode: 400, body: { error: "Missing messages" } });
+    expect(recorded).toEqual({ statusCode: 400, body: { error: "Messages are required" } });
     expect(mockedInvokeLLM).not.toHaveBeenCalled();
   });
 

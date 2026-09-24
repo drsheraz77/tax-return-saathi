@@ -276,9 +276,9 @@ export function analyzeParsedTransactions(rows: ParsedTransaction[]): Transactio
     byDateAndAmount.set(key, [...(byDateAndAmount.get(key) || []), row]);
   }
   const internalTransferCandidates: TransactionAnalysis["internalTransferCandidates"] = [];
-  for (const [key, grouped] of byDateAndAmount.entries()) {
-    const debitRow = grouped.find((row) => row.direction === "debit");
-    const creditRow = grouped.find((row) => row.direction === "credit");
+  for (const [key, grouped] of Array.from(byDateAndAmount.entries())) {
+    const debitRow = grouped.find((row: ParsedTransaction) => row.direction === "debit");
+    const creditRow = grouped.find((row: ParsedTransaction) => row.direction === "credit");
     if (debitRow && creditRow && (TRANSFER_WORDS.test(debitRow.description) || TRANSFER_WORDS.test(creditRow.description))) {
       const [date, amount] = key.split("|");
       internalTransferCandidates.push({ debitRow: debitRow.rowNumber, creditRow: creditRow.rowNumber, date, amount: Number(amount) });

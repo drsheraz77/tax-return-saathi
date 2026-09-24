@@ -18,7 +18,7 @@ function similarity(a: string, b: string) {
   const bb = new Set(norm(b).split(" ").filter(x => x.length >= 3));
   if (!aa.size || !bb.size) return 0;
   let common = 0;
-  for (const x of aa) if (bb.has(x)) common++;
+  for (const x of Array.from(aa)) if (bb.has(x)) common++;
   return common / Math.max(aa.size, bb.size);
 }
 

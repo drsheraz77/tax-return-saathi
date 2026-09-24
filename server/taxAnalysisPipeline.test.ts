@@ -46,6 +46,7 @@ const extraction = {
     bankChecks: [],
     bankTransactions: [],
     priorYearProperties: [],
+    assetStatements: [],
     liabilities: [],
     priorYearLiabilities: [],
     fundsTrace: {
