@@ -44,6 +44,7 @@ type Inputs = {
   transactionAnalysis?: {
     duplicateTransfers?: Array<unknown>;
     internalTransferCandidates?: Array<unknown>;
+    cashWithdrawalRows?: number[];
   };
   fundsFlow?: {
     status?: "traceable" | "partial" | "needs_review";
@@ -223,6 +224,19 @@ export function evaluateTy2026Rules(input: Inputs): Ty2026RuleFinding[] {
       severity: "low",
       evidenceClass: "REQUIRES_VERIFICATION",
       confidence: "medium",
+    });
+  }
+
+  const cashWithdrawalCount = input.transactionAnalysis?.cashWithdrawalRows?.length ?? 0;
+  if (cashWithdrawalCount > 0) {
+    findings.push({
+      ruleId: "E34",
+      title: "Cash withdrawals require separate source-of-funds tracing",
+      detail: cashWithdrawalCount + " cash withdrawal transaction(s) were identified. A cash withdrawal is an application of funds, but the later use of that cash was not established by the bank trail alone.",
+      question: "Match significant cash withdrawals to receipts, asset payments, construction expenses or other supporting evidence rather than assuming the cash funded a particular asset.",
+      severity: "medium",
+      evidenceClass: "REQUIRES_VERIFICATION",
+      confidence: "high",
     });
   }
 
