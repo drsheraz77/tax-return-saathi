@@ -6,6 +6,7 @@ import { summarizeTransactionClassification } from "../shared/transactionClassif
 import { compareYearToYearAssets } from "../shared/assetContinuity";
 import { evaluateTy2026Rules } from "../shared/ty2026Rules";
 import { traceFundsAcrossAccounts } from "../shared/fundsFlow";
+import { reconcileDocumentToReturn, summarizeFieldReconciliation } from "../shared/fieldReconciliation";
 
 const MODEL = "gemini-3-flash-preview";
 const MAX_REVIEW_TOKENS = 4096;
@@ -254,7 +255,14 @@ export async function returnReviewPipeline(req: Request, res: Response) {
     const currentAssets = extracted.facts.properties.map((asset) => ({ key: asset.label.toLocaleLowerCase().trim(), label: asset.label, priorYearValue: 0, currentYearValue: asset.acquisitionCost, currentYearStatus: "present" as const }));
     const assetContinuity = compareYearToYearAssets(extracted.facts.priorYearProperties, currentAssets);
     const ty2026Rules = evaluateTy2026Rules({ wealth, banks, funds, properties: extracted.facts.properties, assetContinuity, transactionAnalysis, fundsFlow, profile: extracted.facts.profile });
-    const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, transactionAnalysis, fundsFlow, assetContinuity, ty2026Rules, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
+    const fieldReconciliation = summarizeFieldReconciliation(reconcileDocumentToReturn({
+      profile: extracted.facts.profile,
+      bankChecks: extracted.facts.bankChecks,
+      properties: extracted.facts.properties,
+      declaredAssetPurchases: extracted.facts.assetPurchases,
+      declaredAssetSaleProceeds: extracted.facts.assetSaleProceeds,
+    }));
+    const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, transactionAnalysis, fundsFlow, assetContinuity, ty2026Rules, fieldReconciliation, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
 
     const reasoning = await invokeLLM({
       model: MODEL,
