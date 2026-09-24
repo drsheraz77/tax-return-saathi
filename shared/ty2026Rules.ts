@@ -46,7 +46,8 @@ type Inputs = {
     internalTransferCandidates?: Array<unknown>;
     cashWithdrawalRows?: number[];
   };
-  assetLiabilities?: { results?: Array<{ assetLabel: string; assetValue: number; matchedLiabilityAmount: number; unmatchedAssetAmount: number; status: string; detail: string }> };\n  liabilityContinuity?: { results?: Array<{ label: string; priorYearAmount: number; currentYearAmount: number; status: string; difference: number; detail: string }> };\n  liabilityBankTrace?: { results?: Array<{ liabilityLabel: string; liabilityAmount: number; drawdownAmount: number; repaymentAmount: number; status: string; detail: string }> };\n  fundsFlow?: {
+  assetLiabilities?: { results?: Array<{ assetLabel: string; assetValue: number; matchedLiabilityAmount: number; unmatchedAssetAmount: number; status: string; detail: string }> };\n  liabilityContinuity?: { results?: Array<{ label: string; priorYearAmount: number; currentYearAmount: number; status: string; difference: number; detail: string }> };\n  liabilityBankTrace?: { results?: Array<{ liabilityLabel: string; liabilityAmount: number; drawdownAmount: number; repaymentAmount: number; status: string; detail: string }> };
+  liabilityBalance?: { results?: Array<{ label: string; priorYearAmount: number; drawdownAmount: number; repaymentAmount: number; expectedClosingAmount: number; currentYearAmount: number; difference: number; status: string; detail: string }> };\n  fundsFlow?: {
     status?: "traceable" | "partial" | "needs_review";
     totals?: { sourceCredits?: number; tracedToApplications?: number; unexplainedSourceCredits?: number };
     crossAccountTransfers?: Array<unknown>;
@@ -292,6 +293,20 @@ export function evaluateTy2026Rules(input: Inputs): Ty2026RuleFinding[] {
         severity: "medium",
         evidenceClass: "REQUIRES_VERIFICATION",
         confidence: "medium",
+      });
+    }
+  }
+
+  for (const item of input.liabilityBalance?.results ?? []) {
+    if (item.status === "mismatch" || item.status === "requires_verification") {
+      findings.push({
+        ruleId: "E38",
+        title: `Liability balance reconciliation requires verification: ${item.label}`,
+        detail: `Prior-year liability ${money(item.priorYearAmount)} + drawdowns ${money(item.drawdownAmount)} - repayments ${money(item.repaymentAmount)} = expected closing liability ${money(item.expectedClosingAmount)}, versus current reported liability ${money(item.currentYearAmount)}; difference ${money(Math.abs(item.difference))}. ${item.detail}`,
+        question: "Verify the opening liability, lender/payable statement, bank drawdowns and repayments, and the liability amount reported at 30 June.",
+        severity: item.status === "mismatch" ? "high" : "medium",
+        evidenceClass: item.status === "mismatch" ? "CALCULATED" : "REQUIRES_VERIFICATION",
+        confidence: "high",
       });
     }
   }
