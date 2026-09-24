@@ -78,7 +78,7 @@ const EXTRACTION_SCHEMA = {
           items: {
             type: "object",
             properties: { rowNumber: { type: "number" }, date: { type: "string" }, description: { type: "string" }, amount: { type: "number" }, direction: { type: "string", enum: ["credit", "debit", "unknown"] }, accountRef: { type: "string" } },
-            required: ["rowNumber", "date", "description", "amount", "direction", "accountRef"],
+            required: ["rowNumber", "date", "description", "amount", "direction"],
             additionalProperties: false,
           },
         },
@@ -188,7 +188,7 @@ type ExtractedCase = {
     declaredClosingWealth: number;
     profile?: { returnType?: "simplified_salaried" | "normal_individual" | "unknown"; selectedSources?: string[]; resident?: boolean; employerRecords?: Array<{ employerRegistrationNo?: string; salaryTaxDeducted?: number; certificateTaxDeducted?: number; terminationBenefits?: number; salaryArrears?: number; averageTaxElectionMade?: boolean }>; rentalPropertiesDeclared?: number; foreignAssets?: number; foreignIncome?: number; foreignStatementPresent?: boolean; motorVehicles?: Array<{ registrationNo?: string; chassisNo?: string; value?: number; cc?: number }>; filingDate?: string; atlSurchargePaid?: boolean; verificationComplete?: boolean };
     bankChecks: Array<{ accountRef: string; statementClosingBalance: number; declaredWealthBalance: number }>;
-    bankTransactions: Array<{ rowNumber: number; date: string; description: string; amount: number; direction: "credit" | "debit" | "unknown"; accountRef: string }>;
+    bankTransactions: Array<{ rowNumber: number; date: string; description: string; amount: number; direction: "credit" | "debit" | "unknown"; accountRef?: string }>;
     priorYearProperties: Array<{ key: string; label: string; priorYearValue: number; currentYearValue: number; priorYearStatus?: "present" | "sold" | "transferred" | "unknown"; currentYearStatus?: "present" | "sold" | "transferred" | "unknown" }>;
     fundsTrace: Record<string, number>;
     properties: Array<{ label: string; acquisitionCost: number; fbrValuation: number; saleProceeds: number; evidenceRef: string }>;
