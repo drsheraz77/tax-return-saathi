@@ -49,6 +49,33 @@ function worksheetRows(result) {
   return rows;
 }
 
+function entryDateValue(item, fallbackTaxYear) {
+  const candidate = item?.transactionDate || item?.date || item?.paymentDate || item?.periodEnd || item?.periodStart || item?.taxYear || fallbackTaxYear;
+  if (!candidate) return null;
+  const yearMatch = String(candidate).match(/(?:^|[^0-9])(20\d{2})(?:$|[^0-9])/);
+  if (yearMatch && !String(candidate).includes("-")) return `${yearMatch[1]}-01-01`;
+  const parsed = new Date(candidate);
+  return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString().slice(0, 10);
+}
+
+export function filterWorksheetByDateRange(result, fromDate = "", toDate = "") {
+  if (!fromDate && !toDate) return result;
+  const worksheet = result?.worksheet || {};
+  const filtered = { ...result, worksheet: { ...worksheet } };
+  Object.keys(SECTION_LABELS).forEach((section) => {
+    filtered.worksheet[section] = (worksheet[section] || []).filter((item) => {
+      const value = entryDateValue(item, worksheet.taxYear);
+      if (!value) return true;
+      return (!fromDate || value >= fromDate) && (!toDate || value <= toDate);
+    });
+  });
+  return filtered;
+}
+
+export function countWorksheetEntries(result) {
+  return Object.keys(SECTION_LABELS).reduce((count, section) => count + (result?.worksheet?.[section] || []).length, 0);
+}
+
 export function categoryTotals(result) {
   return Object.keys(SECTION_LABELS).reduce((totals, section) => {
     totals[section] = (result?.worksheet?.[section] || []).reduce((sum, item) => sum + (Number(item[AMOUNT_KEYS[section]]) || 0), 0);
@@ -151,7 +178,8 @@ function drawPage(result, pageRows, pageNumber, totalPages, options) {
   drawText(ctx, "TAX RETURN SAATHI", PAGE.margin, 78, { font: "bold 30px Arial", color: "#FFFFFF" });
   drawText(ctx, "ٹیکس ریٹرن ساتھی", PAGE.width - PAGE.margin, 88, { font: urduFont(38, true), color: "#FFFFFF", align: "right", direction: "rtl" });
   drawText(ctx, "Document preparation worksheet · دستاویزی تیاری ورک شیٹ", PAGE.margin, 142, { font: "22px Arial", color: "#E9E2C7" });
-  drawText(ctx, `Tax year: ${result?.worksheet?.taxYear || "—"}`, PAGE.width - PAGE.margin, 145, { font: "22px Arial", color: "#E9E2C7", align: "right" });
+    drawText(ctx, `Tax year: ${result?.worksheet?.taxYear || "—"}`, PAGE.width - PAGE.margin, 145, { font: "22px Arial", color: "#E9E2C7", align: "right" });
+    if (options.dateRange?.from || options.dateRange?.to) drawText(ctx, `Selected range: ${options.dateRange.from || "—"} to ${options.dateRange.to || "—"}`, PAGE.width - PAGE.margin, 178, { font: "16px Arial", color: "#E9E2C7", align: "right" });
 
   let y = 275;
   if (pageNumber === 1) {
@@ -230,13 +258,14 @@ export async function generateBilingualWorksheetPdf(result, options = {}) {
   return pdf.save();
 }
 
-export function worksheetSummaryText(result) {
+export function worksheetSummaryText(result, options = {}) {
   const totals = categoryTotals(result);
   const lines = [
     "TAX RETURN SAATHI / ٹیکس ریٹرن ساتھی",
     "Prepared worksheet summary / خلاصہ ورک شیٹ",
     `Tax year / ٹیکس سال: ${result?.worksheet?.taxYear || "—"}`,
     `Return type / ریٹرن کی قسم: ${result?.worksheet?.returnType || "—"}`,
+    ...(options.dateRange?.from || options.dateRange?.to ? [`Selected date range / منتخب تاریخ کی حد: ${options.dateRange.from || "—"} to ${options.dateRange.to || "—"}`] : []),
     "",
     `Totals / مجموعہ — Salary / تنخواہ: Rs. ${money(totals.salary)} · Withholding / کٹوتی: Rs. ${money(totals.withholding)} · Other income / دیگر آمدن: Rs. ${money(totals.otherIncome)} · Property / جائیداد: Rs. ${money(totals.propertyTransactions)}`,
   ];

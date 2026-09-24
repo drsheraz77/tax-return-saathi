@@ -320,3 +320,14 @@
 - [x] Reuse the existing quick-tools dock rather than adding a new floating control.
 - [x] Run the full test suite, production build, and desktop/mobile verification for this batch.
 - [x] Save a release checkpoint and document the local-only / non-determination limitations.
+
+
+## Multi-year tax summary date filters — 2026-09-24
+- [x] Define inclusive date/year filtering behavior and privacy boundaries.
+- [x] Add reusable worksheet filtering and entry-count helpers.
+- [x] Add Urdu-first and English date-range controls with invalid-range handling.
+- [x] Apply the selected range to worksheet display, CSV, PDF, and bilingual summary exports.
+- [x] Add selected-range metadata to PDF and text summary outputs.
+- [x] Add synthetic multi-year regression coverage and browser verification.
+- [x] Run full tests, typecheck, build, diff check, and desktop/mobile verification.
+- [ ] Save a reversible checkpoint for the date-range filter release.

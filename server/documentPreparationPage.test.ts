@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { buildWorksheetCsv } from "../client/src/DocumentPreparationPage.jsx";
-import { categoryTotals } from "../client/src/worksheetPdf.js";
+import { categoryTotals, countWorksheetEntries, filterWorksheetByDateRange, worksheetSummaryText } from "../client/src/worksheetPdf.js";
 
 const app = fs.readFileSync(path.join(process.cwd(), "client/src/App.jsx"), "utf8");
 const main = fs.readFileSync(path.join(process.cwd(), "client/src/main.jsx"), "utf8");
@@ -68,5 +68,14 @@ describe("document-assisted return preparation page", () => {
     expect(totals.withholding).toBe(100);
     expect(totals.propertyTransactions).toBe(8000);
     expect(Object.keys(totals)).toHaveLength(7);
+  });
+
+  it("filters multi-year worksheet entries by inclusive date range while retaining undated evidence", () => {
+    const result = { worksheet: { taxYear: "TY2026", salary: [{ employerLabel: "Prior year", taxYear: "TY2025", grossSalary: 100 }, { employerLabel: "Current year", taxYear: "TY2026", grossSalary: 200 }, { employerLabel: "Undated", grossSalary: 300 }], withholding: [], otherIncome: [], deductions: [], investmentsAndAssets: [], propertyTransactions: [], bankBalances: [] } };
+    const filtered = filterWorksheetByDateRange(result, "2026-01-01", "2026-12-31");
+    expect(filtered.worksheet.salary.map((item) => item.employerLabel)).toEqual(["Current year", "Undated"]);
+    expect(countWorksheetEntries(filtered)).toBe(2);
+    expect(countWorksheetEntries(result)).toBe(3);
+    expect(worksheetSummaryText(filtered, { dateRange: { from: "2026-01-01", to: "2026-12-31" } })).toContain("Selected date range / منتخب تاریخ کی حد: 2026-01-01 to 2026-12-31");
   });
 });

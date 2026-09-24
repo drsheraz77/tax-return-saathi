@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { generateBilingualWorksheetPdf, worksheetSummaryText } from "./worksheetPdf.js";
+import { useEffect, useMemo, useState } from "react";
+import { countWorksheetEntries, filterWorksheetByDateRange, generateBilingualWorksheetPdf, worksheetSummaryText } from "./worksheetPdf.js";
 
 const COLORS = {
   green: "#0B3D2E",
@@ -49,6 +49,12 @@ const COPY = {
     summary: "بائی لنگول خلاصہ ڈاؤن لوڈ کریں",
     totals: "خلاصہ مجموعہ شامل کریں",
     charts: "زمرہ وار چارٹ شامل کریں",
+    dateRange: "ٹیکس سال / تاریخ کی حد",
+    fromDate: "شروع",
+    toDate: "اختتام",
+    clearDates: "تاریخ کی حد صاف کریں",
+    rangeSummary: "منتخب حد میں اندراجات",
+    invalidRange: "اختتامی تاریخ ابتدائی تاریخ کے بعد ہونی چاہیے۔",
     draftRestored: "آپ کا مقامی ڈرافٹ بحال کر دیا گیا ہے۔",
   },
   en: {
@@ -89,6 +95,12 @@ const COPY = {
     summary: "Download bilingual summary",
     totals: "Include summary totals",
     charts: "Include category chart",
+    dateRange: "Tax year / date range",
+    fromDate: "From",
+    toDate: "To",
+    clearDates: "Clear date range",
+    rangeSummary: "Entries in selected range",
+    invalidRange: "The end date must be on or after the start date.",
     draftRestored: "Your local draft was restored.",
   },
 };
@@ -182,7 +194,13 @@ export default function DocumentPreparationPage() {
   const [draftMessage, setDraftMessage] = useState("");
   const [includeTotals, setIncludeTotals] = useState(true);
   const [includeCharts, setIncludeCharts] = useState(true);
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const copy = COPY[lang];
+  const dateRangeValid = !fromDate || !toDate || fromDate <= toDate;
+  const filteredResult = useMemo(() => dateRangeValid ? filterWorksheetByDateRange(result, fromDate, toDate) : result, [result, fromDate, toDate, dateRangeValid]);
+  const totalEntries = countWorksheetEntries(result);
+  const filteredEntries = countWorksheetEntries(filteredResult);
 
   useEffect(() => {
     try {
@@ -238,16 +256,16 @@ export default function DocumentPreparationPage() {
     setDraftMessage("");
   };
 
-  const exportCsv = () => downloadFile(buildWorksheetCsv(result), `tax-return-preparation-${result?.worksheet?.taxYear || "draft"}.csv`, "text/csv;charset=utf-8");
+  const exportCsv = () => downloadFile(buildWorksheetCsv(filteredResult), `tax-return-preparation-${result?.worksheet?.taxYear || "draft"}.csv`, "text/csv;charset=utf-8");
   const exportPdf = async () => {
     try {
-      const bytes = await generateBilingualWorksheetPdf(result, { includeTotals, includeCharts });
+      const bytes = await generateBilingualWorksheetPdf(filteredResult, { includeTotals, includeCharts, dateRange: { from: fromDate, to: toDate } });
       downloadFile(bytes, `tax-return-saathi-worksheet-${result?.worksheet?.taxYear || "draft"}.pdf`, "application/pdf");
     } catch {
       setError(lang === "ur" ? "PDF تیار نہیں ہو سکی۔ CSV یا خلاصہ ڈاؤن لوڈ آزمائیں۔" : "The PDF could not be generated. Try the CSV or summary download.");
     }
   };
-  const exportSummary = () => downloadFile(worksheetSummaryText(result), `tax-return-saathi-summary-${result?.worksheet?.taxYear || "draft"}.txt`, "text/plain;charset=utf-8");
+  const exportSummary = () => downloadFile(worksheetSummaryText(filteredResult, { dateRange: { from: fromDate, to: toDate } }), `tax-return-saathi-summary-${result?.worksheet?.taxYear || "draft"}.txt`, "text/plain;charset=utf-8");
 
   const onFiles = (event) => {
     setError("");
@@ -347,20 +365,29 @@ export default function DocumentPreparationPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm"><span>{copy.taxYear}: <b>{result.worksheet.taxYear || "—"}</b></span><span>{copy.returnType}: <b>{result.worksheet.returnType}</b></span></div>
             </div>
             <div className="document-preparation-chrome rounded-xl border p-3 mb-4" style={{ borderColor: "#DDD6C4", background: "#fff" }}>
+              <div className="rounded-lg p-3 mb-3" style={{ background: "#FBF6E3" }}>
+                <div className="font-bold text-sm mb-2">{copy.dateRange}</div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 items-end">
+                  <label className="text-xs">{copy.fromDate}<input type="date" value={fromDate} onChange={(event) => setFromDate(event.target.value)} className="block w-full rounded border px-2 py-2 mt-1 bg-white" /></label>
+                  <label className="text-xs">{copy.toDate}<input type="date" value={toDate} onChange={(event) => setToDate(event.target.value)} className="block w-full rounded border px-2 py-2 mt-1 bg-white" /></label>
+                  <button onClick={() => { setFromDate(""); setToDate(""); }} className="rounded-lg px-3 py-2 text-sm font-bold border" style={{ borderColor: COLORS.gold, color: "#7A6210", background: "#fff" }}>{copy.clearDates}</button>
+                </div>
+                {!dateRangeValid ? <p className="text-xs mt-2" role="alert" style={{ color: COLORS.red }}>{copy.invalidRange}</p> : <p className="text-xs mt-2 opacity-70">{copy.rangeSummary}: {filteredEntries} / {totalEntries}</p>}
+              </div>
               <div className="flex flex-wrap gap-4 mb-3 text-sm">
                 <label className="inline-flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={includeTotals} onChange={(event) => setIncludeTotals(event.target.checked)} />{copy.totals}</label>
                 <label className="inline-flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={includeCharts} onChange={(event) => setIncludeCharts(event.target.checked)} />{copy.charts}</label>
               </div>
               <div className="flex flex-wrap gap-2">
-                <button onClick={exportCsv} className="rounded-lg px-3 py-2 text-sm font-bold border" style={{ borderColor: COLORS.green, color: COLORS.green, background: "#fff" }}>{copy.csv}</button>
-                <button onClick={exportPdf} className="rounded-lg px-3 py-2 text-sm font-bold" style={{ background: COLORS.green, color: "#fff" }}>{copy.pdf}</button>
-                <button onClick={exportSummary} className="rounded-lg px-3 py-2 text-sm font-bold border" style={{ borderColor: COLORS.gold, color: "#7A6210", background: "#FBF6E3" }}>{copy.summary}</button>
+                <button disabled={!dateRangeValid} onClick={exportCsv} className="rounded-lg px-3 py-2 text-sm font-bold border disabled:opacity-50" style={{ borderColor: COLORS.green, color: COLORS.green, background: "#fff" }}>{copy.csv}</button>
+                <button disabled={!dateRangeValid} onClick={exportPdf} className="rounded-lg px-3 py-2 text-sm font-bold disabled:opacity-50" style={{ background: COLORS.green, color: "#fff" }}>{copy.pdf}</button>
+                <button disabled={!dateRangeValid} onClick={exportSummary} className="rounded-lg px-3 py-2 text-sm font-bold border disabled:opacity-50" style={{ borderColor: COLORS.gold, color: "#7A6210", background: "#FBF6E3" }}>{copy.summary}</button>
                 <button onClick={clearDraft} className="rounded-lg px-3 py-2 text-sm font-bold border" style={{ borderColor: COLORS.red, color: COLORS.red, background: "#fff" }}>{copy.clearDraft}</button>
               </div>
               {draftEnabled && draftSavedAt && <p className="text-xs mt-2 opacity-70">{copy.savedAt}: {new Date(draftSavedAt).toLocaleString(lang === "ur" ? "ur-PK" : "en-PK")}</p>}
             </div>
-            {result.remainingItems?.length > 0 && <section className="rounded-xl border p-4 mb-4" style={{ borderColor: "#E3D7AE", background: "#FBF6E3" }}><h2 className="font-bold mb-2" style={{ color: "#7A6210" }}>{copy.remaining}</h2><ul className="text-sm space-y-1 list-disc ps-5">{result.remainingItems.map((item, index) => <li key={index}>{item}</li>)}</ul></section>}
-            {SECTIONS.map(([key, label, amountKey]) => <Section key={key} title={copy[label]} rows={result.worksheet[key] || []} amountKey={amountKey} copy={copy} lang={lang} />)}
+            {filteredResult.remainingItems?.length > 0 && <section className="rounded-xl border p-4 mb-4" style={{ borderColor: "#E3D7AE", background: "#FBF6E3" }}><h2 className="font-bold mb-2" style={{ color: "#7A6210" }}>{copy.remaining}</h2><ul className="text-sm space-y-1 list-disc ps-5">{filteredResult.remainingItems.map((item, index) => <li key={index}>{item}</li>)}</ul></section>}
+            {SECTIONS.map(([key, label, amountKey]) => <Section key={key} title={copy[label]} rows={filteredResult.worksheet[key] || []} amountKey={amountKey} copy={copy} lang={lang} />)}
             {result.observations?.length > 0 && <section className="rounded-xl border p-4 mb-4" style={{ borderColor: "#DDD6C4", background: "#fff" }}><h2 className="font-bold mb-2" style={{ color: COLORS.green }}>{lang === "ur" ? "مشاہدات" : "Observations"}</h2><ul className="text-sm space-y-1 list-disc ps-5">{result.observations.map((item, index) => <li key={index}>{item}</li>)}</ul></section>}
             <p className="text-xs opacity-65 leading-relaxed mb-4">{copy.note}</p>
             <button onClick={() => { setResult(null); setFiles([]); setConfirmed(false); setDraftMessage(""); }} className="document-preparation-chrome rounded-lg px-5 py-3 text-sm font-bold" style={{ background: COLORS.green, color: "#fff" }}>{copy.startOver}</button>
