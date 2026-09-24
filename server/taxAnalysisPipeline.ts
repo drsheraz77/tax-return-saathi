@@ -239,7 +239,8 @@ type ExtractedCase = {
     priorYearProperties: Array<{ key: string; label: string; priorYearValue: number; currentYearValue: number; priorYearStatus?: "present" | "sold" | "transferred" | "unknown"; currentYearStatus?: "present" | "sold" | "transferred" | "unknown" }>;
     fundsTrace: Record<string, number>;
     assetStatements: Array<{ assetType: "investment" | "vehicle" | "other"; label: string; statementValue: number; declaredValue: number; evidenceRef: string }>;
-    properties: Array<{ label: string; acquisitionCost: number; fbrValuation: number; saleProceeds: number; evidenceRef: string }>;\n    liabilities: Array<{ label: string; amount: number; liabilityType: "loan" | "payable" | "credit" | "other"; priorYearAmount?: number; evidenceRef: string }>;
+    properties: Array<{ label: string; acquisitionCost: number; fbrValuation: number; saleProceeds: number; evidenceRef: string }>;\n    liabilities: Array<{ label: string; amount: number; liabilityType: "loan" | "payable" | "credit" | "other"; priorYearAmount?: number; lender?: string; reference?: string; evidenceRef: string }>;
+    priorYearLiabilities: Array<{ label: string; amount: number; liabilityType: "loan" | "payable" | "credit" | "other"; lender?: string; reference?: string; evidenceRef: string }>;
   };
   observations: string[];
   missing: string[];
