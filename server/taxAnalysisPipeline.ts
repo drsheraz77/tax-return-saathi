@@ -7,6 +7,7 @@ import { compareYearToYearAssets } from "../shared/assetContinuity";
 import { evaluateTy2026Rules } from "../shared/ty2026Rules";
 import { traceFundsAcrossAccounts } from "../shared/fundsFlow";
 import { reconcileDocumentToReturn, summarizeFieldReconciliation } from "../shared/fieldReconciliation";
+import { reconcileAssets, summarizeAssetReconciliation } from "../shared/assetReconciliation";
 
 const MODEL = "gemini-3-flash-preview";
 const MAX_REVIEW_TOKENS = 4096;
@@ -109,6 +110,21 @@ const EXTRACTION_SCHEMA = {
           required: ["openingFunds", "saleProceeds", "income", "loans", "gifts", "otherReceipts", "assetPurchases", "construction", "vehicleBookings", "otherApplications"],
           additionalProperties: false,
         },
+        assetStatements: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              assetType: { type: "string", enum: ["investment", "vehicle", "other"] },
+              label: { type: "string" },
+              statementValue: { type: "number" },
+              declaredValue: { type: "number" },
+              evidenceRef: { type: "string" },
+            },
+            required: ["assetType", "label", "statementValue", "declaredValue", "evidenceRef"],
+            additionalProperties: false,
+          },
+        },
         properties: {
           type: "array",
           items: {
@@ -125,7 +141,7 @@ const EXTRACTION_SCHEMA = {
           },
         },
       },
-      required: ["taxYear", "openingWealth", "income", "capitalReceipts", "assetSaleProceeds", "loans", "gifts", "otherSources", "personalExpenditure", "taxPaid", "assetPurchases", "investments", "loanRepayment", "otherApplications", "declaredClosingWealth", "bankChecks", "bankTransactions", "priorYearProperties", "fundsTrace", "properties"],
+      required: ["taxYear", "openingWealth", "income", "capitalReceipts", "assetSaleProceeds", "loans", "gifts", "otherSources", "personalExpenditure", "taxPaid", "assetPurchases", "investments", "loanRepayment", "otherApplications", "declaredClosingWealth", "bankChecks", "bankTransactions", "priorYearProperties", "fundsTrace", "assetStatements", "properties"],
       additionalProperties: false,
     },
     observations: { type: "array", items: { type: "string" } },
@@ -192,6 +208,7 @@ type ExtractedCase = {
     bankTransactions: Array<{ rowNumber: number; date: string; description: string; amount: number; direction: "credit" | "debit" | "unknown"; accountRef?: string }>;
     priorYearProperties: Array<{ key: string; label: string; priorYearValue: number; currentYearValue: number; priorYearStatus?: "present" | "sold" | "transferred" | "unknown"; currentYearStatus?: "present" | "sold" | "transferred" | "unknown" }>;
     fundsTrace: Record<string, number>;
+    assetStatements: Array<{ assetType: "investment" | "vehicle" | "other"; label: string; statementValue: number; declaredValue: number; evidenceRef: string }>;
     properties: Array<{ label: string; acquisitionCost: number; fbrValuation: number; saleProceeds: number; evidenceRef: string }>;
   };
   observations: string[];
@@ -255,6 +272,11 @@ export async function returnReviewPipeline(req: Request, res: Response) {
     const currentAssets = extracted.facts.properties.map((asset) => ({ key: asset.label.toLocaleLowerCase().trim(), label: asset.label, priorYearValue: 0, currentYearValue: asset.acquisitionCost, currentYearStatus: "present" as const }));
     const assetContinuity = compareYearToYearAssets(extracted.facts.priorYearProperties, currentAssets);
     const ty2026Rules = evaluateTy2026Rules({ wealth, banks, funds, properties: extracted.facts.properties, assetContinuity, transactionAnalysis, fundsFlow, profile: extracted.facts.profile });
+    const assetReconciliation = summarizeAssetReconciliation(reconcileAssets({
+      investments: extracted.facts.assetStatements.filter((x) => x.assetType === "investment"),
+      vehicles: extracted.facts.assetStatements.filter((x) => x.assetType === "vehicle"),
+      otherAssets: extracted.facts.assetStatements.filter((x) => x.assetType === "other"),
+    }));
     const fieldReconciliation = summarizeFieldReconciliation(reconcileDocumentToReturn({
       profile: extracted.facts.profile,
       bankChecks: extracted.facts.bankChecks,
@@ -262,7 +284,7 @@ export async function returnReviewPipeline(req: Request, res: Response) {
       declaredAssetPurchases: extracted.facts.assetPurchases,
       declaredAssetSaleProceeds: extracted.facts.assetSaleProceeds,
     }));
-    const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, transactionAnalysis, fundsFlow, assetContinuity, ty2026Rules, fieldReconciliation, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
+    const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, transactionAnalysis, fundsFlow, assetContinuity, ty2026Rules, fieldReconciliation, assetReconciliation, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
 
     const reasoning = await invokeLLM({
       model: MODEL,
