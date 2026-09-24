@@ -12,6 +12,13 @@ describe("liability bank trace", () => {
     expect(r[0].status).toBe("requires_verification");
   });
 
+  it("uses lender/reference evidence when the label wording differs", () => {
+    const rows = [{ rowNumber: 10, date: "2026-06-10", description: "ABC Bank disbursement ref LN-7788", amount: 6500000, direction: "credit" as const, accountRef: "A" }];
+    const r = traceLiabilityBankMovements(rows, [{ label: "Vehicle payable", amount: 6500000, lender: "ABC Bank", reference: "LN-7788" }], { startDate: "2025-07-01", endDate: "2026-06-30" });
+    expect(r[0].drawdownAmount).toBe(6500000);
+    expect(r[0].status).toBe("drawdown_traced");
+  });
+
   it("traces a loan drawdown", () => {
     const r = traceLiabilityBankMovements([{ rowNumber: 1, date: "2026-06-01", description: "J5 Premium loan disbursement", amount: 6500000, direction: "credit", accountRef: "A" }], [{ label: "J5 Premium loan", amount: 6500000 }]);
     expect(r[0].status).toBe("drawdown_traced");
