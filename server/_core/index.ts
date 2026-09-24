@@ -11,6 +11,7 @@ import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
+import { createIpRateLimiter } from "./rateLimit";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -37,14 +38,16 @@ async function startServer() {
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  app.disable("x-powered-by");
+  app.set("trust proxy", 1);
   registerStorageProxy(app);
   registerOAuthRoutes(app);
   // Retain the uploaded browser route while the server uses the managed AI proxy.
   app.all("/api/claude", manusLlmProxy);
   // New bounded pipelines: documents are extracted once, calculations are deterministic,
   // and the reasoning model receives structured facts rather than raw documents.
-  app.all("/api/return-review", returnReviewPipeline);
-  app.all("/api/tax-chat", taxChatPipeline);
+  app.all("/api/return-review", createIpRateLimiter({ windowMs: 15 * 60 * 1000, max: 12, name: "return-review" }), returnReviewPipeline);
+  app.all("/api/tax-chat", createIpRateLimiter({ windowMs: 15 * 60 * 1000, max: 60, name: "tax-chat" }), taxChatPipeline);
   // Platform-managed scheduled callback; it authenticates cron sessions itself.
   app.post("/api/scheduled/feedback-retention", feedbackRetentionHandler);
   // tRPC API

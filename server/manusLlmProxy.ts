@@ -177,8 +177,8 @@ export async function manusLlmProxy(req: Request, res: Response) {
     return res.status(400).json({ error: "Invalid JSON" });
   }
 
-  if (!Array.isArray(payload.messages)) {
-    return res.status(400).json({ error: "Missing messages" });
+  if (!Array.isArray(payload.messages) || payload.messages.length === 0 || payload.messages.length > 24) {
+    return res.status(400).json({ error: "Messages are required" });
   }
 
   try {

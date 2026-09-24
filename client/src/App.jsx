@@ -2089,6 +2089,274 @@ function GapCheck({ lang, t, dedicated = false }) {
           </div>
         )}
 
+        {result.calculations?.fieldReconciliation?.total > 0 && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#B9C9BF", background: "#F7FAF7" }}>
+            <div className="font-bold text-sm mb-2" style={{ color: COLORS.green2 }}>{lang === "ur" ? "دستاویز اور ریٹرن کا موازنہ" : "Document-to-return reconciliation"}</div>
+            <div className="text-xs opacity-75 mb-3">
+              {lang === "ur"
+                ? "دستاویز سے حاصل شدہ اعداد اور ریٹرن میں موجود اعداد کا خودکار موازنہ۔ اختلاف صرف تصدیق کی ضرورت دکھاتا ہے۔"
+                : "Deterministic comparison of figures established from supporting documents against return values. A mismatch is a verification signal, not a compliance determination."}
+            </div>
+            <div className="grid grid-cols-3 gap-2 text-xs mb-3">
+              <div className="rounded-lg border p-2"><div className="opacity-60">{lang === "ur" ? "کل" : "Total"}</div><div className="font-bold">{result.calculations.fieldReconciliation.total}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">{lang === "ur" ? "مطابقت" : "Matched"}</div><div className="font-bold">{result.calculations.fieldReconciliation.matched}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">{lang === "ur" ? "اختلاف/جانچ" : "Mismatch / verify"}</div><div className="font-bold">{result.calculations.fieldReconciliation.mismatches + result.calculations.fieldReconciliation.requiresVerification}</div></div>
+            </div>
+            <div className="space-y-2">
+              {result.calculations.fieldReconciliation.results.map((item, i) => (
+                <div key={i} className="rounded-lg border p-3" style={{ background: "#fff", borderColor: item.status === "matched" ? "#B9C9BF" : "#E3D7AE" }}>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="font-semibold text-sm">{item.field}</div>
+                    <span className="text-xs rounded-full px-2 py-0.5" style={{ background: item.status === "matched" ? "#DCEFE2" : "#FBF6E3", color: item.status === "matched" ? COLORS.green2 : "#7A6210" }}>
+                      {item.status === "matched" ? (lang === "ur" ? "مطابق" : "matched") : item.status === "mismatch" ? (lang === "ur" ? "فرق" : "mismatch") : (lang === "ur" ? "تصدیق" : "verify")}
+                    </span>
+                  </div>
+                  <div className="text-xs mt-2 grid grid-cols-1 sm:grid-cols-3 gap-1">
+                    <span>Return: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK", { maximumFractionDigits: 2 }).format(item.returnValue || 0)}</b></span>
+                    <span>Evidence: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK", { maximumFractionDigits: 2 }).format(item.evidenceValue || 0)}</b></span>
+                    <span>Difference: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK", { maximumFractionDigits: 2 }).format(item.difference || 0)}</b></span>
+                  </div>
+                  <div className="text-xs mt-1 opacity-65">{item.detail} · {item.evidenceRef}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {result.calculations?.assetReconciliation?.total > 0 && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#B9C9BF", background: "#F7FAF7" }}>
+            <div className="font-bold text-sm mb-2" style={{ color: COLORS.green2 }}>{lang === "ur" ? "سرمایہ کاری اور دیگر اثاثوں کی جانچ" : "Investment & asset reconciliation"}</div>
+            <div className="text-xs opacity-75 mb-3">
+              {lang === "ur"
+                ? "سرمایہ کاری، گاڑی یا دوسرے اثاثے کے بیان میں موجود رقم کو ریٹرن کی رقم سے ملایا گیا ہے۔"
+                : "Investment, vehicle, and other asset statement values are compared with the corresponding return values."}
+            </div>
+            <div className="grid grid-cols-3 gap-2 text-xs mb-3">
+              <div className="rounded-lg border p-2"><div className="opacity-60">{lang === "ur" ? "کل" : "Total"}</div><div className="font-bold">{result.calculations.assetReconciliation.total}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">{lang === "ur" ? "مطابق" : "Matched"}</div><div className="font-bold">{result.calculations.assetReconciliation.matched}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">{lang === "ur" ? "فرق" : "Mismatches"}</div><div className="font-bold">{result.calculations.assetReconciliation.mismatches}</div></div>
+            </div>
+            <div className="space-y-2">
+              {result.calculations.assetReconciliation.results.map((item, i) => (
+                <div key={i} className="rounded-lg border p-3" style={{ background: "#fff", borderColor: item.status === "matched" ? "#B9C9BF" : "#E3D7AE" }}>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="font-semibold text-sm">{item.label}</div>
+                    <span className="text-xs rounded-full px-2 py-0.5" style={{ background: item.status === "matched" ? "#DCEFE2" : "#FBF6E3", color: item.status === "matched" ? COLORS.green2 : "#7A6210" }}>
+                      {item.status === "matched" ? (lang === "ur" ? "مطابق" : "matched") : (lang === "ur" ? "جانچ ضروری" : "verify")}
+                    </span>
+                  </div>
+                  <div className="text-xs mt-2 grid grid-cols-1 sm:grid-cols-3 gap-1">
+                    <span>Statement: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK", { maximumFractionDigits: 2 }).format(item.statementValue || 0)}</b></span>
+                    <span>Return: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK", { maximumFractionDigits: 2 }).format(item.declaredValue || 0)}</b></span>
+                    <span>Difference: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK", { maximumFractionDigits: 2 }).format(item.difference || 0)}</b></span>
+                  </div>
+                  <div className="text-xs mt-1 opacity-65">{item.detail} · {item.evidenceRef}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {result.calculations?.liabilityBankTrace?.total > 0 && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#D7DDE6", background: "#F7F9FC" }}>
+            <div className="font-bold text-sm mb-2">Liability bank movement tracing</div>
+            <div className="text-xs opacity-75 mb-3">Loan-related credits and repayments are matched to identified liabilities. Bank descriptions are treated as evidence for verification, not as conclusive proof of a legal liability.</div>
+            <div className="grid grid-cols-3 gap-2 text-xs mb-3">
+              <div className="rounded-lg border p-2"><div className="opacity-60">Liabilities</div><div className="font-bold">{result.calculations.liabilityBankTrace.total}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">Drawdowns traced</div><div className="font-bold">{result.calculations.liabilityBankTrace.drawdownsTraced}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">Repayments traced</div><div className="font-bold">{result.calculations.liabilityBankTrace.repaymentsTraced}</div></div>
+            </div>
+            <div className="space-y-2">
+              {result.calculations.liabilityBankTrace.results.map((item, i) => (
+                <div key={i} className="rounded-lg border p-3 bg-white">
+                  <div className="flex items-center justify-between gap-2"><div className="font-semibold text-sm">{item.liabilityLabel}</div><span className="text-xs rounded-full px-2 py-0.5" style={{ background: item.status === "requires_verification" ? "#FBF6E3" : "#DCEFE2" }}>{item.status}</span></div>
+                  <div className="text-xs mt-2 grid grid-cols-1 sm:grid-cols-3 gap-1">
+                    <span>Liability: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.liabilityAmount || 0)}</b></span>
+                    <span>Drawdown: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.drawdownAmount || 0)}</b></span>
+                    <span>Repayment: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.repaymentAmount || 0)}</b></span>
+                  </div>
+                  <div className="text-xs mt-1 opacity-65">{item.detail}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {result.calculations?.liabilityBalance?.total > 0 && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#D7DDE6", background: "#F7F9FC" }}>
+            <div className="font-bold text-sm mb-2">Liability balance reconciliation</div>
+            <div className="text-xs opacity-75 mb-3">Opening liability + traced drawdowns − traced repayments is compared with the liability reported at year-end.</div>
+            <div className="grid grid-cols-3 gap-2 text-xs mb-3">
+              <div className="rounded-lg border p-2"><div className="opacity-60">Reconciled</div><div className="font-bold">{result.calculations.liabilityBalance.reconciled}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">Mismatch</div><div className="font-bold">{result.calculations.liabilityBalance.mismatches}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">Verify</div><div className="font-bold">{result.calculations.liabilityBalance.requiresVerification}</div></div>
+            </div>
+            <div className="space-y-2">
+              {result.calculations.liabilityBalance.results.map((item, i) => (
+                <div key={i} className="rounded-lg border p-3 bg-white">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="font-semibold text-sm">{item.label}</div>
+                    <span className="text-xs rounded-full px-2 py-0.5" style={{ background: item.status === "reconciled" ? "#DCEFE2" : item.status === "mismatch" ? "#F8DCD5" : "#FBF6E3" }}>{item.status}</span>
+                  </div>
+                  <div className="text-xs mt-2 grid grid-cols-1 sm:grid-cols-4 gap-1">
+                    <span>Opening: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.priorYearAmount || 0)}</b></span>
+                    <span>Drawdown: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.drawdownAmount || 0)}</b></span>
+                    <span>Repayment: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.repaymentAmount || 0)}</b></span>
+                    <span>Closing: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.currentYearAmount || 0)}</b></span>
+                  </div>
+                  <div className="text-xs mt-1 opacity-65">Expected closing: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.expectedClosingAmount || 0)}</b> · Difference: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(Math.abs(item.difference || 0))}</b></div>
+                  <div className="text-xs mt-1 opacity-65">{item.detail}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {result.calculations?.liabilityContinuity?.total > 0 && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#D7DDE6", background: "#F7F9FC" }}>
+            <div className="font-bold text-sm mb-2">Liability continuity</div>
+            <div className="text-xs opacity-75 mb-3">Prior-year and current-year liabilities are compared conservatively. A missing prior/current record is a verification signal, not proof that a liability was created or settled.</div>
+            <div className="grid grid-cols-3 gap-2 text-xs mb-3">
+              <div className="rounded-lg border p-2"><div className="opacity-60">Liabilities</div><div className="font-bold">{result.calculations.liabilityContinuity.total}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">New / changed</div><div className="font-bold">{result.calculations.liabilityContinuity.new + result.calculations.liabilityContinuity.increased + result.calculations.liabilityContinuity.decreased}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">Settled</div><div className="font-bold">{result.calculations.liabilityContinuity.settled}</div></div>
+            </div>
+            <div className="space-y-2">
+              {result.calculations.liabilityContinuity.results.map((item, i) => (
+                <div key={i} className="rounded-lg border p-3 bg-white">
+                  <div className="flex items-center justify-between gap-2"><div className="font-semibold text-sm">{item.label}</div><span className="text-xs rounded-full px-2 py-0.5" style={{ background: item.status === "continued" ? "#DCEFE2" : "#FBF6E3" }}>{item.status}</span></div>
+                  <div className="text-xs mt-2 grid grid-cols-1 sm:grid-cols-3 gap-1">
+                    <span>Prior: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.priorYearAmount || 0)}</b></span>
+                    <span>Current: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.currentYearAmount || 0)}</b></span>
+                    <span>Change: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.difference || 0)}</b></span>
+                  </div>
+                  <div className="text-xs mt-1 opacity-65">{item.detail}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {result.calculations?.assetLiabilities?.totalAssets > 0 && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#D7DDE6", background: "#F7F9FC" }}>
+            <div className="font-bold text-sm mb-2">Asset & liability consistency</div>
+            <div className="text-xs opacity-75 mb-3">
+              A related loan/payable can explain part of an asset acquisition, but the system does not treat a booking or future payment obligation as a liability without supporting evidence.
+            </div>
+            <div className="grid grid-cols-3 gap-2 text-xs mb-3">
+              <div className="rounded-lg border p-2"><div className="opacity-60">Assets checked</div><div className="font-bold">{result.calculations.assetLiabilities.totalAssets}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">Consistent</div><div className="font-bold">{result.calculations.assetLiabilities.consistent}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">Verification</div><div className="font-bold">{result.calculations.assetLiabilities.partial + result.calculations.assetLiabilities.requiresVerification}</div></div>
+            </div>
+            <div className="space-y-2">
+              {result.calculations.assetLiabilities.results.map((item, i) => (
+                <div key={i} className="rounded-lg border p-3 bg-white">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="font-semibold text-sm">{item.assetLabel}</div>
+                    <span className="text-xs rounded-full px-2 py-0.5" style={{ background: item.status === "consistent" ? "#DCEFE2" : "#FBF6E3" }}>{item.status}</span>
+                  </div>
+                  <div className="text-xs mt-2 grid grid-cols-1 sm:grid-cols-3 gap-1">
+                    <span>Asset: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.assetValue || 0)}</b></span>
+                    <span>Liability matched: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.matchedLiabilityAmount || 0)}</b></span>
+                    <span>Unmatched: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.unmatchedAssetAmount || 0)}</b></span>
+                  </div>
+                  <div className="text-xs mt-1 opacity-65">{item.detail}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {result.calculations?.assetFundingTrace?.totalAssets > 0 && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#E3D7AE", background: "#FFF9E8" }}>
+            <div className="font-bold text-sm mb-2" style={{ color: "#7A6210" }}>{lang === "ur" ? "اثاثوں کے ذرائعِ فنڈز کی جانچ" : "Asset source-of-funds tracing"}</div>
+            <div className="text-xs opacity-75 mb-3">
+              {lang === "ur"
+                ? "ہر شناخت شدہ اثاثے کی ادائیگی کو دستیاب بینک رسیدوں سے محتاط طریقے سے ملایا گیا ہے۔"
+                : "Identified asset applications are conservatively matched to preceding documented bank receipts; an unmatched amount is a verification signal, not proof of an undisclosed source."}
+            </div>
+            <div className="grid grid-cols-3 gap-2 text-xs mb-3">
+              <div className="rounded-lg border p-2"><div className="opacity-60">{lang === "ur" ? "اثاثے" : "Assets"}</div><div className="font-bold">{result.calculations.assetFundingTrace.totalAssets}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">{lang === "ur" ? "مکمل ٹریس" : "Traced"}</div><div className="font-bold">{result.calculations.assetFundingTrace.traced}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">{lang === "ur" ? "جانچ ضروری" : "Needs review"}</div><div className="font-bold">{result.calculations.assetFundingTrace.needsReview + result.calculations.assetFundingTrace.partial}</div></div>
+            </div>
+            <div className="space-y-2">
+              {result.calculations.assetFundingTrace.results.map((item, i) => (
+                <div key={i} className="rounded-lg border p-3" style={{ background: "#fff", borderColor: item.status === "traced" ? "#B9C9BF" : "#E3D7AE" }}>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="font-semibold text-sm">{item.label}</div>
+                    <span className="text-xs rounded-full px-2 py-0.5" style={{ background: item.status === "traced" ? "#DCEFE2" : "#FBF6E3", color: item.status === "traced" ? COLORS.green2 : "#7A6210" }}>
+                      {item.status}
+                    </span>
+                  </div>
+                  <div className="text-xs mt-2 grid grid-cols-1 sm:grid-cols-3 gap-1">
+                    <span>Declared: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK", { maximumFractionDigits: 2 }).format(item.declaredValue || 0)}</b></span>
+                    <span>Traced: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK", { maximumFractionDigits: 2 }).format(item.tracedSourceAmount || 0)}</b></span>
+                    <span>Unexplained: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK", { maximumFractionDigits: 2 }).format(item.unexplainedAmount || 0)}</b></span>
+                  </div>
+                  <div className="text-xs mt-1 opacity-65">{item.reason}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {result.calculations?.ty2026Rules?.length > 0 && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: COLORS.gold, background: "#FFF9E8" }}>
+            <div className="font-bold text-sm mb-2" style={{ color: "#7A6210" }}>{lang === "ur" ? "TY2026 قواعد پر مبنی جانچ" : "TY2026 rule-based checks"}</div>
+            <div className="text-xs opacity-75 mb-3">{lang === "ur" ? "یہ نتائج صرف ان قواعد کو دکھاتے ہیں جن کے لیے فراہم کردہ ریکارڈ میں قابلِ جانچ اشارہ موجود ہے۔" : "Only rules supported by the submitted evidence are shown; the AI does not invent additional findings."}</div>
+            <div className="space-y-3">
+              {result.calculations.ty2026Rules.map((rule, i) => (
+                <div key={i} className="rounded-lg border p-3" style={{ borderColor: "#E3D7AE", background: "#fff" }}>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="font-semibold text-sm">{rule.ruleId}: {rule.title}</div>
+                    <span className="text-xs rounded-full px-2 py-0.5" style={{ background: rule.severity === "high" ? "#F7D9D0" : "#FBF6E3", color: rule.severity === "high" ? COLORS.red : "#7A6210" }}>{rule.severity}</span>
+                  </div>
+                  <div className="text-sm mt-1">{rule.detail}</div>
+                  {rule.question && <div className="text-xs mt-2 opacity-75">{rule.question}</div>}
+                  <div className="text-xs mt-1 opacity-55">{rule.evidenceClass} · {rule.confidence} confidence</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {result.calculations?.deterministicFindings?.length > 0 && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: COLORS.gold, background: "#FBF6E3" }}>
+            <div className="font-bold text-sm mb-2" style={{ color: "#7A6210" }}>{lang === "ur" ? "خودکار عملی جانچ" : "Deterministic practical checks"}</div>
+            <div className="space-y-2">
+              {result.calculations.deterministicFindings.map((finding, i) => (
+                <div key={i} className="text-sm">
+                  <div className="font-semibold">{finding.title}</div>
+                  <div className="opacity-80">{finding.detail}</div>
+                  <div className="text-xs mt-1 opacity-65">{finding.evidenceClass} · {finding.confidence} confidence · {finding.severity} priority</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {result.calculations?.transactionAnalysis?.classifications?.length > 0 && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#B9C9BF", background: "#F7FAF7" }}>
+            <div className="font-bold text-sm mb-2" style={{ color: COLORS.green2 }}>{lang === "ur" ? "بینک لین دین کی درجہ بندی" : "Bank transaction classification"}</div>
+            <div className="text-xs opacity-75 mb-2">{lang === "ur" ? "یہ درجہ بندیاں صرف لین دین کی تفصیل سے حاصل ہونے والے اشارے ہیں؛ اصل دستاویز سے تصدیق ضروری ہے۔" : "These are description-based signals only; confirm each material classification against the underlying record."}</div>
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(result.calculations.transactionAnalysis.counts || {}).map(([category, count]) => (
+                <span key={category} className="rounded-full border px-2 py-1 text-xs" style={{ borderColor: "#B9C9BF" }}>{category}: {count}</span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {result.calculations?.assetContinuity?.length > 0 && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#B9C9BF", background: "#F7FAF7" }}>
+            <div className="font-bold text-sm mb-2" style={{ color: COLORS.green2 }}>{lang === "ur" ? "پچھلے سال کے اثاثوں کا تسلسل" : "Year-to-year asset continuity"}</div>
+            <ul className="text-sm space-y-2">
+              {result.calculations.assetContinuity.map((item, i) => <li key={i}>• <span className="font-semibold">{item.label}</span>: {item.detail}</li>)}
+            </ul>
+          </div>
+        )}
+
         {result.found?.length > 0 && (
           <div className="rounded-xl border p-4 mb-3" style={{ borderColor: "#B5CDBD", background: "#F0F5F1" }}>
             <div className="font-bold text-sm mb-2" style={{ color: COLORS.green2 }}>{t.resFound}</div>

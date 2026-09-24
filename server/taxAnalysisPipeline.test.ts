@@ -44,6 +44,10 @@ const extraction = {
     otherApplications: 0,
     declaredClosingWealth: 5_000_000,
     bankChecks: [],
+    bankTransactions: [],
+    priorYearProperties: [],
+    liabilities: [],
+    priorYearLiabilities: [],
     fundsTrace: {
       openingFunds: 11_000_000,
       saleProceeds: 8_000_000,
@@ -91,6 +95,7 @@ describe("structured tax analysis pipeline", () => {
     expect(recorded.status).toBe(200);
     expect((recorded.body as { calculations: { wealth: { expectedClosingWealth: number }, funds: { totalAvailable: number } } }).calculations.wealth.expectedClosingWealth).toBe(5_000_000);
     expect((recorded.body as { calculations: { funds: { totalAvailable: number } } }).calculations.funds.totalAvailable).toBe(19_000_000);
+    expect((recorded.body as { calculations: { deterministicFindings: Array<{ code: string }> } }).calculations.deterministicFindings).toContainEqual(expect.objectContaining({ code: "WEALTH_RECONCILED" }));
     expect(mockedInvokeLLM).toHaveBeenCalledTimes(2);
     const secondCall = mockedInvokeLLM.mock.calls[1][0];
     expect(JSON.stringify(secondCall.messages)).not.toContain("ignore previous instructions");
