@@ -45,6 +45,11 @@ type Inputs = {
     duplicateTransfers?: Array<unknown>;
     internalTransferCandidates?: Array<unknown>;
   };
+  fundsFlow?: {
+    status?: "traceable" | "partial" | "needs_review";
+    totals?: { sourceCredits?: number; tracedToApplications?: number; unexplainedSourceCredits?: number };
+    crossAccountTransfers?: Array<unknown>;
+  };
 };
 
 const money = (n: number) => `Rs ${Math.round(n).toLocaleString("en-PK")}`;
@@ -234,5 +239,32 @@ export function evaluateTy2026Rules(input: Inputs): Ty2026RuleFinding[] {
     });
   }
 
+
+  const fundsFlow = input.fundsFlow;
+  const unexplainedSourceCredits = fundsFlow?.totals?.unexplainedSourceCredits ?? 0;
+  const crossAccountTransferCount = fundsFlow?.crossAccountTransfers?.length ?? 0;
+  if (crossAccountTransferCount > 0) {
+    findings.push({
+      ruleId: "E32",
+      title: "Cross-account source-of-funds transfer traced",
+      detail: crossAccountTransferCount + " cross-account transfer(s) were matched conservatively by account, amount and date." +
+        (unexplainedSourceCredits > 1 ? " Some source receipts remain unmatched: " + money(unexplainedSourceCredits) + "." : " The identified qualifying source receipts were linked to subsequent applications within the matching window."),
+      question: "Verify the transfer entries and supporting source/application documents before relying on the automated linkage.",
+      severity: unexplainedSourceCredits > 1 ? "medium" : "low",
+      evidenceClass: "REQUIRES_VERIFICATION",
+      confidence: "medium",
+    });
+  }
+  if (fundsFlow?.status === "needs_review" && unexplainedSourceCredits > 1) {
+    findings.push({
+      ruleId: "E33",
+      title: "Qualifying source receipts remain unexplained across bank accounts",
+      detail: "The cross-account engine identified " + money(unexplainedSourceCredits) + " of qualifying source receipts without a conservative downstream application match.",
+      question: "Trace the remaining receipts to documented expenditure, investment, asset acquisition, transfer, or closing funds.",
+      severity: "high",
+      evidenceClass: "CALCULATED",
+      confidence: "medium",
+    });
+  }
   return findings;
 }
