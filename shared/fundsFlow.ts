@@ -94,33 +94,44 @@ export function traceFundsAcrossAccounts(rows: Array<ParsedTransaction & { accou
     let available = sourceAmount;
     const transferPath: number[] = [];
 
-    const outgoing = crossAccountTransfers.find((transfer) =>
-      transfer.creditRow !== source.rowNumber &&
+    const outgoingTransfers = crossAccountTransfers.filter((transfer) =>
       transfer.debitAccount === source.accountRef &&
       transfer.creditAccount !== source.accountRef &&
-      Math.abs(transfer.amount - sourceAmount) <= MONEY_TOLERANCE &&
-      withinWindow(source.date, transfer.date),
+      withinWindow(source.date, transfer.date) &&
+      !transferPath.includes(transfer.debitRow) &&
+      !transferPath.includes(transfer.creditRow),
     );
 
-    if (outgoing) {
-      transferPath.push(outgoing.debitRow, outgoing.creditRow);
+    const routedAmounts = new Map<string, number>();
+    for (const transfer of outgoingTransfers) {
+      transferPath.push(transfer.debitRow, transfer.creditRow);
+      routedAmounts.set(transfer.creditAccount, (routedAmounts.get(transfer.creditAccount) || 0) + transfer.amount);
     }
 
-    const destinationAccount = outgoing?.creditAccount || source.accountRef;
-    const sourceForApplicationDate = outgoing ? events.find((row) => row.rowNumber === outgoing.creditRow)?.date || source.date : source.date;
-    const applications = events
-      .filter((row) =>
-        row.direction === "debit" &&
-        !usedApplicationRows.has(row.rowNumber) &&
-        row.accountRef === destinationAccount &&
-        APPLICATION_CATEGORIES.has(row.category) &&
-        withinWindow(sourceForApplicationDate, row.date),
-      )
-      .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount));
+    const destinations = outgoingTransfers.length
+      ? Array.from(routedAmounts.entries()).map(([account, amount]) => ({
+          account,
+          amount,
+          startDate: events.find((row) => row.rowNumber === outgoingTransfers.find((item) => item.creditAccount === account)?.creditRow)?.date || source.date,
+        }))
+      : [{ account: source.accountRef, amount: sourceAmount, startDate: source.date }];
 
-    for (const application of applications) {
+    const applications = destinations.flatMap((destination) =>
+      events
+        .filter((row) =>
+          row.direction === "debit" &&
+          !usedApplicationRows.has(row.rowNumber) &&
+          row.accountRef === destination.account &&
+          APPLICATION_CATEGORIES.has(row.category) &&
+          withinWindow(destination.startDate, row.date),
+        )
+        .map((row) => ({ row, routeAvailable: destination.amount })),
+    ).sort((a, b) => Math.abs(b.row.amount) - Math.abs(a.row.amount));
+
+    for (const candidate of applications) {
       if (available <= MONEY_TOLERANCE) break;
-      const applied = Math.min(available, Math.abs(application.amount));
+      const application = candidate.row;
+      const applied = Math.min(available, Math.abs(application.amount), candidate.routeAvailable);
       if (applied <= MONEY_TOLERANCE) continue;
       const status = applied + MONEY_TOLERANCE >= sourceAmount ? "traced" : "partial";
       links.push({
