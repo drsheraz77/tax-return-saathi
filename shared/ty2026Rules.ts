@@ -46,7 +46,7 @@ type Inputs = {
     internalTransferCandidates?: Array<unknown>;
     cashWithdrawalRows?: number[];
   };
-  assetLiabilities?: { results?: Array<{ assetLabel: string; assetValue: number; matchedLiabilityAmount: number; unmatchedAssetAmount: number; status: string; detail: string }> };\n  liabilityContinuity?: { results?: Array<{ label: string; priorYearAmount: number; currentYearAmount: number; status: string; difference: number; detail: string }> };\n  fundsFlow?: {
+  assetLiabilities?: { results?: Array<{ assetLabel: string; assetValue: number; matchedLiabilityAmount: number; unmatchedAssetAmount: number; status: string; detail: string }> };\n  liabilityContinuity?: { results?: Array<{ label: string; priorYearAmount: number; currentYearAmount: number; status: string; difference: number; detail: string }> };\n  liabilityBankTrace?: { results?: Array<{ liabilityLabel: string; liabilityAmount: number; drawdownAmount: number; repaymentAmount: number; status: string; detail: string }> };\n  fundsFlow?: {
     status?: "traceable" | "partial" | "needs_review";
     totals?: { sourceCredits?: number; tracedToApplications?: number; unexplainedSourceCredits?: number };
     crossAccountTransfers?: Array<unknown>;
@@ -275,6 +275,20 @@ export function evaluateTy2026Rules(input: Inputs): Ty2026RuleFinding[] {
         title: `Year-to-year liability change requires verification: ${item.label}`,
         detail: `Prior-year amount ${money(item.priorYearAmount)}; current-year amount ${money(item.currentYearAmount)}; calculated change ${money(item.difference)}. ${item.detail}`,
         question: "Verify the prior/current liability statements, settlement or drawdown evidence, reporting date, and corresponding asset or funds movement.",
+        severity: "medium",
+        evidenceClass: "REQUIRES_VERIFICATION",
+        confidence: "medium",
+      });
+    }
+  }
+
+  for (const item of input.liabilityBankTrace?.results ?? []) {
+    if (item.status === "requires_verification" || item.status === "partial") {
+      findings.push({
+        ruleId: "E37",
+        title: `Liability bank movement requires verification: ${item.liabilityLabel}`,
+        detail: `Liability ${money(item.liabilityAmount)}; traced loan drawdown ${money(item.drawdownAmount)}; traced repayment ${money(item.repaymentAmount)}. ${item.detail}`,
+        question: "Verify the lender statement and bank entries, and reconcile drawdowns/repayments with the liability balance at the reporting date.",
         severity: "medium",
         evidenceClass: "REQUIRES_VERIFICATION",
         confidence: "medium",
