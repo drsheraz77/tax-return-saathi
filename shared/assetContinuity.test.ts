@@ -13,6 +13,14 @@ describe("year-to-year asset continuity", () => {
     }));
   });
 
+  it("matches equivalent labels despite minor wording differences", () => {
+    const result = compareYearToYearAssets(
+      [{ key: "palm-iv", label: "Palm IV Plot", priorYearValue: 14000000, currentYearValue: 0, priorYearStatus: "present" }],
+      [{ key: "palm-iv-current", label: "Palm IV Property", priorYearValue: 0, currentYearValue: 14000000, currentYearStatus: "present" }],
+    );
+    expect(result).toContainEqual(expect.objectContaining({ status: "continued" }));
+  });
+
   it("identifies a documented new asset", () => {
     const result = compareYearToYearAssets(
       [],
