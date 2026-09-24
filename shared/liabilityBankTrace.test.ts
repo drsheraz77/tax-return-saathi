@@ -2,6 +2,16 @@ import { describe, expect, it } from "vitest";
 import { traceLiabilityBankMovements, summarizeLiabilityBankMovements } from "./liabilityBankTrace";
 
 describe("liability bank trace", () => {
+  it("ignores movements outside the reporting period", () => {
+    const r = traceLiabilityBankMovements(
+      [{ rowNumber: 9, date: "2025-06-30", description: "Loan A disbursement", amount: 6500000, direction: "credit", accountRef: "A" }],
+      [{ label: "Loan A", amount: 6500000 }],
+      { startDate: "2025-07-01", endDate: "2026-06-30" },
+    );
+    expect(r[0].drawdownAmount).toBe(0);
+    expect(r[0].status).toBe("requires_verification");
+  });
+
   it("traces a loan drawdown", () => {
     const r = traceLiabilityBankMovements([{ rowNumber: 1, date: "2026-06-01", description: "J5 Premium loan disbursement", amount: 6500000, direction: "credit", accountRef: "A" }], [{ label: "J5 Premium loan", amount: 6500000 }]);
     expect(r[0].status).toBe("drawdown_traced");
