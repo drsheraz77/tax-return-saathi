@@ -16,10 +16,13 @@ const TOLERANCE = 1;
 const WINDOW_DAYS = 60;
 
 function norm(s: string) { return s.toLocaleLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
-function related(a: string, b: string) {
-  const aa = norm(a).split(" ").filter(x => x.length >= 3);
-  const bb = norm(b).split(" ").filter(x => x.length >= 3);
-  return aa.some(x => bb.includes(x));
+function related(label: string, description: string, lender?: string, reference?: string) {
+  const text = norm(description);
+  const labelWords = norm(label).split(" ").filter(x => x.length >= 3);
+  const labelMatch = labelWords.some(x => text.includes(x));
+  const lenderMatch = !!lender && norm(lender).length >= 3 && text.includes(norm(lender));
+  const referenceMatch = !!reference && norm(reference).length >= 3 && text.includes(norm(reference));
+  return referenceMatch || lenderMatch || labelMatch;
 }
 function withinWindow(date: string, start?: string, end?: string) {
   const x = Date.parse(date);
@@ -37,7 +40,7 @@ function withinWindow(date: string, start?: string, end?: string) {
 
 export function traceLiabilityBankMovements(
   rows: Array<ParsedTransaction & { accountRef?: string | null }>,
-  liabilities: Array<{ label: string; amount: number }>,
+  liabilities: Array<{ label: string; amount: number; lender?: string; reference?: string }>,
   period?: { startDate?: string; endDate?: string },
 ): LiabilityBankLink[] {
   const normalized = rows.map(r => ({ ...r, accountRef: String(r.accountRef || "unidentified account") }));
@@ -52,7 +55,7 @@ export function traceLiabilityBankMovements(
       !usedDrawdowns.has(e.rowNumber) &&
       e.direction === "credit" &&
       e.category === "loan" &&
-      related(liability.label, e.description) &&
+      related(liability.label, e.description, liability.lender, liability.reference) &&
       withinWindow(e.date, period?.startDate, period?.endDate),
     ).sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount));
 
