@@ -10,6 +10,7 @@ import { reconcileDocumentToReturn, summarizeFieldReconciliation } from "../shar
 import { reconcileAssets, summarizeAssetReconciliation } from "../shared/assetReconciliation";
 import { traceAssetFunding, summarizeAssetFundingTrace } from "../shared/assetFundingTrace";
 import { reconcileAssetLiabilities, summarizeAssetLiabilities } from "../shared/assetLiabilityReconciliation";
+import { compareYearToYearLiabilities, summarizeLiabilityContinuity } from "../shared/liabilityContinuity";
 
 const MODEL = "gemini-3-flash-preview";
 const MAX_REVIEW_TOKENS = 4096;
@@ -289,14 +290,14 @@ export async function returnReviewPipeline(req: Request, res: Response) {
         ...extracted.facts.assetStatements.map((x) => ({ label: x.label, assetType: x.assetType, declaredValue: x.declaredValue })),
       ],
     ));
-    const assetLiabilities = summarizeAssetLiabilities(reconcileAssetLiabilities(
+    const liabilityContinuity = summarizeLiabilityContinuity(compareYearToYearLiabilities(\n      extracted.facts.liabilities.filter((x) => x.priorYearAmount !== undefined).map((x) => ({ label: x.label, amount: x.priorYearAmount ?? 0 })),\n      extracted.facts.liabilities.map((x) => ({ label: x.label, amount: x.amount, evidenceRef: x.evidenceRef })),\n    ));\n    const assetLiabilities = summarizeAssetLiabilities(reconcileAssetLiabilities(
       [
         ...extracted.facts.properties.map((x) => ({ label: x.label, value: x.acquisitionCost })),
         ...extracted.facts.assetStatements.map((x) => ({ label: x.label, value: x.declaredValue })),
       ],
       extracted.facts.liabilities,
     ));
-    const ty2026Rules = evaluateTy2026Rules({ wealth, banks, funds, properties: extracted.facts.properties, assetContinuity, transactionAnalysis, fundsFlow, profile: extracted.facts.profile, assetLiabilities });
+    const ty2026Rules = evaluateTy2026Rules({ wealth, banks, funds, properties: extracted.facts.properties, assetContinuity, transactionAnalysis, fundsFlow, profile: extracted.facts.profile, assetLiabilities, liabilityContinuity });
     const assetReconciliation = summarizeAssetReconciliation(reconcileAssets({
       investments: extracted.facts.assetStatements.filter((x) => x.assetType === "investment"),
       vehicles: extracted.facts.assetStatements.filter((x) => x.assetType === "vehicle"),
@@ -309,7 +310,7 @@ export async function returnReviewPipeline(req: Request, res: Response) {
       declaredAssetPurchases: extracted.facts.assetPurchases,
       declaredAssetSaleProceeds: extracted.facts.assetSaleProceeds,
     }));
-    const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, transactionAnalysis, fundsFlow, assetContinuity, ty2026Rules, fieldReconciliation, assetReconciliation, assetFundingTrace, assetLiabilities, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
+    const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, transactionAnalysis, fundsFlow, assetContinuity, ty2026Rules, fieldReconciliation, assetReconciliation, assetFundingTrace, assetLiabilities, liabilityContinuity, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
 
     const reasoning = await invokeLLM({
       model: MODEL,
