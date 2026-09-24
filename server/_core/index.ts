@@ -11,6 +11,7 @@ import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
+import { createIpRateLimiter } from "./rateLimit";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -43,8 +44,8 @@ async function startServer() {
   app.all("/api/claude", manusLlmProxy);
   // New bounded pipelines: documents are extracted once, calculations are deterministic,
   // and the reasoning model receives structured facts rather than raw documents.
-  app.all("/api/return-review", returnReviewPipeline);
-  app.all("/api/tax-chat", taxChatPipeline);
+  app.all("/api/return-review", createIpRateLimiter({ windowMs: 15 * 60 * 1000, max: 12, name: "return-review" }), returnReviewPipeline);
+  app.all("/api/tax-chat", createIpRateLimiter({ windowMs: 15 * 60 * 1000, max: 60, name: "tax-chat" }), taxChatPipeline);
   // Platform-managed scheduled callback; it authenticates cron sessions itself.
   app.post("/api/scheduled/feedback-retention", feedbackRetentionHandler);
   // tRPC API
