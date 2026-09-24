@@ -30,4 +30,30 @@ describe("traceFundsAcrossAccounts", () => {
     ]);
     expect(result.totals.sourceCredits).toBe(0);
   });
+  it("supports a source split across two own-account transfers and multiple applications", () => {
+    const result = traceFundsAcrossAccounts([
+      { rowNumber: 10, date: "2026-06-01", description: "Property sale proceeds", amount: 10_000_000, direction: "credit", accountRef: "A" },
+      { rowNumber: 11, date: "2026-06-02", description: "Own account transfer", amount: -6_000_000, direction: "debit", accountRef: "A" },
+      { rowNumber: 12, date: "2026-06-02", description: "Own account transfer", amount: 6_000_000, direction: "credit", accountRef: "B" },
+      { rowNumber: 13, date: "2026-06-03", description: "Own account transfer", amount: -4_000_000, direction: "debit", accountRef: "A" },
+      { rowNumber: 14, date: "2026-06-03", description: "Own account transfer", amount: 4_000_000, direction: "credit", accountRef: "C" },
+      { rowNumber: 15, date: "2026-06-05", description: "Property purchase payment", amount: -3_000_000, direction: "debit", accountRef: "B" },
+      { rowNumber: 16, date: "2026-06-06", description: "Construction payment", amount: -2_000_000, direction: "debit", accountRef: "B" },
+      { rowNumber: 17, date: "2026-06-07", description: "Property purchase payment", amount: -4_000_000, direction: "debit", accountRef: "C" },
+    ]);
+    expect(result.crossAccountTransfers).toHaveLength(2);
+    expect(result.totals.tracedToApplications).toBe(9_000_000);
+    expect(result.totals.unexplainedSourceCredits).toBe(1_000_000);
+    expect(result.status).toBe("partial");
+  });
+
+  it("does not trace a source into an unrelated account without a matched transfer", () => {
+    const result = traceFundsAcrossAccounts([
+      { rowNumber: 20, date: "2026-06-01", description: "Property sale proceeds", amount: 5_000_000, direction: "credit", accountRef: "A" },
+      { rowNumber: 21, date: "2026-06-02", description: "Property purchase payment", amount: -5_000_000, direction: "debit", accountRef: "B" },
+    ]);
+    expect(result.totals.tracedToApplications).toBe(0);
+    expect(result.status).toBe("needs_review");
+  });
+
 });
