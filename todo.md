@@ -340,4 +340,4 @@
 - [x] Clarify filled-return analysis as the primary filled return plus optional salary, tax-statement, bank, or asset documents.
 - [x] Add distinct workflow cards and unmistakable navigation labels.
 - [x] Run focused/full tests, typecheck, production build, diff check, and desktop/mobile responsive verification.
-- [ ] Save a reversible checkpoint for this clarity release.
+- [x] Save a reversible checkpoint for this clarity release.
