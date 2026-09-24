@@ -2089,6 +2089,40 @@ function GapCheck({ lang, t, dedicated = false }) {
           </div>
         )}
 
+        {result.calculations?.fieldReconciliation?.total > 0 && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#B9C9BF", background: "#F7FAF7" }}>
+            <div className="font-bold text-sm mb-2" style={{ color: COLORS.green2 }}>{lang === "ur" ? "دستاویز اور ریٹرن کا موازنہ" : "Document-to-return reconciliation"}</div>
+            <div className="text-xs opacity-75 mb-3">
+              {lang === "ur"
+                ? "دستاویز سے حاصل شدہ اعداد اور ریٹرن میں موجود اعداد کا خودکار موازنہ۔ اختلاف صرف تصدیق کی ضرورت دکھاتا ہے۔"
+                : "Deterministic comparison of figures established from supporting documents against return values. A mismatch is a verification signal, not a compliance determination."}
+            </div>
+            <div className="grid grid-cols-3 gap-2 text-xs mb-3">
+              <div className="rounded-lg border p-2"><div className="opacity-60">{lang === "ur" ? "کل" : "Total"}</div><div className="font-bold">{result.calculations.fieldReconciliation.total}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">{lang === "ur" ? "مطابقت" : "Matched"}</div><div className="font-bold">{result.calculations.fieldReconciliation.matched}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">{lang === "ur" ? "اختلاف/جانچ" : "Mismatch / verify"}</div><div className="font-bold">{result.calculations.fieldReconciliation.mismatches + result.calculations.fieldReconciliation.requiresVerification}</div></div>
+            </div>
+            <div className="space-y-2">
+              {result.calculations.fieldReconciliation.results.map((item, i) => (
+                <div key={i} className="rounded-lg border p-3" style={{ background: "#fff", borderColor: item.status === "matched" ? "#B9C9BF" : "#E3D7AE" }}>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="font-semibold text-sm">{item.field}</div>
+                    <span className="text-xs rounded-full px-2 py-0.5" style={{ background: item.status === "matched" ? "#DCEFE2" : "#FBF6E3", color: item.status === "matched" ? COLORS.green2 : "#7A6210" }}>
+                      {item.status === "matched" ? (lang === "ur" ? "مطابق" : "matched") : item.status === "mismatch" ? (lang === "ur" ? "فرق" : "mismatch") : (lang === "ur" ? "تصدیق" : "verify")}
+                    </span>
+                  </div>
+                  <div className="text-xs mt-2 grid grid-cols-1 sm:grid-cols-3 gap-1">
+                    <span>Return: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK", { maximumFractionDigits: 2 }).format(item.returnValue || 0)}</b></span>
+                    <span>Evidence: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK", { maximumFractionDigits: 2 }).format(item.evidenceValue || 0)}</b></span>
+                    <span>Difference: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK", { maximumFractionDigits: 2 }).format(item.difference || 0)}</b></span>
+                  </div>
+                  <div className="text-xs mt-1 opacity-65">{item.detail} · {item.evidenceRef}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {result.calculations?.ty2026Rules?.length > 0 && (
           <div className="rounded-xl border p-4 mb-4" style={{ borderColor: COLORS.gold, background: "#FFF9E8" }}>
             <div className="font-bold text-sm mb-2" style={{ color: "#7A6210" }}>{lang === "ur" ? "TY2026 قواعد پر مبنی جانچ" : "TY2026 rule-based checks"}</div>
