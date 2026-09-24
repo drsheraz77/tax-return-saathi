@@ -119,7 +119,7 @@ const EXTRACTION_SCHEMA = {
           type: "array",
           items: {
             type: "object",
-            properties: { label: { type: "string" }, amount: { type: "number" }, liabilityType: { type: "string", enum: ["loan", "payable", "credit", "other"] }, priorYearAmount: { type: "number" }, evidenceRef: { type: "string" } },
+            properties: { label: { type: "string" }, amount: { type: "number" }, liabilityType: { type: "string", enum: ["loan", "payable", "credit", "other"] }, priorYearAmount: { type: "number" }, lender: { type: "string" }, reference: { type: "string" }, evidenceRef: { type: "string" } },
             required: ["label", "amount", "liabilityType", "evidenceRef"],
             additionalProperties: false,
           },
@@ -292,7 +292,7 @@ export async function returnReviewPipeline(req: Request, res: Response) {
         ...extracted.facts.assetStatements.map((x) => ({ label: x.label, assetType: x.assetType, declaredValue: x.declaredValue })),
       ],
     ));
-    const liabilityBankTrace = summarizeLiabilityBankMovements(traceLiabilityBankMovements(\n      extracted.facts.bankTransactions,\n      extracted.facts.liabilities.map((x) => ({ label: x.label, amount: x.amount })),\n    ));\n    const liabilityContinuity = summarizeLiabilityContinuity(compareYearToYearLiabilities(\n      extracted.facts.liabilities.filter((x) => x.priorYearAmount !== undefined).map((x) => ({ label: x.label, amount: x.priorYearAmount ?? 0 })),\n      extracted.facts.liabilities.map((x) => ({ label: x.label, amount: x.amount, evidenceRef: x.evidenceRef })),\n    ));\n    const assetLiabilities = summarizeAssetLiabilities(reconcileAssetLiabilities(
+    const liabilityBankTrace = summarizeLiabilityBankMovements(traceLiabilityBankMovements(\n      extracted.facts.bankTransactions,\n      extracted.facts.liabilities.map((x) => ({ label: x.label, amount: x.amount, lender: x.lender, reference: x.reference })),\n    ));\n    const liabilityContinuity = summarizeLiabilityContinuity(compareYearToYearLiabilities(\n      extracted.facts.liabilities.filter((x) => x.priorYearAmount !== undefined).map((x) => ({ label: x.label, amount: x.priorYearAmount ?? 0 })),\n      extracted.facts.liabilities.map((x) => ({ label: x.label, amount: x.amount, evidenceRef: x.evidenceRef })),\n    ));\n    const assetLiabilities = summarizeAssetLiabilities(reconcileAssetLiabilities(
       [
         ...extracted.facts.properties.map((x) => ({ label: x.label, value: x.acquisitionCost })),
         ...extracted.facts.assetStatements.map((x) => ({ label: x.label, value: x.declaredValue })),
