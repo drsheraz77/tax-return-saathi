@@ -20,7 +20,9 @@ function related(label: string, description: string, lender?: string, reference?
   const text = norm(description);
   const labelWords = norm(label).split(" ").filter(x => x.length >= 3 && !["loan", "payable", "credit", "premium", "vehicle"].includes(x));
   const labelMatches = labelWords.filter(x => text.includes(x));
-  const labelMatch = labelWords.length > 0 ? labelMatches.length >= Math.min(2, labelWords.length) : false;
+  const normalizedLabel = norm(label);
+  const exactLabelMatch = normalizedLabel.length >= 3 && text.includes(normalizedLabel);
+  const labelMatch = exactLabelMatch || (labelWords.length >= 2 && labelMatches.length >= 2);
   const lenderMatch = !!lender && norm(lender).length >= 3 && text.includes(norm(lender));
   const referenceMatch = !!reference && norm(reference).length >= 3 && text.includes(norm(reference));
   return referenceMatch || (lenderMatch && (labelMatch || /loan|repayment|installment|emi|قسط|قرض/i.test(description))) || labelMatch;
