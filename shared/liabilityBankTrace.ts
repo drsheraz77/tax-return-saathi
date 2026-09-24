@@ -21,16 +21,24 @@ function related(a: string, b: string) {
   const bb = norm(b).split(" ").filter(x => x.length >= 3);
   return aa.some(x => bb.includes(x));
 }
-function withinWindow(a: string, b: string) {
-  const x = Date.parse(a), y = Date.parse(b);
-  if (!Number.isFinite(x) || !Number.isFinite(y)) return false;
-  const days = (y - x) / 86_400_000;
-  return days >= 0 && days <= WINDOW_DAYS;
+function withinWindow(date: string, start?: string, end?: string) {
+  const x = Date.parse(date);
+  if (!Number.isFinite(x)) return false;
+  if (start) {
+    const s = Date.parse(start);
+    if (Number.isFinite(s) && x < s) return false;
+  }
+  if (end) {
+    const e = Date.parse(end);
+    if (Number.isFinite(e) && x > e) return false;
+  }
+  return true;
 }
 
 export function traceLiabilityBankMovements(
   rows: Array<ParsedTransaction & { accountRef?: string | null }>,
   liabilities: Array<{ label: string; amount: number }>,
+  period?: { startDate?: string; endDate?: string },
 ): LiabilityBankLink[] {
   const normalized = rows.map(r => ({ ...r, accountRef: String(r.accountRef || "unidentified account") }));
   const classified = classifyTransactions(normalized);
@@ -44,14 +52,16 @@ export function traceLiabilityBankMovements(
       !usedDrawdowns.has(e.rowNumber) &&
       e.direction === "credit" &&
       e.category === "loan" &&
-      related(liability.label, e.description),
+      related(liability.label, e.description) &&
+      withinWindow(e.date, period?.startDate, period?.endDate),
     ).sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount));
 
     const repayments = events.filter(e =>
       !usedRepayments.has(e.rowNumber) &&
       e.direction === "debit" &&
       (e.category === "loan" || /loan repayment|loan payment|installment|emi|قسط|قرض/i.test(e.description)) &&
-      related(liability.label, e.description),
+      related(liability.label, e.description) &&
+      withinWindow(e.date, period?.startDate, period?.endDate),
     ).sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount));
 
     let drawdown = 0;
