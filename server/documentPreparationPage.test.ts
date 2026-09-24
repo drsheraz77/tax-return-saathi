@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { buildWorksheetCsv } from "../client/src/DocumentPreparationPage.jsx";
+import { categoryTotals } from "../client/src/worksheetPdf.js";
 
 const app = fs.readFileSync(path.join(process.cwd(), "client/src/App.jsx"), "utf8");
 const main = fs.readFileSync(path.join(process.cwd(), "client/src/main.jsx"), "utf8");
@@ -38,8 +39,14 @@ describe("document-assisted return preparation page", () => {
     expect(page).toContain("Download CSV");
     expect(page).toContain("Download branded PDF");
     expect(page).toContain("Download bilingual summary");
+    expect(page).toContain("Include summary totals");
+    expect(page).toContain("Include category chart");
     expect(page).toContain("generateBilingualWorksheetPdf");
     expect(pdf).toContain("export async function generateBilingualWorksheetPdf");
+    expect(pdf).toContain("NotoNaskhArabic-Regular.ttf");
+    expect(pdf).toContain("NotoSansArabic-Bold.ttf");
+    expect(pdf).toContain("Optional summary totals");
+    expect(pdf).toContain("Category overview");
     expect(pdf).toContain("ٹیکس ریٹرن ساتھی");
     expect(page).not.toContain("FileSystemHandle");
   });
@@ -53,5 +60,13 @@ describe("document-assisted return preparation page", () => {
     expect(csv).toContain("\ufeff\"Section\",\"Description\"");
     expect(csv).toContain("\"Employer, A\"");
     expect(csv).toContain("\"Verify \"\"official\"\" field\"");
+  });
+
+  it("calculates category totals without applying tax rates or determinations", () => {
+    const totals = categoryTotals({ worksheet: { salary: [{ grossSalary: 1000 }], withholding: [{ amount: 100 }], otherIncome: [], deductions: [], investmentsAndAssets: [], propertyTransactions: [{ statedAmount: 8000 }], bankBalances: [] } });
+    expect(totals.salary).toBe(1000);
+    expect(totals.withholding).toBe(100);
+    expect(totals.propertyTransactions).toBe(8000);
+    expect(Object.keys(totals)).toHaveLength(7);
   });
 });

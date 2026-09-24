@@ -47,6 +47,8 @@ const COPY = {
     csv: "CSV ڈاؤن لوڈ کریں",
     pdf: "برانڈڈ PDF ڈاؤن لوڈ کریں",
     summary: "بائی لنگول خلاصہ ڈاؤن لوڈ کریں",
+    totals: "خلاصہ مجموعہ شامل کریں",
+    charts: "زمرہ وار چارٹ شامل کریں",
     draftRestored: "آپ کا مقامی ڈرافٹ بحال کر دیا گیا ہے۔",
   },
   en: {
@@ -85,6 +87,8 @@ const COPY = {
     csv: "Download CSV",
     pdf: "Download branded PDF",
     summary: "Download bilingual summary",
+    totals: "Include summary totals",
+    charts: "Include category chart",
     draftRestored: "Your local draft was restored.",
   },
 };
@@ -176,6 +180,8 @@ export default function DocumentPreparationPage() {
   const [draftEnabled, setDraftEnabled] = useState(false);
   const [draftSavedAt, setDraftSavedAt] = useState("");
   const [draftMessage, setDraftMessage] = useState("");
+  const [includeTotals, setIncludeTotals] = useState(true);
+  const [includeCharts, setIncludeCharts] = useState(true);
   const copy = COPY[lang];
 
   useEffect(() => {
@@ -235,7 +241,7 @@ export default function DocumentPreparationPage() {
   const exportCsv = () => downloadFile(buildWorksheetCsv(result), `tax-return-preparation-${result?.worksheet?.taxYear || "draft"}.csv`, "text/csv;charset=utf-8");
   const exportPdf = async () => {
     try {
-      const bytes = await generateBilingualWorksheetPdf(result);
+      const bytes = await generateBilingualWorksheetPdf(result, { includeTotals, includeCharts });
       downloadFile(bytes, `tax-return-saathi-worksheet-${result?.worksheet?.taxYear || "draft"}.pdf`, "application/pdf");
     } catch {
       setError(lang === "ur" ? "PDF تیار نہیں ہو سکی۔ CSV یا خلاصہ ڈاؤن لوڈ آزمائیں۔" : "The PDF could not be generated. Try the CSV or summary download.");
@@ -341,6 +347,10 @@ export default function DocumentPreparationPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm"><span>{copy.taxYear}: <b>{result.worksheet.taxYear || "—"}</b></span><span>{copy.returnType}: <b>{result.worksheet.returnType}</b></span></div>
             </div>
             <div className="document-preparation-chrome rounded-xl border p-3 mb-4" style={{ borderColor: "#DDD6C4", background: "#fff" }}>
+              <div className="flex flex-wrap gap-4 mb-3 text-sm">
+                <label className="inline-flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={includeTotals} onChange={(event) => setIncludeTotals(event.target.checked)} />{copy.totals}</label>
+                <label className="inline-flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={includeCharts} onChange={(event) => setIncludeCharts(event.target.checked)} />{copy.charts}</label>
+              </div>
               <div className="flex flex-wrap gap-2">
                 <button onClick={exportCsv} className="rounded-lg px-3 py-2 text-sm font-bold border" style={{ borderColor: COLORS.green, color: COLORS.green, background: "#fff" }}>{copy.csv}</button>
                 <button onClick={exportPdf} className="rounded-lg px-3 py-2 text-sm font-bold" style={{ background: COLORS.green, color: "#fff" }}>{copy.pdf}</button>
