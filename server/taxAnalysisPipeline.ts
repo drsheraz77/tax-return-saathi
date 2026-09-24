@@ -283,6 +283,9 @@ export async function returnReviewPipeline(req: Request, res: Response) {
     const blocks = Array.isArray(body.documents) ? body.documents as BrowserBlock[] : [];
     const language = body.language === "ur" ? "Urdu" : "English";
     if (blocks.length === 0 || blocks.length > 4) return res.status(400).json({ error: "Documents are required" });
+    if (blocks.some((block) => !isRecord(block) || !["text", "image", "document"].includes(String(block.type)))) {
+      return res.status(400).json({ error: "Unsupported document block" });
+    }
 
     const extraction = await invokeLLM({
       model: MODEL,
@@ -374,6 +377,9 @@ export async function taxChatPipeline(req: Request, res: Response) {
     const body = isRecord(req.body) ? req.body : {};
     const messages = Array.isArray(body.messages) ? body.messages as Message[] : [];
     if (messages.length === 0 || messages.length > 24) return res.status(400).json({ error: "Messages are required" });
+    if (messages.some((message) => !isRecord(message) || !["user", "assistant"].includes(String(message.role)))) {
+      return res.status(400).json({ error: "Unsupported message role" });
+    }
     const language = body.language === "ur" ? "Urdu" : "English";
     const completion = await invokeLLM({
       model: MODEL,
