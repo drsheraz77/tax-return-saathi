@@ -330,4 +330,4 @@
 - [x] Add selected-range metadata to PDF and text summary outputs.
 - [x] Add synthetic multi-year regression coverage and browser verification.
 - [x] Run full tests, typecheck, build, diff check, and desktop/mobile verification.
-- [ ] Save a reversible checkpoint for the date-range filter release.
+- [x] Save a reversible checkpoint for the date-range filter release.
