@@ -12,6 +12,7 @@ import { traceAssetFunding, summarizeAssetFundingTrace } from "../shared/assetFu
 import { reconcileAssetLiabilities, summarizeAssetLiabilities } from "../shared/assetLiabilityReconciliation";
 import { compareYearToYearLiabilities, summarizeLiabilityContinuity } from "../shared/liabilityContinuity";
 import { traceLiabilityBankMovements, summarizeLiabilityBankMovements } from "../shared/liabilityBankTrace";
+import { reconcileLiabilityBalances, summarizeLiabilityBalances } from "../shared/liabilityBalanceReconciliation";
 
 const MODEL = "gemini-3-flash-preview";
 const MAX_REVIEW_TOKENS = 4096;
@@ -298,7 +299,7 @@ export async function returnReviewPipeline(req: Request, res: Response) {
       ],
       extracted.facts.liabilities,
     ));
-    const ty2026Rules = evaluateTy2026Rules({ wealth, banks, funds, properties: extracted.facts.properties, assetContinuity, transactionAnalysis, fundsFlow, profile: extracted.facts.profile, assetLiabilities, liabilityContinuity, liabilityBankTrace });
+    const ty2026Rules = evaluateTy2026Rules({ wealth, banks, funds, properties: extracted.facts.properties, assetContinuity, transactionAnalysis, fundsFlow, profile: extracted.facts.profile, assetLiabilities, liabilityContinuity, liabilityBankTrace, liabilityBalance });
     const assetReconciliation = summarizeAssetReconciliation(reconcileAssets({
       investments: extracted.facts.assetStatements.filter((x) => x.assetType === "investment"),
       vehicles: extracted.facts.assetStatements.filter((x) => x.assetType === "vehicle"),
@@ -311,7 +312,7 @@ export async function returnReviewPipeline(req: Request, res: Response) {
       declaredAssetPurchases: extracted.facts.assetPurchases,
       declaredAssetSaleProceeds: extracted.facts.assetSaleProceeds,
     }));
-    const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, transactionAnalysis, fundsFlow, assetContinuity, ty2026Rules, fieldReconciliation, assetReconciliation, assetFundingTrace, assetLiabilities, liabilityContinuity, liabilityBankTrace, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
+    const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, transactionAnalysis, fundsFlow, assetContinuity, ty2026Rules, fieldReconciliation, assetReconciliation, assetFundingTrace, assetLiabilities, liabilityContinuity, liabilityBankTrace, liabilityBalance, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
 
     const reasoning = await invokeLLM({
       model: MODEL,
