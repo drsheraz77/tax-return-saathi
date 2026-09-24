@@ -55,6 +55,7 @@ export function summarizeTransactionClassification(analysis: TransactionAnalysis
     counts,
     internalTransferCandidates: analysis.internalTransferCandidates,
     duplicateTransfers: analysis.duplicateTransfers,
+    cashWithdrawalRows: classifications.filter((item) => item.category === "cash_withdrawal").map((item) => item.rowNumber),
     warnings: analysis.warnings,
   };
 }
