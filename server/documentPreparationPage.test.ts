@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
+import { buildWorksheetCsv } from "../client/src/DocumentPreparationPage.jsx";
 
 const app = fs.readFileSync(path.join(process.cwd(), "client/src/App.jsx"), "utf8");
 const main = fs.readFileSync(path.join(process.cwd(), "client/src/main.jsx"), "utf8");
@@ -28,5 +29,25 @@ describe("document-assisted return preparation page", () => {
     expect(page).toContain("This is not an official FBR/IRIS form");
     expect(page).toContain("remainingItems");
     expect(page).toContain("CNIC, NTN, IBAN");
+  });
+
+  it("offers opt-in local drafts and worksheet exports without document persistence", () => {
+    expect(page).toContain("localStorage");
+    expect(page).toContain("document-preparation-draft");
+    expect(page).toContain("Download CSV");
+    expect(page).toContain("Print / save as PDF");
+    expect(page).toContain("window.print()");
+    expect(page).not.toContain("FileSystemHandle");
+  });
+
+  it("creates an escaped CSV containing worksheet rows and remaining items", () => {
+    const csv = buildWorksheetCsv({
+      worksheet: { taxYear: "TY2026", salary: [{ employerLabel: "Employer, A", grossSalary: 1000, sourceRef: "document 1" }], withholding: [], otherIncome: [], deductions: [], investmentsAndAssets: [], propertyTransactions: [], bankBalances: [] },
+      remainingItems: ["Verify \"official\" field"],
+      observations: [],
+    });
+    expect(csv).toContain("\ufeff\"Section\",\"Description\"");
+    expect(csv).toContain("\"Employer, A\"");
+    expect(csv).toContain("\"Verify \"\"official\"\" field\"");
   });
 });

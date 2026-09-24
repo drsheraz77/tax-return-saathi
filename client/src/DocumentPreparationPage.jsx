@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const COLORS = {
   green: "#0B3D2E",
@@ -38,6 +38,14 @@ const COPY = {
     note: "یہ آفیشل FBR/IRIS فارم نہیں ہے۔ ہر رقم اصل ریکارڈ سے ملائیں اور سرکاری ریٹرن میں خود درج کریں۔ یہ ٹول حتمی ٹیکس، شرح، استثنا، filing treatment یا FBR نتیجہ طے نہیں کرتا۔",
     taxYear: "ٹیکس سال",
     returnType: "ریٹرن کی قسم",
+    saveDraft: "اس ورک شیٹ کو اسی براؤزر میں محفوظ کریں",
+    draftPrivacy: "صرف ورک شیٹ، باقی اشیا اور وقت اسی براؤزر میں محفوظ ہوگا؛ اصل فائلیں نہیں۔ مشترکہ براؤزر پر یہ ڈرافٹ دوسروں کو دکھائی دے سکتا ہے۔",
+    saved: "مقامی ورک شیٹ محفوظ ہے",
+    savedAt: "آخری محفوظ وقت",
+    clearDraft: "مقامی ڈرافٹ حذف کریں",
+    csv: "CSV ڈاؤن لوڈ کریں",
+    pdf: "PDF کے لیے پرنٹ کریں",
+    draftRestored: "آپ کا مقامی ڈرافٹ بحال کر دیا گیا ہے۔",
   },
   en: {
     title: "Prepare your return from documents",
@@ -67,6 +75,14 @@ const COPY = {
     note: "This is not an official FBR/IRIS form. Verify every amount against the original record and enter the official return yourself. This tool does not determine final tax, rates, exemptions, filing treatment, or an FBR outcome.",
     taxYear: "Tax year",
     returnType: "Return type",
+    saveDraft: "Save this worksheet in this browser",
+    draftPrivacy: "Only the worksheet, remaining items, and timestamp stay in this browser; original files are not saved. Anyone using this browser profile may see the draft.",
+    saved: "Local worksheet saved",
+    savedAt: "Last saved",
+    clearDraft: "Clear local draft",
+    csv: "Download CSV",
+    pdf: "Print / save as PDF",
+    draftRestored: "Your local draft was restored.",
   },
 };
 
@@ -79,6 +95,48 @@ const SECTIONS = [
   ["propertyTransactions", "property", "statedAmount"],
   ["bankBalances", "banks", "closingBalance"],
 ];
+
+const DRAFT_KEY = "tax-return-saathi.document-preparation-draft.v1";
+const DRAFT_PREFERENCE_KEY = "tax-return-saathi.document-preparation-draft-enabled.v1";
+
+export function buildWorksheetCsv(result) {
+  const rows = [["Section", "Description", "Amount", "Tax year", "Source", "Notes"]];
+  const labels = {
+    salary: "Salary",
+    withholding: "Withholding / tax deducted",
+    otherIncome: "Other income",
+    deductions: "Deductions",
+    investmentsAndAssets: "Investments and assets",
+    propertyTransactions: "Property transactions",
+    bankBalances: "Bank balances",
+  };
+  const amountKeys = { salary: "grossSalary", withholding: "amount", otherIncome: "amount", deductions: "amount", investmentsAndAssets: "statedValue", propertyTransactions: "statedAmount", bankBalances: "closingBalance" };
+  Object.keys(labels).forEach((section) => {
+    (result?.worksheet?.[section] || []).forEach((item) => rows.push([
+      labels[section],
+      item.employerLabel || item.category || item.description || item.accountLabel || "Entry",
+      item[amountKeys[section]] ?? "",
+      item.taxYear || result?.worksheet?.taxYear || "",
+      item.sourceRef || "",
+      item.supportStatus || item.transactionDate || "",
+    ]));
+  });
+  (result?.remainingItems || []).forEach((item) => rows.push(["Remaining item", item, "", result?.worksheet?.taxYear || "", "", ""]));
+  (result?.observations || []).forEach((item) => rows.push(["Observation", item, "", result?.worksheet?.taxYear || "", "", ""]));
+  return "\ufeff" + rows.map((row) => row.map((cell) => `"${String(cell ?? "").replace(/"/g, '""')}"`).join(",")).join("\r\n");
+}
+
+function downloadFile(content, filename, type) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
 
 function formatMoney(value, lang) {
   return new Intl.NumberFormat(lang === "ur" ? "ur-PK" : "en-PK", { maximumFractionDigits: 2 }).format(Number(value) || 0);
@@ -112,7 +170,73 @@ export default function DocumentPreparationPage() {
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
+  const [draftEnabled, setDraftEnabled] = useState(false);
+  const [draftSavedAt, setDraftSavedAt] = useState("");
+  const [draftMessage, setDraftMessage] = useState("");
   const copy = COPY[lang];
+
+  useEffect(() => {
+    try {
+      const enabled = window.localStorage.getItem(DRAFT_PREFERENCE_KEY) === "1";
+      setDraftEnabled(enabled);
+      if (enabled) {
+        const raw = window.localStorage.getItem(DRAFT_KEY);
+        if (raw) {
+          const draft = JSON.parse(raw);
+          if (draft?.result?.worksheet) {
+            setResult(draft.result);
+            setDraftSavedAt(draft.savedAt || "");
+            setDraftMessage(COPY.ur.draftRestored);
+          }
+        }
+      }
+    } catch {
+      // Local storage may be blocked; the feature remains optional and in-memory.
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!draftEnabled || !result?.worksheet) return;
+    const savedAt = new Date().toISOString();
+    try {
+      window.localStorage.setItem(DRAFT_KEY, JSON.stringify({ result, savedAt }));
+      setDraftSavedAt(savedAt);
+      setDraftMessage(copy.saved);
+    } catch {
+      setDraftMessage( lang === "ur" ? "مقامی محفوظ کاری دستیاب نہیں۔" : "Local saving is unavailable.");
+    }
+  }, [draftEnabled, result]);
+
+  const toggleDraft = (enabled) => {
+    setDraftEnabled(enabled);
+    setDraftMessage("");
+    try {
+      if (enabled) window.localStorage.setItem(DRAFT_PREFERENCE_KEY, "1");
+      else {
+        window.localStorage.removeItem(DRAFT_PREFERENCE_KEY);
+        window.localStorage.removeItem(DRAFT_KEY);
+        setDraftSavedAt("");
+      }
+    } catch {
+      // Keep the control reversible even when storage is unavailable.
+    }
+  };
+
+  const clearDraft = () => {
+    try { window.localStorage.removeItem(DRAFT_KEY); } catch { /* no-op */ }
+    setResult(null);
+    setDraftSavedAt("");
+    setDraftMessage("");
+  };
+
+  const exportCsv = () => downloadFile(buildWorksheetCsv(result), `tax-return-preparation-${result?.worksheet?.taxYear || "draft"}.csv`, "text/csv;charset=utf-8");
+  const exportPdf = () => {
+    document.body.classList.add("print-document-preparation");
+    window.setTimeout(() => {
+      window.print();
+      window.setTimeout(() => document.body.classList.remove("print-document-preparation"), 300);
+    }, 0);
+  };
 
   const onFiles = (event) => {
     setError("");
@@ -165,8 +289,8 @@ export default function DocumentPreparationPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: COLORS.paper, color: COLORS.ink }} dir={lang === "ur" ? "rtl" : "ltr"}>
-      <header className="max-w-3xl mx-auto px-4 pt-5">
+    <div className="min-h-screen document-preparation-page" style={{ background: COLORS.paper, color: COLORS.ink }} dir={lang === "ur" ? "rtl" : "ltr"}>
+      <header className="max-w-3xl mx-auto px-4 pt-5 document-preparation-chrome">
         <div className="flex items-center justify-between gap-3">
           <a href="/" className="text-sm font-semibold" style={{ color: COLORS.green }}>{copy.back}</a>
           <button onClick={() => setLang(lang === "ur" ? "en" : "ur")} className="rounded-full border px-3 py-1 text-sm font-semibold" style={{ borderColor: COLORS.green, color: COLORS.green, background: "#fff" }}>{lang === "ur" ? "English" : "اردو"}</button>
@@ -195,6 +319,11 @@ export default function DocumentPreparationPage() {
                 <input type="checkbox" checked={confirmed} onChange={(event) => setConfirmed(event.target.checked)} className="mt-1" />
                 <span>{copy.redaction}</span>
               </label>
+              <label className="flex items-start gap-2 text-sm mt-4 cursor-pointer">
+                <input type="checkbox" checked={draftEnabled} onChange={(event) => toggleDraft(event.target.checked)} className="mt-1" />
+                <span><b>{copy.saveDraft}</b><span className="block text-xs opacity-65 mt-1">{copy.draftPrivacy}</span></span>
+              </label>
+              {draftMessage && <p className="text-xs mt-2" role="status" style={{ color: COLORS.green }}>{draftMessage}</p>}
               {error && <p className="text-sm mt-3" role="alert" style={{ color: COLORS.red }}>{error}</p>}
               <button onClick={prepare} disabled={busy} className="rounded-lg px-5 py-3 text-sm font-bold mt-4 w-full disabled:opacity-50" style={{ background: COLORS.green, color: "#fff" }}>{busy ? copy.running : copy.run}</button>
             </div>
@@ -206,11 +335,19 @@ export default function DocumentPreparationPage() {
               <h2 className="text-xl font-bold mb-2">{copy.worksheet}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm"><span>{copy.taxYear}: <b>{result.worksheet.taxYear || "—"}</b></span><span>{copy.returnType}: <b>{result.worksheet.returnType}</b></span></div>
             </div>
+            <div className="document-preparation-chrome rounded-xl border p-3 mb-4" style={{ borderColor: "#DDD6C4", background: "#fff" }}>
+              <div className="flex flex-wrap gap-2">
+                <button onClick={exportCsv} className="rounded-lg px-3 py-2 text-sm font-bold border" style={{ borderColor: COLORS.green, color: COLORS.green, background: "#fff" }}>{copy.csv}</button>
+                <button onClick={exportPdf} className="rounded-lg px-3 py-2 text-sm font-bold" style={{ background: COLORS.green, color: "#fff" }}>{copy.pdf}</button>
+                <button onClick={clearDraft} className="rounded-lg px-3 py-2 text-sm font-bold border" style={{ borderColor: COLORS.red, color: COLORS.red, background: "#fff" }}>{copy.clearDraft}</button>
+              </div>
+              {draftEnabled && draftSavedAt && <p className="text-xs mt-2 opacity-70">{copy.savedAt}: {new Date(draftSavedAt).toLocaleString(lang === "ur" ? "ur-PK" : "en-PK")}</p>}
+            </div>
             {result.remainingItems?.length > 0 && <section className="rounded-xl border p-4 mb-4" style={{ borderColor: "#E3D7AE", background: "#FBF6E3" }}><h2 className="font-bold mb-2" style={{ color: "#7A6210" }}>{copy.remaining}</h2><ul className="text-sm space-y-1 list-disc ps-5">{result.remainingItems.map((item, index) => <li key={index}>{item}</li>)}</ul></section>}
             {SECTIONS.map(([key, label, amountKey]) => <Section key={key} title={copy[label]} rows={result.worksheet[key] || []} amountKey={amountKey} copy={copy} lang={lang} />)}
             {result.observations?.length > 0 && <section className="rounded-xl border p-4 mb-4" style={{ borderColor: "#DDD6C4", background: "#fff" }}><h2 className="font-bold mb-2" style={{ color: COLORS.green }}>{lang === "ur" ? "مشاہدات" : "Observations"}</h2><ul className="text-sm space-y-1 list-disc ps-5">{result.observations.map((item, index) => <li key={index}>{item}</li>)}</ul></section>}
             <p className="text-xs opacity-65 leading-relaxed mb-4">{copy.note}</p>
-            <button onClick={() => { setResult(null); setFiles([]); setConfirmed(false); }} className="rounded-lg px-5 py-3 text-sm font-bold" style={{ background: COLORS.green, color: "#fff" }}>{copy.startOver}</button>
+            <button onClick={() => { setResult(null); setFiles([]); setConfirmed(false); setDraftMessage(""); }} className="document-preparation-chrome rounded-lg px-5 py-3 text-sm font-bold" style={{ background: COLORS.green, color: "#fff" }}>{copy.startOver}</button>
           </>
         )}
       </main>

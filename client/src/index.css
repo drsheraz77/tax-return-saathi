@@ -175,3 +175,26 @@
     }
   }
 }
+
+
+@media print {
+  body.print-document-preparation {
+    background: #fff !important;
+  }
+
+  body.print-document-preparation .document-preparation-chrome {
+    display: none !important;
+  }
+
+  body.print-document-preparation .document-preparation-page,
+  body.print-document-preparation .document-preparation-page main {
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #fff !important;
+  }
+
+  body.print-document-preparation .document-preparation-page section {
+    break-inside: avoid;
+  }
+}
