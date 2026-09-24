@@ -55,7 +55,7 @@ const T = {
     langBtn: "اردو",
     disclaimer:
       "Education-only review — this AI cannot access or reproduce FBR checks, confirm figures, or predict notices. File your official return on IRIS (iris.fbr.gov.pk) and verify figures with a tax advisor.",
-    tabs: { check: "Analyze Your Tax Return", checklist: "Prepare my documents", guide: "Filing guide", mistakes: "Common errors", scenarios: "Examples", notice: "FBR notice guidance", shop: "For shopkeepers", calc: "Tax estimator", chat: "Ask a guide" },
+    tabs: { check: "Analyze Your Tax Return", checklist: "Prepare from documents", guide: "Filing guide", mistakes: "Common errors", scenarios: "Examples", notice: "FBR notice guidance", shop: "For shopkeepers", calc: "Tax estimator", chat: "Ask a guide" },
     noticeHeroTitle: "Got a letter or notice from FBR? Don't panic.",
     noticeHeroSub: "Upload a photo of it, or type what it says. We'll explain it in simple words — what it means, what you must do, and by when. Free, private, and in your language.",
     noticeHeroCalm: "A notice is not a punishment. Most are routine and can be sorted out by replying on time. We'll walk you through it.",
@@ -162,8 +162,8 @@ const T = {
       { h: "Security reminder", b: "Never share your IRIS password, CNIC PIN, or banking OTP with anyone — including anyone claiming to be from FBR or from this app. FBR will not ask for your password. This app will never ask for it either." },
     ],
     privacyContact: "Questions? This tool is provided as a free public service. For official matters, contact FBR directly at iris.fbr.gov.pk or 051-111-772-772.",
-    checkTitle: "Review your completed income tax return before filing",
-    checkSub: "Upload a redacted completed return and selected supporting pages. AI will highlight visible gaps or possible discrepancies for you to verify before you submit on IRIS.",
+    checkTitle: "Analyze your completed income tax return",
+    checkSub: "Upload your redacted filled return and, if needed, supporting salary, tax-statement, bank, or asset pages. AI compares visible return values with those documents and flags remaining items or possible discrepancies for you to verify before IRIS filing.",
     checkPrivacy: "This is an education-only review. It cannot access or reproduce FBR checks, confirm your figures, predict notices, submit a return, or make a binding tax decision. Your redacted file is sent through the app's server-side managed AI pathway for this analysis and is not persisted in this app's database. Do not upload passwords, OTPs, bank-account details, or an unmasked CNIC number.",
     redactionConfirm: "I confirm that I removed or masked passwords, OTPs, full CNIC numbers, and bank, account, card, or IBAN details before selecting files.",
     redactionHint: "This check is for your safety; it does not verify file contents. Upload only pages needed for this educational review.",
@@ -193,9 +193,9 @@ const T = {
     qFirst: "Is this your first time filing?",
     yes: "Yes",
     no: "No",
-    uploadLabel: "Upload a redacted completed return (PDF or photo, up to 3 files, max 4 MB each)",
-    uploadHint: "Completed return printout and, if needed, redacted salary/tax certificate or wealth-statement pages",
-    analyzeBtn: "Review my return",
+    uploadLabel: "Upload your redacted filled return and supporting documents (PDF/photo, up to 3 files, max 4 MB each)",
+    uploadHint: "Start with the filled return; add salary slips, tax statements, bank, wealth-statement, or asset pages to confirm values.",
+    analyzeBtn: "Analyze my filled return",
     analyzing: "Reviewing visible entries and possible gaps…",
     tooBig: "is too large (max 4 MB). Please compress or re-scan it.",
     badType: "isn't a PDF or image. Please upload PDF, JPG, or PNG.",
@@ -525,7 +525,7 @@ const T = {
     langBtn: "English",
     disclaimer:
       "یہ صرف تعلیمی جانچ ہے — یہ اے آئی ایف بی آر کی جانچ تک رسائی نہیں رکھتا، اسے نقل نہیں کر سکتا، اعداد کی تصدیق یا نوٹس کی پیش گوئی نہیں کر سکتا۔ سرکاری ریٹرن IRIS (iris.fbr.gov.pk) پر جمع کریں اور اعداد کی ٹیکس مشیر سے تصدیق کروائیں۔",
-    tabs: { check: "اپنا ٹیکس ریٹرن جانچیں · Analyze Your Tax Return", checklist: "دستاویزات تیار کریں", guide: "فائلنگ رہنمائی", mistakes: "عام غلطیاں", scenarios: "مثالیں", notice: "ایف بی آر نوٹس رہنمائی", shop: "دکانداروں کے لیے", calc: "ٹیکس اندازہ", chat: "رہنمائی پوچھیں" },
+    tabs: { check: "اپنا ٹیکس ریٹرن جانچیں · Analyze Your Tax Return", checklist: "دستاویزات سے تیاری", guide: "فائلنگ رہنمائی", mistakes: "عام غلطیاں", scenarios: "مثالیں", notice: "ایف بی آر نوٹس رہنمائی", shop: "دکانداروں کے لیے", calc: "ٹیکس اندازہ", chat: "رہنمائی پوچھیں" },
     noticeHeroTitle: "ایف بی آر سے خط یا نوٹس آیا ہے؟ گھبرائیں نہیں۔",
     noticeHeroSub: "اس کی تصویر اپ لوڈ کریں، یا جو لکھا ہے وہ ٹائپ کریں۔ ہم آسان الفاظ میں سمجھائیں گے — اس کا مطلب کیا ہے، آپ کو کیا کرنا ہے، اور کب تک۔ مفت، نجی، اور آپ کی زبان میں۔",
     noticeHeroCalm: "نوٹس کوئی سزا نہیں۔ زیادہ تر معمولی ہوتے ہیں اور وقت پر جواب دے کر حل ہو جاتے ہیں۔ ہم آپ کے ساتھ ہیں۔",
@@ -632,8 +632,8 @@ const T = {
       { h: "سیکیورٹی یاد دہانی", b: "اپنا IRIS پاس ورڈ، شناختی کارڈ پن، یا بینکنگ OTP کبھی کسی کے ساتھ شیئر نہ کریں — بشمول کوئی جو ایف بی آر یا اس ایپ سے ہونے کا دعویٰ کرے۔ ایف بی آر آپ سے پاس ورڈ نہیں مانگے گا۔ یہ ایپ بھی کبھی نہیں مانگے گی۔" },
     ],
     privacyContact: "سوالات؟ یہ آلہ ایک مفت عوامی خدمت کے طور پر فراہم کیا گیا ہے۔ سرکاری معاملات کے لیے ایف بی آر سے براہِ راست iris.fbr.gov.pk یا 051-111-772-772 پر رابطہ کریں۔",
-    checkTitle: "جمع کرانے سے پہلے اپنا مکمل انکم ٹیکس ریٹرن جانچیں",
-    checkSub: "اپنا چھپایا ہوا مکمل ریٹرن اور منتخب معاون صفحات اپ لوڈ کریں۔ اے آئی IRIS پر جمع کرانے سے پہلے نظر آنے والی کمی یا ممکنہ تضاد کی نشان دہی کرے گا تاکہ آپ اسے تصدیق کر سکیں۔",
+    checkTitle: "اپنا مکمل انکم ٹیکس ریٹرن اور معاون دستاویزات جانچیں",
+    checkSub: "اپنا چھپایا ہوا بھرا ہوا ریٹرن اپ لوڈ کریں۔ ضرورت ہو تو تنخواہ، ٹیکس اسٹیٹمنٹ، بینک، ویلتھ اسٹیٹمنٹ یا اثاثوں کے صفحات بھی شامل کریں تاکہ اے آئی ریٹرن کی نظر آنے والی رقوم کا دستاویزات سے موازنہ کرے اور باقی تصدیق/ممکنہ اختلاف دکھائے۔",
     checkPrivacy: "یہ صرف تعلیمی جانچ ہے۔ یہ ایف بی آر کی جانچ تک رسائی نہیں رکھتا، اسے نقل نہیں کر سکتا، آپ کے اعداد کی تصدیق، نوٹس کی پیش گوئی، ریٹرن جمع، یا حتمی ٹیکس فیصلہ نہیں کر سکتا۔ آپ کی چھپائی ہوئی فائل اسی تجزیے کے لیے ایپ کے سرور سائیڈ مینیجڈ اے آئی راستے سے گزرتی ہے اور ایپ کے ڈیٹابیس میں محفوظ نہیں کی جاتی۔ پاس ورڈ، OTP، بینک اکاؤنٹ کی تفصیلات، یا بغیر چھپایا ہوا شناختی کارڈ نمبر اپ لوڈ نہ کریں۔",
     redactionConfirm: "میں تصدیق کرتا/کرتی ہوں کہ فائل منتخب کرنے سے پہلے میں نے پاس ورڈ، OTP، مکمل شناختی کارڈ نمبر، اور بینک، اکاؤنٹ، کارڈ یا IBAN کی تفصیلات ہٹا یا چھپا دی ہیں۔",
     redactionHint: "یہ جانچ صرف آپ کی حفاظت کے لیے ہے؛ یہ فائل کا مواد نہیں جانچتی۔ صرف وہ صفحات اپ لوڈ کریں جو اس تعلیمی جانچ کے لیے درکار ہوں۔",
@@ -663,9 +663,9 @@ const T = {
     qFirst: "کیا آپ پہلی بار فائل کر رہے ہیں؟",
     yes: "جی ہاں",
     no: "نہیں",
-    uploadLabel: "اپنا چھپایا ہوا مکمل ریٹرن اپ لوڈ کریں (PDF یا تصویر، زیادہ سے زیادہ ۳ فائلیں، ہر ایک ۴ ایم بی تک)",
-    uploadHint: "مکمل ریٹرن پرنٹ اور، ضرورت ہو تو، چھپائے ہوئے تنخواہ/ٹیکس سرٹیفکیٹ یا ویلتھ اسٹیٹمنٹ کے صفحات",
-    analyzeBtn: "میرا ریٹرن جانچیں",
+    uploadLabel: "اپنا چھپایا ہوا بھرا ہوا ریٹرن اور معاون دستاویزات اپ لوڈ کریں (PDF/تصویر، زیادہ سے زیادہ ۳ فائلیں، ہر ایک ۴ ایم بی تک)",
+    uploadHint: "پہلے بھرا ہوا ریٹرن دیں؛ پھر ضرورت کے مطابق تنخواہ، ٹیکس اسٹیٹمنٹ، بینک، ویلتھ اسٹیٹمنٹ یا اثاثوں کے صفحات شامل کریں۔",
+    analyzeBtn: "میرا بھرا ہوا ریٹرن جانچیں",
     analyzing: "نظر آنے والے اندراجات اور ممکنہ کمی کا جائزہ لیا جا رہا ہے…",
     tooBig: "بہت بڑی ہے (زیادہ سے زیادہ ۴ ایم بی)۔ کمپریس کر کے دوبارہ کوشش کریں۔",
     badType: "PDF یا تصویر نہیں ہے۔ PDF، JPG یا PNG اپ لوڈ کریں۔",
@@ -2908,10 +2908,18 @@ function DocChecklist({ lang, t }) {
       <div>
         <h2 className="text-2xl font-bold mb-2" style={{ color: COLORS.green }}>{t.checklistTitle}</h2>
         <p className="text-sm mb-5 opacity-80 leading-relaxed">{t.checklistSub}</p>
-        <a href="/prepare-tax-return" className="block rounded-xl border p-4 mb-5" style={{ borderColor: COLORS.gold, background: "#FBF6E3", color: COLORS.green, textDecoration: "none" }}>
-          <div className="font-bold text-sm">{lang === "ur" ? "دستاویزات اپ لوڈ کر کے تیاری ورک شیٹ بنائیں" : "Upload documents to build a preparation worksheet"}</div>
-          <div className="text-xs mt-1 opacity-75">{lang === "ur" ? "تنخواہ، ٹیکس سرٹیفکیٹ اور دوسری دستاویزات سے ماخذ کے ساتھ قابلِ تصدیق اندراجات اور باقی اشیا دیکھیں۔" : "Use salary, tax certificates, and other documents to create source-linked entries and see what remains."}</div>
-        </a>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+          <a href="/prepare-tax-return" className="block rounded-xl border p-4" style={{ borderColor: COLORS.gold, background: "#FBF6E3", color: COLORS.green, textDecoration: "none" }}>
+            <div className="text-[11px] font-bold uppercase tracking-wide" style={{ color: "#7A6210" }}>{lang === "ur" ? "راستہ ۱ · نئی تیاری" : "PATH 1 · START FROM DOCUMENTS"}</div>
+            <div className="font-bold text-sm mt-1">{lang === "ur" ? "تنخواہ اور دوسری دستاویزات سے ورک شیٹ بنائیں" : "Upload documents to build a return worksheet"}</div>
+            <div className="text-xs mt-1 opacity-75">{lang === "ur" ? "AI دستاویزات سے قابلِ تصدیق اندراجات اور باقی اشیا بنائے گا؛ یہ آفیشل FBR فارم یا filing نہیں۔" : "AI creates reviewable return-section entries and remaining-item feedback; it is not an official FBR form or filing."}</div>
+          </a>
+          <a href="/analyze-tax-return" className="block rounded-xl border p-4" style={{ borderColor: COLORS.green, background: "#F0F5F1", color: COLORS.green, textDecoration: "none" }}>
+            <div className="text-[11px] font-bold uppercase tracking-wide" style={{ color: COLORS.green2 }}>{lang === "ur" ? "راستہ ۲ · بھرا ہوا ریٹرن" : "PATH 2 · CHECK A FILLED RETURN"}</div>
+            <div className="font-bold text-sm mt-1">{lang === "ur" ? "اپنا بھرا ہوا ریٹرن اور معاون صفحات جانچیں" : "Analyze a filled return and confirm its values"}</div>
+            <div className="text-xs mt-1 opacity-75">{lang === "ur" ? "اپنا ریٹرن بنیادی فائل رکھیں؛ تنخواہ، ٹیکس، بینک یا اثاثوں کی دستاویزات سے رقوم کا موازنہ کریں۔" : "Upload the filled return first, then add salary, tax, bank, or asset documents to compare visible values."}</div>
+          </a>
+        </div>
 
       {/* step dots */}
       <div className="flex gap-1.5 mb-5">
@@ -3074,7 +3082,7 @@ function Privacy({ lang, t, onBack }) {
 
 // ── App ──────────────────────────────────────────────────────
 export default function TaxReturnSaathi({ initialTab = "check", dedicatedAnalysis = false }) {
-  const [lang, setLang] = useState("ur");
+  const [lang, setLang] = useState("en");
   const [tab, setTab] = useState(initialTab);
   const [showPrivacy, setShowPrivacy] = useState(false);
   const t = T[lang];
@@ -3189,9 +3197,9 @@ export default function TaxReturnSaathi({ initialTab = "check", dedicatedAnalysi
       ) : (
       <main className="max-w-3xl mx-auto px-4 py-6">
         {dedicatedAnalysis && <section className="rounded-2xl border p-5 mb-5" style={{ borderColor: COLORS.gold, background: "#FBF6E3" }}>
-          <p className="text-xs font-bold mb-1" style={{ color: "#7A6210" }}>{lang === "ur" ? "خصوصی فیچر · آزمائشی تیاری" : "Special feature · Pilot preparation"}</p>
-          <h2 className="text-2xl font-bold mb-1" style={{ color: COLORS.green }}>{lang === "ur" ? "اپنا ٹیکس ریٹرن جانچیں" : "Analyze Your Tax Return"}</h2>
-          <p className="text-sm leading-relaxed" style={{ color: COLORS.ink }}>{lang === "ur" ? "اپنا چھپایا ہوا مکمل ریٹرن اپ لوڈ کر کے IRIS پر جمع کرانے سے پہلے نظر آنے والی کمی اور ممکنہ تضاد کی جانچ کریں۔" : "Upload your redacted complete return to review visible gaps and possible inconsistencies before submitting in IRIS."}</p>
+          <p className="text-xs font-bold mb-1" style={{ color: "#7A6210" }}>{lang === "ur" ? "خصوصی فیچر · بھرا ہوا ریٹرن" : "Special feature · Filled-return analysis"}</p>
+          <h2 className="text-2xl font-bold mb-1" style={{ color: COLORS.green }}>{lang === "ur" ? "اپنا بھرا ہوا ٹیکس ریٹرن جانچیں" : "Analyze Your Filled Tax Return"}</h2>
+          <p className="text-sm leading-relaxed" style={{ color: COLORS.ink }}>{lang === "ur" ? "اپنا چھپایا ہوا بھرا ہوا ریٹرن بنیادی فائل کے طور پر اپ لوڈ کریں۔ اضافی تنخواہ، ٹیکس اسٹیٹمنٹ، بینک یا اثاثوں کی دستاویزات شامل کر کے ریٹرن کی رقوم کا موازنہ اور باقی تصدیق دیکھیں۔" : "Upload your redacted filled return as the primary file. Add salary, tax-statement, bank, or asset documents to compare visible return values and see remaining checks."}</p>
           <p className="text-xs mt-2" style={{ color: "#6B5A17" }}>{lang === "ur" ? "یہ آزاد تعلیمی جانچ ہے، ایف بی آر کی جانچ، حتمی ٹیکس فیصلہ یا فائلنگ نہیں۔" : "This is independent educational screening, not an FBR check, final tax decision, or filing service."}</p>
         </section>}
         {tab === "notice" && <NoticeExplainer t={t} lang={lang} />}

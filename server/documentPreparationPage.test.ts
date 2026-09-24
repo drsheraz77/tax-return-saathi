@@ -21,12 +21,15 @@ describe("document-assisted return preparation page", () => {
 
   it("links the existing checklist to the new preparation workflow", () => {
     expect(app).toContain('href="/prepare-tax-return"');
-    expect(app).toContain("Upload documents to build a preparation worksheet");
+    expect(app).toContain("Upload documents to build a return worksheet");
+    expect(app).toContain("Analyze a filled return and confirm its values");
   });
 
   it("renders a bilingual worksheet and explicit non-filing boundary", () => {
-    expect(page).toContain("دستاویزات سے ریٹرن کی تیاری");
-    expect(page).toContain("Prepare your return from documents");
+    expect(page).toContain("دستاویزات سے ریٹرن کی تیاری ورک شیٹ");
+    expect(page).toContain("Prepare a return worksheet from documents");
+    expect(page).toContain('const [lang, setLang] = useState("en")');
+    expect(page).toContain("It does not produce an official FBR form or file your return.");
     expect(page).toContain("/api/document-preparation");
     expect(page).toContain("This is not an official FBR/IRIS form");
     expect(page).toContain("remainingItems");

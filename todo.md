@@ -331,3 +331,13 @@
 - [x] Add synthetic multi-year regression coverage and browser verification.
 - [x] Run full tests, typecheck, build, diff check, and desktop/mobile verification.
 - [x] Save a reversible checkpoint for the date-range filter release.
+
+
+## Workflow clarity and English default — 2026-09-24
+- [x] Define the two distinct workflows: document-to-worksheet preparation and filled-return analysis with supporting-document confirmation.
+- [x] Make English the initial language on the main app and document-preparation route while retaining the Urdu switch.
+- [x] Clarify document-preparation output as a reviewable worksheet with remaining-item feedback, not an official FBR form or filing.
+- [x] Clarify filled-return analysis as the primary filled return plus optional salary, tax-statement, bank, or asset documents.
+- [x] Add distinct workflow cards and unmistakable navigation labels.
+- [x] Run focused/full tests, typecheck, production build, diff check, and desktop/mobile responsive verification.
+- [ ] Save a reversible checkpoint for this clarity release.

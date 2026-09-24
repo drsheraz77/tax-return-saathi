@@ -12,8 +12,8 @@ const COLORS = {
 
 const COPY = {
   ur: {
-    title: "دستاویزات سے ریٹرن کی تیاری",
-    subtitle: "تنخواہ، ٹیکس سرٹیفکیٹ، بینک، سرمایہ کاری یا دوسری دستاویزات اپ لوڈ کریں۔ AI ایک قابلِ تصدیق تیاری ورک شیٹ بنائے گا اور باقی دستاویزات/اشیا کی فہرست دے گا۔",
+    title: "دستاویزات سے ریٹرن کی تیاری ورک شیٹ",
+    subtitle: "تنخواہ، ٹیکس اسٹیٹمنٹ، بینک، سرمایہ کاری یا دوسری دستاویزات اپ لوڈ کریں۔ AI ایک قابلِ تصدیق ورک شیٹ بنائے گا، ریٹرن کے حصوں سے جوڑے گا، اور باقی تصدیق/اشیا کی فہرست دے گا۔ یہ آفیشل FBR فارم نہیں بناتا اور ریٹرن جمع نہیں کرتا۔",
     privacy: "صرف پہلے سے چھپائی ہوئی دستاویزات اپ لوڈ کریں۔ فائلیں اس درخواست کے دوران سرور کے managed AI راستے سے گزرتی ہیں؛ ایپ کے database میں محفوظ نہیں ہوتیں۔ CNIC، NTN، IBAN، اکاؤنٹ نمبر، پاس ورڈ، OTP یا کارڈ کی معلومات شامل نہ کریں۔",
     choose: "دستاویزات منتخب کریں",
     selected: "دستاویزات تیار",
@@ -58,8 +58,8 @@ const COPY = {
     draftRestored: "آپ کا مقامی ڈرافٹ بحال کر دیا گیا ہے۔",
   },
   en: {
-    title: "Prepare your return from documents",
-    subtitle: "Upload salary, tax certificates, bank, investment, property, or other preparation documents. AI creates a verifiable preparation worksheet and lists remaining evidence or items.",
+    title: "Prepare a return worksheet from documents",
+    subtitle: "Upload salary slips, tax statements, bank, investment, property, or other documents. AI creates a reviewable worksheet mapped to return sections and lists remaining evidence or items. It does not produce an official FBR form or file your return.",
     privacy: "Upload redacted documents only. Files pass through the server-managed AI pathway for this request and are not saved in the app database. Do not include CNIC, NTN, IBAN, account numbers, passwords, OTPs, or card details.",
     choose: "Choose documents",
     selected: "documents ready",
@@ -183,7 +183,7 @@ function Section({ title, rows, amountKey, copy, lang }) {
 }
 
 export default function DocumentPreparationPage() {
-  const [lang, setLang] = useState("ur");
+  const [lang, setLang] = useState("en");
   const [files, setFiles] = useState([]);
   const [confirmed, setConfirmed] = useState(false);
   const [busy, setBusy] = useState(false);

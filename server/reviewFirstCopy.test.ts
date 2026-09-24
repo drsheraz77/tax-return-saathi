@@ -5,8 +5,8 @@ import { describe, expect, it } from "vitest";
 const appSource = readFileSync(resolve(process.cwd(), "client/src/App.jsx"), "utf8");
 
 describe("review-first application copy", () => {
-  it("opens in Urdu while retaining the existing English language switch", () => {
-    expect(appSource).toContain('const [lang, setLang] = useState("ur")');
+  it("opens in English while retaining the Urdu language switch", () => {
+    expect(appSource).toContain('const [lang, setLang] = useState("en")');
     expect(appSource).toContain('onClick={() => setLang(lang === "en" ? "ur" : "en")}');
   });
 
@@ -18,7 +18,8 @@ describe("review-first application copy", () => {
   });
 
   it("keeps the English review limited to visible educational guidance", () => {
-    expect(appSource).toContain("Review your completed income tax return before filing");
+    expect(appSource).toContain("Analyze your completed income tax return");
+    expect(appSource).toContain("supporting salary, tax-statement, bank, or asset pages");
     expect(appSource).toContain("cannot access or reproduce FBR checks, confirm your figures, predict notices, submit a return, or make a binding tax decision");
     expect(appSource).toContain("Do not upload passwords, OTPs, bank-account details, or an unmasked CNIC number.");
     expect(appSource).toContain("I confirm that I removed or masked passwords, OTPs, full CNIC numbers, and bank, account, card, or IBAN details before selecting files.");
@@ -27,8 +28,8 @@ describe("review-first application copy", () => {
   });
 
   it("keeps the equivalent Urdu review boundary and redaction prompt", () => {
-    expect(appSource).toContain("جمع کرانے سے پہلے اپنا مکمل انکم ٹیکس ریٹرن جانچیں");
-    expect(appSource).toContain("اپنا چھپایا ہوا مکمل ریٹرن اپ لوڈ کریں");
+    expect(appSource).toContain("اپنا مکمل انکم ٹیکس ریٹرن اور معاون دستاویزات جانچیں");
+    expect(appSource).toContain("اپنا چھپایا ہوا بھرا ہوا ریٹرن اپ لوڈ کریں");
     expect(appSource).toContain("یہ ایف بی آر کی جانچ تک رسائی نہیں رکھتا، اسے نقل نہیں کر سکتا");
     expect(appSource).toContain("میں تصدیق کرتا/کرتی ہوں کہ فائل منتخب کرنے سے پہلے میں نے پاس ورڈ، OTP، مکمل شناختی کارڈ نمبر");
     expect(appSource).toContain("یہ آزاد تیاری کی مدد ہے، ایف بی آر سروس نہیں");
