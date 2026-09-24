@@ -8,6 +8,7 @@ import { evaluateTy2026Rules } from "../shared/ty2026Rules";
 import { traceFundsAcrossAccounts } from "../shared/fundsFlow";
 import { reconcileDocumentToReturn, summarizeFieldReconciliation } from "../shared/fieldReconciliation";
 import { reconcileAssets, summarizeAssetReconciliation } from "../shared/assetReconciliation";
+import { traceAssetFunding, summarizeAssetFundingTrace } from "../shared/assetFundingTrace";
 
 const MODEL = "gemini-3-flash-preview";
 const MAX_REVIEW_TOKENS = 4096;
@@ -272,6 +273,13 @@ export async function returnReviewPipeline(req: Request, res: Response) {
     const currentAssets = extracted.facts.properties.map((asset) => ({ key: asset.label.toLocaleLowerCase().trim(), label: asset.label, priorYearValue: 0, currentYearValue: asset.acquisitionCost, currentYearStatus: "present" as const }));
     const assetContinuity = compareYearToYearAssets(extracted.facts.priorYearProperties, currentAssets);
     const ty2026Rules = evaluateTy2026Rules({ wealth, banks, funds, properties: extracted.facts.properties, assetContinuity, transactionAnalysis, fundsFlow, profile: extracted.facts.profile });
+    const assetFundingTrace = summarizeAssetFundingTrace(traceAssetFunding(
+      extracted.facts.bankTransactions,
+      [
+        ...extracted.facts.properties.map((x) => ({ label: x.label, assetType: "property" as const, declaredValue: x.acquisitionCost })),
+        ...extracted.facts.assetStatements.map((x) => ({ label: x.label, assetType: x.assetType, declaredValue: x.declaredValue })),
+      ],
+    ));
     const assetReconciliation = summarizeAssetReconciliation(reconcileAssets({
       investments: extracted.facts.assetStatements.filter((x) => x.assetType === "investment"),
       vehicles: extracted.facts.assetStatements.filter((x) => x.assetType === "vehicle"),
@@ -284,7 +292,7 @@ export async function returnReviewPipeline(req: Request, res: Response) {
       declaredAssetPurchases: extracted.facts.assetPurchases,
       declaredAssetSaleProceeds: extracted.facts.assetSaleProceeds,
     }));
-    const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, transactionAnalysis, fundsFlow, assetContinuity, ty2026Rules, fieldReconciliation, assetReconciliation, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
+    const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, transactionAnalysis, fundsFlow, assetContinuity, ty2026Rules, fieldReconciliation, assetReconciliation, assetFundingTrace, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
 
     const reasoning = await invokeLLM({
       model: MODEL,
