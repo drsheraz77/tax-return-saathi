@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { generateBilingualWorksheetPdf, worksheetSummaryText } from "./worksheetPdf.js";
 
 const COLORS = {
   green: "#0B3D2E",
@@ -44,7 +45,8 @@ const COPY = {
     savedAt: "آخری محفوظ وقت",
     clearDraft: "مقامی ڈرافٹ حذف کریں",
     csv: "CSV ڈاؤن لوڈ کریں",
-    pdf: "PDF کے لیے پرنٹ کریں",
+    pdf: "برانڈڈ PDF ڈاؤن لوڈ کریں",
+    summary: "بائی لنگول خلاصہ ڈاؤن لوڈ کریں",
     draftRestored: "آپ کا مقامی ڈرافٹ بحال کر دیا گیا ہے۔",
   },
   en: {
@@ -81,7 +83,8 @@ const COPY = {
     savedAt: "Last saved",
     clearDraft: "Clear local draft",
     csv: "Download CSV",
-    pdf: "Print / save as PDF",
+    pdf: "Download branded PDF",
+    summary: "Download bilingual summary",
     draftRestored: "Your local draft was restored.",
   },
 };
@@ -230,13 +233,15 @@ export default function DocumentPreparationPage() {
   };
 
   const exportCsv = () => downloadFile(buildWorksheetCsv(result), `tax-return-preparation-${result?.worksheet?.taxYear || "draft"}.csv`, "text/csv;charset=utf-8");
-  const exportPdf = () => {
-    document.body.classList.add("print-document-preparation");
-    window.setTimeout(() => {
-      window.print();
-      window.setTimeout(() => document.body.classList.remove("print-document-preparation"), 300);
-    }, 0);
+  const exportPdf = async () => {
+    try {
+      const bytes = await generateBilingualWorksheetPdf(result);
+      downloadFile(bytes, `tax-return-saathi-worksheet-${result?.worksheet?.taxYear || "draft"}.pdf`, "application/pdf");
+    } catch {
+      setError(lang === "ur" ? "PDF تیار نہیں ہو سکی۔ CSV یا خلاصہ ڈاؤن لوڈ آزمائیں۔" : "The PDF could not be generated. Try the CSV or summary download.");
+    }
   };
+  const exportSummary = () => downloadFile(worksheetSummaryText(result), `tax-return-saathi-summary-${result?.worksheet?.taxYear || "draft"}.txt`, "text/plain;charset=utf-8");
 
   const onFiles = (event) => {
     setError("");
@@ -339,6 +344,7 @@ export default function DocumentPreparationPage() {
               <div className="flex flex-wrap gap-2">
                 <button onClick={exportCsv} className="rounded-lg px-3 py-2 text-sm font-bold border" style={{ borderColor: COLORS.green, color: COLORS.green, background: "#fff" }}>{copy.csv}</button>
                 <button onClick={exportPdf} className="rounded-lg px-3 py-2 text-sm font-bold" style={{ background: COLORS.green, color: "#fff" }}>{copy.pdf}</button>
+                <button onClick={exportSummary} className="rounded-lg px-3 py-2 text-sm font-bold border" style={{ borderColor: COLORS.gold, color: "#7A6210", background: "#FBF6E3" }}>{copy.summary}</button>
                 <button onClick={clearDraft} className="rounded-lg px-3 py-2 text-sm font-bold border" style={{ borderColor: COLORS.red, color: COLORS.red, background: "#fff" }}>{copy.clearDraft}</button>
               </div>
               {draftEnabled && draftSavedAt && <p className="text-xs mt-2 opacity-70">{copy.savedAt}: {new Date(draftSavedAt).toLocaleString(lang === "ur" ? "ur-PK" : "en-PK")}</p>}

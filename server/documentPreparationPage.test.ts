@@ -6,6 +6,7 @@ import { buildWorksheetCsv } from "../client/src/DocumentPreparationPage.jsx";
 const app = fs.readFileSync(path.join(process.cwd(), "client/src/App.jsx"), "utf8");
 const main = fs.readFileSync(path.join(process.cwd(), "client/src/main.jsx"), "utf8");
 const page = fs.readFileSync(path.join(process.cwd(), "client/src/DocumentPreparationPage.jsx"), "utf8");
+const pdf = fs.readFileSync(path.join(process.cwd(), "client/src/worksheetPdf.js"), "utf8");
 const index = fs.readFileSync(path.join(process.cwd(), "server/_core/index.ts"), "utf8");
 
 describe("document-assisted return preparation page", () => {
@@ -35,8 +36,11 @@ describe("document-assisted return preparation page", () => {
     expect(page).toContain("localStorage");
     expect(page).toContain("document-preparation-draft");
     expect(page).toContain("Download CSV");
-    expect(page).toContain("Print / save as PDF");
-    expect(page).toContain("window.print()");
+    expect(page).toContain("Download branded PDF");
+    expect(page).toContain("Download bilingual summary");
+    expect(page).toContain("generateBilingualWorksheetPdf");
+    expect(pdf).toContain("export async function generateBilingualWorksheetPdf");
+    expect(pdf).toContain("ٹیکس ریٹرن ساتھی");
     expect(page).not.toContain("FileSystemHandle");
   });
 
