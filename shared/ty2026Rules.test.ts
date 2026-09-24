@@ -88,6 +88,26 @@ describe("evaluateTy2026Rules", () => {
     expect(findings.map((x) => x.ruleId)).toContain("C8");
   });
 
+  it("fires E38 for a liability balance mismatch", () => {
+    const findings = evaluateTy2026Rules({
+      ...base,
+      liabilityBalance: {
+        results: [{
+          label: "J5 Premium loan",
+          priorYearAmount: 2000000,
+          drawdownAmount: 6500000,
+          repaymentAmount: 500000,
+          expectedClosingAmount: 8000000,
+          currentYearAmount: 9000000,
+          difference: 1000000,
+          status: "mismatch",
+          detail: "Mismatch.",
+        }],
+      },
+    });
+    expect(findings.map((x) => x.ruleId)).toContain("E38");
+  });
+
   it("does not flag profile rules when evidence is absent", () => {
     expect(evaluateTy2026Rules(base)).toEqual([]);
   });
