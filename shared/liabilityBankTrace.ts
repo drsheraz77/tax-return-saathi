@@ -18,11 +18,12 @@ const WINDOW_DAYS = 60;
 function norm(s: string) { return s.toLocaleLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
 function related(label: string, description: string, lender?: string, reference?: string) {
   const text = norm(description);
-  const labelWords = norm(label).split(" ").filter(x => x.length >= 3);
-  const labelMatch = labelWords.some(x => text.includes(x));
+  const labelWords = norm(label).split(" ").filter(x => x.length >= 3 && !["loan", "payable", "credit", "premium", "vehicle"].includes(x));
+  const labelMatches = labelWords.filter(x => text.includes(x));
+  const labelMatch = labelWords.length > 0 ? labelMatches.length >= Math.min(2, labelWords.length) : false;
   const lenderMatch = !!lender && norm(lender).length >= 3 && text.includes(norm(lender));
   const referenceMatch = !!reference && norm(reference).length >= 3 && text.includes(norm(reference));
-  return referenceMatch || lenderMatch || labelMatch;
+  return referenceMatch || (lenderMatch && (labelMatch || /loan|repayment|installment|emi|قسط|قرض/i.test(description))) || labelMatch;
 }
 function withinWindow(date: string, start?: string, end?: string) {
   const x = Date.parse(date);
