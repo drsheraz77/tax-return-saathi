@@ -46,7 +46,7 @@ type Inputs = {
     internalTransferCandidates?: Array<unknown>;
     cashWithdrawalRows?: number[];
   };
-  assetLiabilities?: { results?: Array<{ assetLabel: string; assetValue: number; matchedLiabilityAmount: number; unmatchedAssetAmount: number; status: string; detail: string }> };\n  fundsFlow?: {
+  assetLiabilities?: { results?: Array<{ assetLabel: string; assetValue: number; matchedLiabilityAmount: number; unmatchedAssetAmount: number; status: string; detail: string }> };\n  liabilityContinuity?: { results?: Array<{ label: string; priorYearAmount: number; currentYearAmount: number; status: string; difference: number; detail: string }> };\n  fundsFlow?: {
     status?: "traceable" | "partial" | "needs_review";
     totals?: { sourceCredits?: number; tracedToApplications?: number; unexplainedSourceCredits?: number };
     crossAccountTransfers?: Array<unknown>;
@@ -262,6 +262,20 @@ export function evaluateTy2026Rules(input: Inputs): Ty2026RuleFinding[] {
         detail: `${money(item.assetValue)} asset value has ${money(item.matchedLiabilityAmount)} matched to a related documented liability; ${money(item.unmatchedAssetAmount)} remains outside that liability match. ${item.detail}`,
         question: "Verify the acquisition/booking documents, actual liability at the reporting date, payments made, and the amount entered in the Wealth Statement. Do not create a liability solely because a future payment was expected.",
         severity: item.status === "partial" ? "medium" : "medium",
+        evidenceClass: "REQUIRES_VERIFICATION",
+        confidence: "medium",
+      });
+    }
+  }
+
+  for (const item of input.liabilityContinuity?.results ?? []) {
+    if (["new", "settled", "increased", "decreased"].includes(item.status)) {
+      findings.push({
+        ruleId: "E36",
+        title: `Year-to-year liability change requires verification: ${item.label}`,
+        detail: `Prior-year amount ${money(item.priorYearAmount)}; current-year amount ${money(item.currentYearAmount)}; calculated change ${money(item.difference)}. ${item.detail}`,
+        question: "Verify the prior/current liability statements, settlement or drawdown evidence, reporting date, and corresponding asset or funds movement.",
+        severity: "medium",
         evidenceClass: "REQUIRES_VERIFICATION",
         confidence: "medium",
       });
