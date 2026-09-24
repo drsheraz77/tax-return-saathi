@@ -2157,6 +2157,31 @@ function GapCheck({ lang, t, dedicated = false }) {
           </div>
         )}
 
+        {result.calculations?.liabilityContinuity?.total > 0 && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#D7DDE6", background: "#F7F9FC" }}>
+            <div className="font-bold text-sm mb-2">Liability continuity</div>
+            <div className="text-xs opacity-75 mb-3">Prior-year and current-year liabilities are compared conservatively. A missing prior/current record is a verification signal, not proof that a liability was created or settled.</div>
+            <div className="grid grid-cols-3 gap-2 text-xs mb-3">
+              <div className="rounded-lg border p-2"><div className="opacity-60">Liabilities</div><div className="font-bold">{result.calculations.liabilityContinuity.total}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">New / changed</div><div className="font-bold">{result.calculations.liabilityContinuity.new + result.calculations.liabilityContinuity.increased + result.calculations.liabilityContinuity.decreased}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">Settled</div><div className="font-bold">{result.calculations.liabilityContinuity.settled}</div></div>
+            </div>
+            <div className="space-y-2">
+              {result.calculations.liabilityContinuity.results.map((item, i) => (
+                <div key={i} className="rounded-lg border p-3 bg-white">
+                  <div className="flex items-center justify-between gap-2"><div className="font-semibold text-sm">{item.label}</div><span className="text-xs rounded-full px-2 py-0.5" style={{ background: item.status === "continued" ? "#DCEFE2" : "#FBF6E3" }}>{item.status}</span></div>
+                  <div className="text-xs mt-2 grid grid-cols-1 sm:grid-cols-3 gap-1">
+                    <span>Prior: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.priorYearAmount || 0)}</b></span>
+                    <span>Current: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.currentYearAmount || 0)}</b></span>
+                    <span>Change: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.difference || 0)}</b></span>
+                  </div>
+                  <div className="text-xs mt-1 opacity-65">{item.detail}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {result.calculations?.assetLiabilities?.totalAssets > 0 && (
           <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#D7DDE6", background: "#F7F9FC" }}>
             <div className="font-bold text-sm mb-2">Asset & liability consistency</div>
