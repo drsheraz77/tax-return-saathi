@@ -309,7 +309,24 @@ export async function returnReviewPipeline(req: Request, res: Response) {
         ...extracted.facts.assetStatements.map((x) => ({ label: x.label, assetType: x.assetType, declaredValue: x.declaredValue })),
       ],
     ));
-    const liabilityBankTrace = summarizeLiabilityBankMovements(traceLiabilityBankMovements(\n      extracted.facts.bankTransactions,\n      extracted.facts.liabilities.map((x) => ({ label: x.label, amount: x.amount, lender: x.lender, reference: x.reference })),\n    ));\n    const liabilityContinuity = summarizeLiabilityContinuity(compareYearToYearLiabilities(\n      extracted.facts.priorYearLiabilities.map((x) => ({ label: x.label, amount: x.amount })),\n      extracted.facts.liabilities.map((x) => ({ label: x.label, amount: x.amount, evidenceRef: x.evidenceRef })),\n    ));\n    const assetLiabilities = summarizeAssetLiabilities(reconcileAssetLiabilities(
+    const reportingPeriod = extracted.facts.taxYear === "TY2026"
+      ? { startDate: "2025-07-01", endDate: "2026-06-30" }
+      : undefined;
+    const liabilityBankTrace = summarizeLiabilityBankMovements(traceLiabilityBankMovements(
+      extracted.facts.bankTransactions,
+      extracted.facts.liabilities.map((x) => ({ label: x.label, amount: x.amount, lender: x.lender, reference: x.reference })),
+      reportingPeriod,
+    ));
+    const liabilityContinuity = summarizeLiabilityContinuity(compareYearToYearLiabilities(
+      extracted.facts.priorYearLiabilities.map((x) => ({ label: x.label, amount: x.amount })),
+      extracted.facts.liabilities.map((x) => ({ label: x.label, amount: x.amount, evidenceRef: x.evidenceRef })),
+    ));
+    const liabilityBalance = summarizeLiabilityBalances(reconcileLiabilityBalances(
+      extracted.facts.priorYearLiabilities.map((x) => ({ label: x.label, amount: x.amount })),
+      extracted.facts.liabilities.map((x) => ({ label: x.label, amount: x.amount })),
+      liabilityBankTrace.results,
+    ));
+    const assetLiabilities = summarizeAssetLiabilities(reconcileAssetLiabilities(
       [
         ...extracted.facts.properties.map((x) => ({ label: x.label, value: x.acquisitionCost })),
         ...extracted.facts.assetStatements.map((x) => ({ label: x.label, value: x.declaredValue })),
