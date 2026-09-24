@@ -116,6 +116,7 @@ export function traceFundsAcrossAccounts(rows: Array<ParsedTransaction & { accou
         }))
       : [{ account: source.accountRef, amount: sourceAmount, startDate: source.date }];
 
+    const routeRemaining = new Map<string, number>(destinations.map((destination) => [destination.account + "|" + destination.startDate, destination.amount]));
     const applications = destinations.flatMap((destination) =>
       events
         .filter((row) =>
@@ -125,13 +126,14 @@ export function traceFundsAcrossAccounts(rows: Array<ParsedTransaction & { accou
           APPLICATION_CATEGORIES.has(row.category) &&
           withinWindow(destination.startDate, row.date),
         )
-        .map((row) => ({ row, routeAvailable: destination.amount })),
+        .map((row) => ({ row, routeKey: destination.account + "|" + destination.startDate })),
     ).sort((a, b) => Math.abs(b.row.amount) - Math.abs(a.row.amount));
 
     for (const candidate of applications) {
       if (available <= MONEY_TOLERANCE) break;
       const application = candidate.row;
-      const applied = Math.min(available, Math.abs(application.amount), candidate.routeAvailable);
+      const routeAvailable = routeRemaining.get(candidate.routeKey) || 0;
+      const applied = Math.min(available, Math.abs(application.amount), routeAvailable);
       if (applied <= MONEY_TOLERANCE) continue;
       const status = applied + MONEY_TOLERANCE >= sourceAmount ? "traced" : "partial";
       links.push({
@@ -149,6 +151,7 @@ export function traceFundsAcrossAccounts(rows: Array<ParsedTransaction & { accou
           : "Source receipt and subsequent application were matched within the same account and date window.",
       });
       usedApplicationRows.add(application.rowNumber);
+      routeRemaining.set(candidate.routeKey, Math.max(0, routeAvailable - applied));
       available = Math.max(0, available - applied);
       tracedToApplications += applied;
     }
