@@ -46,7 +46,7 @@ type Inputs = {
     internalTransferCandidates?: Array<unknown>;
     cashWithdrawalRows?: number[];
   };
-  fundsFlow?: {
+  assetLiabilities?: { results?: Array<{ assetLabel: string; assetValue: number; matchedLiabilityAmount: number; unmatchedAssetAmount: number; status: string; detail: string }> };\n  fundsFlow?: {
     status?: "traceable" | "partial" | "needs_review";
     totals?: { sourceCredits?: number; tracedToApplications?: number; unexplainedSourceCredits?: number };
     crossAccountTransfers?: Array<unknown>;
@@ -253,6 +253,20 @@ export function evaluateTy2026Rules(input: Inputs): Ty2026RuleFinding[] {
     });
   }
 
+
+  for (const item of input.assetLiabilities?.results ?? []) {
+    if (item.status === "partial" || item.status === "requires_verification") {
+      findings.push({
+        ruleId: "E35",
+        title: `Asset/liability consistency requires verification: ${item.assetLabel}`,
+        detail: `${money(item.assetValue)} asset value has ${money(item.matchedLiabilityAmount)} matched to a related documented liability; ${money(item.unmatchedAssetAmount)} remains outside that liability match. ${item.detail}`,
+        question: "Verify the acquisition/booking documents, actual liability at the reporting date, payments made, and the amount entered in the Wealth Statement. Do not create a liability solely because a future payment was expected.",
+        severity: item.status === "partial" ? "medium" : "medium",
+        evidenceClass: "REQUIRES_VERIFICATION",
+        confidence: "medium",
+      });
+    }
+  }
 
   const fundsFlow = input.fundsFlow;
   const unexplainedSourceCredits = fundsFlow?.totals?.unexplainedSourceCredits ?? 0;
