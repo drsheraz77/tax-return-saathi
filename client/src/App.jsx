@@ -2157,6 +2157,40 @@ function GapCheck({ lang, t, dedicated = false }) {
           </div>
         )}
 
+        {result.calculations?.assetFundingTrace?.totalAssets > 0 && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#E3D7AE", background: "#FFF9E8" }}>
+            <div className="font-bold text-sm mb-2" style={{ color: "#7A6210" }}>{lang === "ur" ? "اثاثوں کے ذرائعِ فنڈز کی جانچ" : "Asset source-of-funds tracing"}</div>
+            <div className="text-xs opacity-75 mb-3">
+              {lang === "ur"
+                ? "ہر شناخت شدہ اثاثے کی ادائیگی کو دستیاب بینک رسیدوں سے محتاط طریقے سے ملایا گیا ہے۔"
+                : "Identified asset applications are conservatively matched to preceding documented bank receipts; an unmatched amount is a verification signal, not proof of an undisclosed source."}
+            </div>
+            <div className="grid grid-cols-3 gap-2 text-xs mb-3">
+              <div className="rounded-lg border p-2"><div className="opacity-60">{lang === "ur" ? "اثاثے" : "Assets"}</div><div className="font-bold">{result.calculations.assetFundingTrace.totalAssets}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">{lang === "ur" ? "مکمل ٹریس" : "Traced"}</div><div className="font-bold">{result.calculations.assetFundingTrace.traced}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">{lang === "ur" ? "جانچ ضروری" : "Needs review"}</div><div className="font-bold">{result.calculations.assetFundingTrace.needsReview + result.calculations.assetFundingTrace.partial}</div></div>
+            </div>
+            <div className="space-y-2">
+              {result.calculations.assetFundingTrace.results.map((item, i) => (
+                <div key={i} className="rounded-lg border p-3" style={{ background: "#fff", borderColor: item.status === "traced" ? "#B9C9BF" : "#E3D7AE" }}>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="font-semibold text-sm">{item.label}</div>
+                    <span className="text-xs rounded-full px-2 py-0.5" style={{ background: item.status === "traced" ? "#DCEFE2" : "#FBF6E3", color: item.status === "traced" ? COLORS.green2 : "#7A6210" }}>
+                      {item.status}
+                    </span>
+                  </div>
+                  <div className="text-xs mt-2 grid grid-cols-1 sm:grid-cols-3 gap-1">
+                    <span>Declared: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK", { maximumFractionDigits: 2 }).format(item.declaredValue || 0)}</b></span>
+                    <span>Traced: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK", { maximumFractionDigits: 2 }).format(item.tracedSourceAmount || 0)}</b></span>
+                    <span>Unexplained: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK", { maximumFractionDigits: 2 }).format(item.unexplainedAmount || 0)}</b></span>
+                  </div>
+                  <div className="text-xs mt-1 opacity-65">{item.reason}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {result.calculations?.ty2026Rules?.length > 0 && (
           <div className="rounded-xl border p-4 mb-4" style={{ borderColor: COLORS.gold, background: "#FFF9E8" }}>
             <div className="font-bold text-sm mb-2" style={{ color: "#7A6210" }}>{lang === "ur" ? "TY2026 قواعد پر مبنی جانچ" : "TY2026 rule-based checks"}</div>
