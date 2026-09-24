@@ -58,7 +58,6 @@ export function traceFundsAcrossAccounts(rows: Array<ParsedTransaction & { accou
   const transfers = events.filter((row) => isInternalTransfer(row, row.category));
   const crossAccountTransfers: CrossAccountFundsFlow["crossAccountTransfers"] = [];
   const usedTransferCredits = new Set<number>();
-  const usedTransferDebits = new Set<number>();
 
   for (const debit of transfers.filter((row) => row.direction === "debit")) {
     const credit = transfers.find((candidate) =>
@@ -69,7 +68,6 @@ export function traceFundsAcrossAccounts(rows: Array<ParsedTransaction & { accou
       withinWindow(debit.date, candidate.date),
     );
     if (credit) {
-      usedTransferDebits.add(debit.rowNumber);
       usedTransferCredits.add(credit.rowNumber);
       crossAccountTransfers.push({
         debitRow: debit.rowNumber,
@@ -88,6 +86,7 @@ export function traceFundsAcrossAccounts(rows: Array<ParsedTransaction & { accou
   );
 
   const links: FundsFlowLink[] = [];
+  const usedApplicationRows = new Set<number>();
   let tracedToApplications = 0;
 
   for (const source of sourceCredits) {
@@ -112,6 +111,7 @@ export function traceFundsAcrossAccounts(rows: Array<ParsedTransaction & { accou
     const applications = events
       .filter((row) =>
         row.direction === "debit" &&
+        !usedApplicationRows.has(row.rowNumber) &&
         row.accountRef === destinationAccount &&
         APPLICATION_CATEGORIES.has(row.category) &&
         withinWindow(sourceForApplicationDate, row.date),
@@ -137,6 +137,7 @@ export function traceFundsAcrossAccounts(rows: Array<ParsedTransaction & { accou
           ? "Source receipt was followed through a matched cross-account transfer to a subsequent application."
           : "Source receipt and subsequent application were matched within the same account and date window.",
       });
+      usedApplicationRows.add(application.rowNumber);
       available = Math.max(0, available - applied);
       tracedToApplications += applied;
     }
