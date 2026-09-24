@@ -124,6 +124,22 @@ const EXTRACTION_SCHEMA = {
             additionalProperties: false,
           },
         },
+        priorYearLiabilities: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              label: { type: "string" },
+              amount: { type: "number" },
+              liabilityType: { type: "string", enum: ["loan", "payable", "credit", "other"] },
+              lender: { type: "string" },
+              reference: { type: "string" },
+              evidenceRef: { type: "string" },
+            },
+            required: ["label", "amount", "liabilityType", "evidenceRef"],
+            additionalProperties: false,
+          },
+        },
         assetStatements: {
           type: "array",
           items: {
@@ -155,7 +171,7 @@ const EXTRACTION_SCHEMA = {
           },
         },
       },
-      required: ["taxYear", "openingWealth", "income", "capitalReceipts", "assetSaleProceeds", "loans", "gifts", "otherSources", "personalExpenditure", "taxPaid", "assetPurchases", "investments", "loanRepayment", "otherApplications", "declaredClosingWealth", "bankChecks", "bankTransactions", "priorYearProperties", "fundsTrace", "liabilities", "assetStatements", "properties"],
+      required: ["taxYear", "openingWealth", "income", "capitalReceipts", "assetSaleProceeds", "loans", "gifts", "otherSources", "personalExpenditure", "taxPaid", "assetPurchases", "investments", "loanRepayment", "otherApplications", "declaredClosingWealth", "bankChecks", "bankTransactions", "priorYearProperties", "fundsTrace", "liabilities", "priorYearLiabilities", "assetStatements", "properties"],
       additionalProperties: false,
     },
     observations: { type: "array", items: { type: "string" } },
@@ -292,7 +308,7 @@ export async function returnReviewPipeline(req: Request, res: Response) {
         ...extracted.facts.assetStatements.map((x) => ({ label: x.label, assetType: x.assetType, declaredValue: x.declaredValue })),
       ],
     ));
-    const liabilityBankTrace = summarizeLiabilityBankMovements(traceLiabilityBankMovements(\n      extracted.facts.bankTransactions,\n      extracted.facts.liabilities.map((x) => ({ label: x.label, amount: x.amount, lender: x.lender, reference: x.reference })),\n    ));\n    const liabilityContinuity = summarizeLiabilityContinuity(compareYearToYearLiabilities(\n      extracted.facts.liabilities.filter((x) => x.priorYearAmount !== undefined).map((x) => ({ label: x.label, amount: x.priorYearAmount ?? 0 })),\n      extracted.facts.liabilities.map((x) => ({ label: x.label, amount: x.amount, evidenceRef: x.evidenceRef })),\n    ));\n    const assetLiabilities = summarizeAssetLiabilities(reconcileAssetLiabilities(
+    const liabilityBankTrace = summarizeLiabilityBankMovements(traceLiabilityBankMovements(\n      extracted.facts.bankTransactions,\n      extracted.facts.liabilities.map((x) => ({ label: x.label, amount: x.amount, lender: x.lender, reference: x.reference })),\n    ));\n    const liabilityContinuity = summarizeLiabilityContinuity(compareYearToYearLiabilities(\n      extracted.facts.priorYearLiabilities.map((x) => ({ label: x.label, amount: x.amount })),\n      extracted.facts.liabilities.map((x) => ({ label: x.label, amount: x.amount, evidenceRef: x.evidenceRef })),\n    ));\n    const assetLiabilities = summarizeAssetLiabilities(reconcileAssetLiabilities(
       [
         ...extracted.facts.properties.map((x) => ({ label: x.label, value: x.acquisitionCost })),
         ...extracted.facts.assetStatements.map((x) => ({ label: x.label, value: x.declaredValue })),
