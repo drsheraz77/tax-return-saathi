@@ -38,6 +38,8 @@ async function startServer() {
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  app.disable("x-powered-by");
+  app.set("trust proxy", 1);
   registerStorageProxy(app);
   registerOAuthRoutes(app);
   // Retain the uploaded browser route while the server uses the managed AI proxy.
