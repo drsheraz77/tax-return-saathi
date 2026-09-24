@@ -30,8 +30,8 @@ function assetMatchScore(a: AssetContinuityItem, b: AssetContinuityItem) {
   if (left === right) return 0.95;
   if (left.includes(right) || right.includes(left)) return 0.85;
   const lt = new Set(left.split(" ")), rt = new Set(right.split(" "));
-  const intersection = [...lt].filter((token) => rt.has(token)).length;
-  const union = new Set([...lt, ...rt]).size;
+  const intersection = Array.from(lt).filter((token) => rt.has(token)).length;
+  const union = new Set(Array.from(lt).concat(Array.from(rt))).size;
   return union ? intersection / union : 0;
 }
 
@@ -41,7 +41,7 @@ export function compareYearToYearAssets(prior: AssetContinuityItem[], current: A
   const matchedCurrent = new Set<number>();
   for (let currentIndex = 0; currentIndex < current.length; currentIndex += 1) {
     const asset = current[currentIndex]; let bestIndex = -1; let bestScore = 0;
-    for (const priorIndex of unmatchedPrior) { const score = assetMatchScore(prior[priorIndex], asset); if (score > bestScore) { bestScore = score; bestIndex = priorIndex; } }
+    for (const priorIndex of Array.from(unmatchedPrior)) { const score = assetMatchScore(prior[priorIndex], asset); if (score > bestScore) { bestScore = score; bestIndex = priorIndex; } }
     if (bestIndex >= 0 && bestScore >= 0.85) {
       const previous = prior[bestIndex]; unmatchedPrior.delete(bestIndex); matchedCurrent.add(currentIndex);
       const priorValue = money(previous.priorYearValue), currentValue = money(asset.currentYearValue);
@@ -52,6 +52,6 @@ export function compareYearToYearAssets(prior: AssetContinuityItem[], current: A
     }
   }
   for (let currentIndex = 0; currentIndex < current.length; currentIndex += 1) if (!matchedCurrent.has(currentIndex)) { const asset = current[currentIndex]; findings.push({ key: asset.key, label: asset.label, status: "new_asset", detail: asset.label + " was not confidently matched to the supplied prior-year asset set. Verify acquisition date, cost, and funding source." }); }
-  for (const priorIndex of unmatchedPrior) { const asset = prior[priorIndex]; if (asset.priorYearStatus === "present") findings.push({ key: asset.key, label: asset.label, status: "requires_verification", detail: asset.label + " was present in the prior-year assets but was not confidently matched to a current-year asset. Verify whether it was sold, transferred, gifted, or omitted." }); }
+  for (const priorIndex of Array.from(unmatchedPrior)) { const asset = prior[priorIndex]; if (asset.priorYearStatus === "present") findings.push({ key: asset.key, label: asset.label, status: "requires_verification", detail: asset.label + " was present in the prior-year assets but was not confidently matched to a current-year asset. Verify whether it was sold, transferred, gifted, or omitted." }); }
   return findings;
 }

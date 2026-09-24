@@ -239,7 +239,8 @@ type ExtractedCase = {
     priorYearProperties: Array<{ key: string; label: string; priorYearValue: number; currentYearValue: number; priorYearStatus?: "present" | "sold" | "transferred" | "unknown"; currentYearStatus?: "present" | "sold" | "transferred" | "unknown" }>;
     fundsTrace: Record<string, number>;
     assetStatements: Array<{ assetType: "investment" | "vehicle" | "other"; label: string; statementValue: number; declaredValue: number; evidenceRef: string }>;
-    properties: Array<{ label: string; acquisitionCost: number; fbrValuation: number; saleProceeds: number; evidenceRef: string }>;\n    liabilities: Array<{ label: string; amount: number; liabilityType: "loan" | "payable" | "credit" | "other"; priorYearAmount?: number; lender?: string; reference?: string; evidenceRef: string }>;
+    properties: Array<{ label: string; acquisitionCost: number; fbrValuation: number; saleProceeds: number; evidenceRef: string }>;
+    liabilities: Array<{ label: string; amount: number; liabilityType: "loan" | "payable" | "credit" | "other"; priorYearAmount?: number; lender?: string; reference?: string; evidenceRef: string }>;
     priorYearLiabilities: Array<{ label: string; amount: number; liabilityType: "loan" | "payable" | "credit" | "other"; lender?: string; reference?: string; evidenceRef: string }>;
   };
   observations: string[];
@@ -301,7 +302,8 @@ export async function returnReviewPipeline(req: Request, res: Response) {
     const banks = compareBankBalances(extracted.facts.bankChecks);
     const funds = traceFunds(extracted.facts.fundsTrace);
     const deterministicFindings = buildDeterministicFindings({ wealth, banks, funds, properties: extracted.facts.properties });
-    const parsedTransactionAnalysis = analyzeParsedTransactions(extracted.facts.bankTransactions);\n    const transactionAnalysis = summarizeTransactionClassification(parsedTransactionAnalysis);
+    const parsedTransactionAnalysis = analyzeParsedTransactions(extracted.facts.bankTransactions);
+    const transactionAnalysis = summarizeTransactionClassification(parsedTransactionAnalysis);
     const fundsFlow = traceFundsAcrossAccounts(extracted.facts.bankTransactions);
     const currentAssets = extracted.facts.properties.map((asset) => ({ key: asset.label.toLocaleLowerCase().trim(), label: asset.label, priorYearValue: 0, currentYearValue: asset.acquisitionCost, currentYearStatus: "present" as const }));
     const assetContinuity = compareYearToYearAssets(extracted.facts.priorYearProperties, currentAssets);

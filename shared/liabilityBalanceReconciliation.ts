@@ -32,7 +32,7 @@ export function reconcileLiabilityBalances(
       const bb = new Set(words(b));
       if (!aa.size || !bb.size) return 0;
       let common = 0;
-      for (const word of aa) if (bb.has(word)) common++;
+      for (const word of Array.from(aa)) if (bb.has(word)) common++;
       return common / Math.max(aa.size, bb.size);
     };
 

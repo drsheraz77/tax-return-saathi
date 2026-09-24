@@ -33,7 +33,7 @@ export function createIpRateLimiter(options: { windowMs: number; max: number; na
 
 setInterval(() => {
   const now = Date.now();
-  for (const [key, bucket] of buckets) {
+  for (const [key, bucket] of Array.from(buckets.entries())) {
     if (bucket.resetAt <= now) buckets.delete(key);
   }
 }, 10 * 60 * 1000).unref();

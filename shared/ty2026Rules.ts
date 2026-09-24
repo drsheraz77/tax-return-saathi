@@ -46,8 +46,11 @@ type Inputs = {
     internalTransferCandidates?: Array<unknown>;
     cashWithdrawalRows?: number[];
   };
-  assetLiabilities?: { results?: Array<{ assetLabel: string; assetValue: number; matchedLiabilityAmount: number; unmatchedAssetAmount: number; status: string; detail: string }> };\n  liabilityContinuity?: { results?: Array<{ label: string; priorYearAmount: number; currentYearAmount: number; status: string; difference: number; detail: string }> };\n  liabilityBankTrace?: { results?: Array<{ liabilityLabel: string; liabilityAmount: number; drawdownAmount: number; repaymentAmount: number; status: string; detail: string }> };
-  liabilityBalance?: { results?: Array<{ label: string; priorYearAmount: number; drawdownAmount: number; repaymentAmount: number; expectedClosingAmount: number; currentYearAmount: number; difference: number; status: string; detail: string }> };\n  fundsFlow?: {
+  assetLiabilities?: { results?: Array<{ assetLabel: string; assetValue: number; matchedLiabilityAmount: number; unmatchedAssetAmount: number; status: string; detail: string }> };
+  liabilityContinuity?: { results?: Array<{ label: string; priorYearAmount: number; currentYearAmount: number; status: string; difference: number; detail: string }> };
+  liabilityBankTrace?: { results?: Array<{ liabilityLabel: string; liabilityAmount: number; drawdownAmount: number; repaymentAmount: number; status: string; detail: string }> };
+  liabilityBalance?: { results?: Array<{ label: string; priorYearAmount: number; drawdownAmount: number; repaymentAmount: number; expectedClosingAmount: number; currentYearAmount: number; difference: number; status: string; detail: string }> };
+  fundsFlow?: {
     status?: "traceable" | "partial" | "needs_review";
     totals?: { sourceCredits?: number; tracedToApplications?: number; unexplainedSourceCredits?: number };
     crossAccountTransfers?: Array<unknown>;
