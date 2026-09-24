@@ -282,7 +282,6 @@ export async function returnReviewPipeline(req: Request, res: Response) {
     const fundsFlow = traceFundsAcrossAccounts(extracted.facts.bankTransactions);
     const currentAssets = extracted.facts.properties.map((asset) => ({ key: asset.label.toLocaleLowerCase().trim(), label: asset.label, priorYearValue: 0, currentYearValue: asset.acquisitionCost, currentYearStatus: "present" as const }));
     const assetContinuity = compareYearToYearAssets(extracted.facts.priorYearProperties, currentAssets);
-    const ty2026Rules = evaluateTy2026Rules({ wealth, banks, funds, properties: extracted.facts.properties, assetContinuity, transactionAnalysis, fundsFlow, profile: extracted.facts.profile });
     const assetFundingTrace = summarizeAssetFundingTrace(traceAssetFunding(
       extracted.facts.bankTransactions,
       [
@@ -297,6 +296,7 @@ export async function returnReviewPipeline(req: Request, res: Response) {
       ],
       extracted.facts.liabilities,
     ));
+    const ty2026Rules = evaluateTy2026Rules({ wealth, banks, funds, properties: extracted.facts.properties, assetContinuity, transactionAnalysis, fundsFlow, profile: extracted.facts.profile, assetLiabilities });
     const assetReconciliation = summarizeAssetReconciliation(reconcileAssets({
       investments: extracted.facts.assetStatements.filter((x) => x.assetType === "investment"),
       vehicles: extracted.facts.assetStatements.filter((x) => x.assetType === "vehicle"),
