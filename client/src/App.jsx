@@ -2182,6 +2182,36 @@ function GapCheck({ lang, t, dedicated = false }) {
           </div>
         )}
 
+        {result.calculations?.liabilityBalance?.total > 0 && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#D7DDE6", background: "#F7F9FC" }}>
+            <div className="font-bold text-sm mb-2">Liability balance reconciliation</div>
+            <div className="text-xs opacity-75 mb-3">Opening liability + traced drawdowns − traced repayments is compared with the liability reported at year-end.</div>
+            <div className="grid grid-cols-3 gap-2 text-xs mb-3">
+              <div className="rounded-lg border p-2"><div className="opacity-60">Reconciled</div><div className="font-bold">{result.calculations.liabilityBalance.reconciled}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">Mismatch</div><div className="font-bold">{result.calculations.liabilityBalance.mismatches}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">Verify</div><div className="font-bold">{result.calculations.liabilityBalance.requiresVerification}</div></div>
+            </div>
+            <div className="space-y-2">
+              {result.calculations.liabilityBalance.results.map((item, i) => (
+                <div key={i} className="rounded-lg border p-3 bg-white">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="font-semibold text-sm">{item.label}</div>
+                    <span className="text-xs rounded-full px-2 py-0.5" style={{ background: item.status === "reconciled" ? "#DCEFE2" : item.status === "mismatch" ? "#F8DCD5" : "#FBF6E3" }}>{item.status}</span>
+                  </div>
+                  <div className="text-xs mt-2 grid grid-cols-1 sm:grid-cols-4 gap-1">
+                    <span>Opening: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.priorYearAmount || 0)}</b></span>
+                    <span>Drawdown: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.drawdownAmount || 0)}</b></span>
+                    <span>Repayment: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.repaymentAmount || 0)}</b></span>
+                    <span>Closing: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.currentYearAmount || 0)}</b></span>
+                  </div>
+                  <div className="text-xs mt-1 opacity-65">Expected closing: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.expectedClosingAmount || 0)}</b> · Difference: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(Math.abs(item.difference || 0))}</b></div>
+                  <div className="text-xs mt-1 opacity-65">{item.detail}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {result.calculations?.liabilityContinuity?.total > 0 && (
           <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#D7DDE6", background: "#F7F9FC" }}>
             <div className="font-bold text-sm mb-2">Liability continuity</div>
