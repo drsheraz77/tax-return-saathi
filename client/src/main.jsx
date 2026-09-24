@@ -19,6 +19,7 @@ const TaxpayerPreparationProfile = React.lazy(() => import("./TaxpayerPreparatio
 const PublicPrivacyPolicy = React.lazy(() => import("./PublicPrivacyPolicy.jsx"));
 const OwnerVisitorSummary = React.lazy(() => import("./OwnerVisitorSummary.jsx"));
 const ReconciliationWorkbench = React.lazy(() => import("./ReconciliationWorkbench.jsx"));
+const DocumentPreparationPage = React.lazy(() => import("./DocumentPreparationPage.jsx"));
 
 document.title = "Tax Return Saathi | Pakistan FBR Tax Assistant";
 
@@ -38,7 +39,7 @@ function SiteContent() {
   }, []);
 
   React.useEffect(() => {
-    document.title = route === "/privacy" ? "Privacy Policy | Tax Return Saathi" : route === "/owner-visitor-summary" ? "Owner Visitor Summary | Tax Return Saathi" : route === "/analyze-tax-return" ? "Analyze Your Tax Return | Tax Return Saathi" : "Tax Return Saathi | Pakistan FBR Tax Assistant";
+    document.title = route === "/privacy" ? "Privacy Policy | Tax Return Saathi" : route === "/owner-visitor-summary" ? "Owner Visitor Summary | Tax Return Saathi" : route === "/analyze-tax-return" ? "Analyze Your Tax Return | Tax Return Saathi" : route === "/prepare-tax-return" ? "Prepare Your Tax Return | Tax Return Saathi" : "Tax Return Saathi | Pakistan FBR Tax Assistant";
   }, [route]);
 
   if (route === "/privacy") {
@@ -57,6 +58,10 @@ function SiteContent() {
       <App initialTab="check" dedicatedAnalysis />
       <PrivacyConsentNotice key="dedicated-analysis" />
     </>;
+  }
+
+  if (route === "/prepare-tax-return") {
+    return <Suspense fallback={<span className="supplemental-panel-loading" role="status">Loading document preparation…</span>}><DocumentPreparationPage /></Suspense>;
   }
 
   return <>

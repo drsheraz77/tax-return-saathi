@@ -5,6 +5,7 @@ import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { manusLlmProxy } from "../manusLlmProxy";
 import { returnReviewPipeline, taxChatPipeline } from "../taxAnalysisPipeline";
+import { documentPreparationPipeline } from "../documentPreparationPipeline";
 import { feedbackRetentionHandler } from "../feedbackRetention";
 import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
@@ -47,6 +48,7 @@ async function startServer() {
   // New bounded pipelines: documents are extracted once, calculations are deterministic,
   // and the reasoning model receives structured facts rather than raw documents.
   app.all("/api/return-review", createIpRateLimiter({ windowMs: 15 * 60 * 1000, max: 12, name: "return-review" }), returnReviewPipeline);
+  app.all("/api/document-preparation", createIpRateLimiter({ windowMs: 15 * 60 * 1000, max: 12, name: "document-preparation" }), documentPreparationPipeline);
   app.all("/api/tax-chat", createIpRateLimiter({ windowMs: 15 * 60 * 1000, max: 60, name: "tax-chat" }), taxChatPipeline);
   // Platform-managed scheduled callback; it authenticates cron sessions itself.
   app.post("/api/scheduled/feedback-retention", feedbackRetentionHandler);

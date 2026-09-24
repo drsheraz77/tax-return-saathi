@@ -2905,9 +2905,13 @@ function DocChecklist({ lang, t }) {
   );
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-2" style={{ color: COLORS.green }}>{t.checklistTitle}</h2>
-      <p className="text-sm mb-5 opacity-80 leading-relaxed">{t.checklistSub}</p>
+      <div>
+        <h2 className="text-2xl font-bold mb-2" style={{ color: COLORS.green }}>{t.checklistTitle}</h2>
+        <p className="text-sm mb-5 opacity-80 leading-relaxed">{t.checklistSub}</p>
+        <a href="/prepare-tax-return" className="block rounded-xl border p-4 mb-5" style={{ borderColor: COLORS.gold, background: "#FBF6E3", color: COLORS.green, textDecoration: "none" }}>
+          <div className="font-bold text-sm">{lang === "ur" ? "دستاویزات اپ لوڈ کر کے تیاری ورک شیٹ بنائیں" : "Upload documents to build a preparation worksheet"}</div>
+          <div className="text-xs mt-1 opacity-75">{lang === "ur" ? "تنخواہ، ٹیکس سرٹیفکیٹ اور دوسری دستاویزات سے ماخذ کے ساتھ قابلِ تصدیق اندراجات اور باقی اشیا دیکھیں۔" : "Use salary, tax certificates, and other documents to create source-linked entries and see what remains."}</div>
+        </a>
 
       {/* step dots */}
       <div className="flex gap-1.5 mb-5">
