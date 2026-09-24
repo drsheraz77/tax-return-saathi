@@ -2157,6 +2157,36 @@ function GapCheck({ lang, t, dedicated = false }) {
           </div>
         )}
 
+        {result.calculations?.assetLiabilities?.totalAssets > 0 && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#D7DDE6", background: "#F7F9FC" }}>
+            <div className="font-bold text-sm mb-2">Asset & liability consistency</div>
+            <div className="text-xs opacity-75 mb-3">
+              A related loan/payable can explain part of an asset acquisition, but the system does not treat a booking or future payment obligation as a liability without supporting evidence.
+            </div>
+            <div className="grid grid-cols-3 gap-2 text-xs mb-3">
+              <div className="rounded-lg border p-2"><div className="opacity-60">Assets checked</div><div className="font-bold">{result.calculations.assetLiabilities.totalAssets}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">Consistent</div><div className="font-bold">{result.calculations.assetLiabilities.consistent}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-60">Verification</div><div className="font-bold">{result.calculations.assetLiabilities.partial + result.calculations.assetLiabilities.requiresVerification}</div></div>
+            </div>
+            <div className="space-y-2">
+              {result.calculations.assetLiabilities.results.map((item, i) => (
+                <div key={i} className="rounded-lg border p-3 bg-white">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="font-semibold text-sm">{item.assetLabel}</div>
+                    <span className="text-xs rounded-full px-2 py-0.5" style={{ background: item.status === "consistent" ? "#DCEFE2" : "#FBF6E3" }}>{item.status}</span>
+                  </div>
+                  <div className="text-xs mt-2 grid grid-cols-1 sm:grid-cols-3 gap-1">
+                    <span>Asset: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.assetValue || 0)}</b></span>
+                    <span>Liability matched: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.matchedLiabilityAmount || 0)}</b></span>
+                    <span>Unmatched: <b dir="ltr">Rs. {new Intl.NumberFormat("en-PK").format(item.unmatchedAssetAmount || 0)}</b></span>
+                  </div>
+                  <div className="text-xs mt-1 opacity-65">{item.detail}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {result.calculations?.assetFundingTrace?.totalAssets > 0 && (
           <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#E3D7AE", background: "#FFF9E8" }}>
             <div className="font-bold text-sm mb-2" style={{ color: "#7A6210" }}>{lang === "ur" ? "اثاثوں کے ذرائعِ فنڈز کی جانچ" : "Asset source-of-funds tracing"}</div>
