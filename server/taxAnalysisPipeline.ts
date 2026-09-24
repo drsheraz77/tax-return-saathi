@@ -5,6 +5,7 @@ import { buildDeterministicFindings } from "../shared/taxReviewFindings";
 import { summarizeTransactionClassification } from "../shared/transactionClassification";
 import { compareYearToYearAssets } from "../shared/assetContinuity";
 import { evaluateTy2026Rules } from "../shared/ty2026Rules";
+import { traceFundsAcrossAccounts } from "../shared/fundsFlow";
 
 const MODEL = "gemini-3-flash-preview";
 const MAX_REVIEW_TOKENS = 4096;
@@ -76,8 +77,8 @@ const EXTRACTION_SCHEMA = {
           type: "array",
           items: {
             type: "object",
-            properties: { rowNumber: { type: "number" }, date: { type: "string" }, description: { type: "string" }, amount: { type: "number" }, direction: { type: "string", enum: ["credit", "debit", "unknown"] } },
-            required: ["rowNumber", "date", "description", "amount", "direction"],
+            properties: { rowNumber: { type: "number" }, date: { type: "string" }, description: { type: "string" }, amount: { type: "number" }, direction: { type: "string", enum: ["credit", "debit", "unknown"] }, accountRef: { type: "string" } },
+            required: ["rowNumber", "date", "description", "amount", "direction", "accountRef"],
             additionalProperties: false,
           },
         },
@@ -187,7 +188,7 @@ type ExtractedCase = {
     declaredClosingWealth: number;
     profile?: { returnType?: "simplified_salaried" | "normal_individual" | "unknown"; selectedSources?: string[]; resident?: boolean; employerRecords?: Array<{ employerRegistrationNo?: string; salaryTaxDeducted?: number; certificateTaxDeducted?: number; terminationBenefits?: number; salaryArrears?: number; averageTaxElectionMade?: boolean }>; rentalPropertiesDeclared?: number; foreignAssets?: number; foreignIncome?: number; foreignStatementPresent?: boolean; motorVehicles?: Array<{ registrationNo?: string; chassisNo?: string; value?: number; cc?: number }>; filingDate?: string; atlSurchargePaid?: boolean; verificationComplete?: boolean };
     bankChecks: Array<{ accountRef: string; statementClosingBalance: number; declaredWealthBalance: number }>;
-    bankTransactions: Array<{ rowNumber: number; date: string; description: string; amount: number; direction: "credit" | "debit" | "unknown" }>;
+    bankTransactions: Array<{ rowNumber: number; date: string; description: string; amount: number; direction: "credit" | "debit" | "unknown"; accountRef: string }>;
     priorYearProperties: Array<{ key: string; label: string; priorYearValue: number; currentYearValue: number; priorYearStatus?: "present" | "sold" | "transferred" | "unknown"; currentYearStatus?: "present" | "sold" | "transferred" | "unknown" }>;
     fundsTrace: Record<string, number>;
     properties: Array<{ label: string; acquisitionCost: number; fbrValuation: number; saleProceeds: number; evidenceRef: string }>;
@@ -249,10 +250,11 @@ export async function returnReviewPipeline(req: Request, res: Response) {
     const funds = traceFunds(extracted.facts.fundsTrace);
     const deterministicFindings = buildDeterministicFindings({ wealth, banks, funds, properties: extracted.facts.properties });
     const parsedTransactionAnalysis = analyzeParsedTransactions(extracted.facts.bankTransactions);\n    const transactionAnalysis = summarizeTransactionClassification(parsedTransactionAnalysis);
+    const fundsFlow = traceFundsAcrossAccounts(extracted.facts.bankTransactions);
     const currentAssets = extracted.facts.properties.map((asset) => ({ key: asset.label.toLocaleLowerCase().trim(), label: asset.label, priorYearValue: 0, currentYearValue: asset.acquisitionCost, currentYearStatus: "present" as const }));
     const assetContinuity = compareYearToYearAssets(extracted.facts.priorYearProperties, currentAssets);
-    const ty2026Rules = evaluateTy2026Rules({ wealth, banks, funds, properties: extracted.facts.properties, assetContinuity, transactionAnalysis, profile: extracted.facts.profile });
-    const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, transactionAnalysis, assetContinuity, ty2026Rules, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
+    const ty2026Rules = evaluateTy2026Rules({ wealth, banks, funds, properties: extracted.facts.properties, assetContinuity, transactionAnalysis, fundsFlow, profile: extracted.facts.profile });
+    const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, transactionAnalysis, fundsFlow, assetContinuity, ty2026Rules, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
 
     const reasoning = await invokeLLM({
       model: MODEL,
