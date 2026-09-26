@@ -2099,6 +2099,19 @@ function GapCheck({ lang, t, dedicated = false }) {
           </div>
         )}
 
+        {result.calculations?.evidenceChecks && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#D7DDE6", background: "#F7F9FC" }}>
+            <div className="font-bold text-sm mb-1" style={{ color: COLORS.green2 }}>{lang === "ur" ? "بینک، اثاثہ اور واجبات کے ثبوت کی جانچ" : "Bank, asset & liability evidence checks"}</div>
+            <div className="text-xs opacity-75 mb-3">{lang === "ur" ? "یہ الگ ثبوتی حالت ہے؛ موجودہ عددی حساب یا ٹیکس نتیجہ تبدیل نہیں کرتی۔" : "These are parallel evidence statuses; they do not change the existing numeric calculations or determine a tax outcome."}</div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+              {[["banks", lang === "ur" ? "بینک" : "Banks"], ["assets", lang === "ur" ? "اثاثے" : "Assets"], ["liabilities", lang === "ur" ? "واجبات" : "Liabilities"]].map(([key, title]) => {
+                const check = result.calculations.evidenceChecks[key];
+                return <div key={key} className="rounded-lg border p-2"><div className="font-semibold">{title}</div><div className="mt-1">{lang === "ur" ? "کل" : "Total"}: {check.total} · {lang === "ur" ? "مطابق" : "matched"}: {check.matched}</div><div>{lang === "ur" ? "فرق" : "mismatch"}: {check.mismatches} · {lang === "ur" ? "ثبوت نہیں" : "evidence missing"}: {check.evidenceNotProvided}</div></div>;
+              })}
+            </div>
+          </div>
+        )}
+
         {result.calculations?.banks?.some((bank) => bank.status === "needs_review") && (
           <div className="rounded-xl border p-4 mb-4" style={{ borderColor: COLORS.gold, background: "#FBF6E3" }}>
             <div className="font-bold text-sm mb-2" style={{ color: "#7A6210" }}>{lang === "ur" ? "بینک بیلنس کا کراس چیک" : "Bank balance cross-check"}</div>

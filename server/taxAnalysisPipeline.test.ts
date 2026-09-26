@@ -98,6 +98,11 @@ describe("structured tax analysis pipeline", () => {
     expect((recorded.body as { calculations: { wealth: { taxPayment: { status: string } } } }).calculations.wealth.taxPayment.status).toBe("not_provided");
     expect((recorded.body as { calculations: { evidenceSummary: { fields: Record<string, { status: string }>; unknownFields: string[] } } }).calculations.evidenceSummary.fields.income.status).toBe("UNKNOWN");
     expect((recorded.body as { calculations: { evidenceSummary: { unknownFields: string[] } } }).calculations.evidenceSummary.unknownFields).toContain("taxPaid");
+    expect((recorded.body as { calculations: { evidenceChecks: { banks: { total: number; evidenceNotProvided: number }; assets: { total: number }; liabilities: { total: number } } } }).calculations.evidenceChecks).toMatchObject({
+      banks: { total: 0, evidenceNotProvided: 0 },
+      assets: { total: 0 },
+      liabilities: { total: 0 },
+    });
     expect((recorded.body as { calculations: { funds: { totalAvailable: number } } }).calculations.funds.totalAvailable).toBe(19_000_000);
     expect((recorded.body as { calculations: { deterministicFindings: Array<{ code: string }> } }).calculations.deterministicFindings).toContainEqual(expect.objectContaining({ code: "WEALTH_RECONCILED" }));
     expect(mockedInvokeLLM).toHaveBeenCalledTimes(2);

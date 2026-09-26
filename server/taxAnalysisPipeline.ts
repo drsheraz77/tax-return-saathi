@@ -14,6 +14,7 @@ import { compareYearToYearLiabilities, summarizeLiabilityContinuity } from "../s
 import { traceLiabilityBankMovements, summarizeLiabilityBankMovements } from "../shared/liabilityBankTrace";
 import { reconcileLiabilityBalances, summarizeLiabilityBalances } from "../shared/liabilityBalanceReconciliation";
 import { buildLegacyEvidenceSummary } from "../shared/evidenceState";
+import { buildAssetEvidenceChecks, buildBankEvidenceChecks, buildLiabilityEvidenceChecks, summarizeEvidenceChecks } from "../shared/evidenceAwareChecks";
 
 const MODEL = "gemini-3-flash-preview";
 const MAX_REVIEW_TOKENS = 4096;
@@ -353,7 +354,12 @@ export async function returnReviewPipeline(req: Request, res: Response) {
       declaredAssetSaleProceeds: extracted.facts.assetSaleProceeds,
     }));
     const evidenceSummary = buildLegacyEvidenceSummary(extracted.facts as unknown as Record<string, unknown>);
-    const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, transactionAnalysis, fundsFlow, assetContinuity, ty2026Rules, fieldReconciliation, assetReconciliation, assetFundingTrace, assetLiabilities, liabilityContinuity, liabilityBankTrace, liabilityBalance, evidenceSummary, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
+    const evidenceChecks = {
+      banks: summarizeEvidenceChecks(buildBankEvidenceChecks(extracted.facts.bankChecks)),
+      assets: summarizeEvidenceChecks(buildAssetEvidenceChecks(extracted.facts.assetStatements)),
+      liabilities: summarizeEvidenceChecks(buildLiabilityEvidenceChecks(extracted.facts.priorYearLiabilities, extracted.facts.liabilities)),
+    };
+    const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, transactionAnalysis, fundsFlow, assetContinuity, ty2026Rules, fieldReconciliation, assetReconciliation, assetFundingTrace, assetLiabilities, liabilityContinuity, liabilityBankTrace, liabilityBalance, evidenceSummary, evidenceChecks, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
 
     const reasoning = await invokeLLM({
       model: MODEL,
