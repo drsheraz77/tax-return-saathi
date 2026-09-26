@@ -28,4 +28,13 @@ describe("dedicated Analyze Your Tax Return page", () => {
     expect(app).toContain("Preparing files securely");
     expect(app).toContain("Analysis complete");
   });
+
+  it("provides local controls for uncertain evidence without persistence", () => {
+    expect(app).toContain("Review uncertain evidence");
+    expect(app).toContain("Confirmed from record");
+    expect(app).toContain("Not applicable");
+    expect(app).toContain("Needs follow-up");
+    expect(app).toContain("Reset all choices");
+    expect(app).toContain("These choices stay in this browser session");
+  });
 });

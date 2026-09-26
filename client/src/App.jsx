@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { evidenceReviewKey, isUncertainEvidenceStatus, summarizeManualEvidenceReviews } from "@shared/evidenceReview";
 
 // ─────────────────────────────────────────────────────────────
 // FBR Tax Return Assistant — English / اردو
@@ -1936,6 +1937,7 @@ function GapCheck({ lang, t, dedicated = false }) {
   const [uploadStage, setUploadStage] = useState("idle");
   const [uploadProgress, setUploadProgress] = useState(0);
   const [encodedCount, setEncodedCount] = useState(0);
+  const [evidenceReviews, setEvidenceReviews] = useState({});
 
   const toggle = (state, setState, id) =>
     setState({ ...state, [id]: !state[id] });
@@ -1994,6 +1996,7 @@ function GapCheck({ lang, t, dedicated = false }) {
     }
     setBusy(true);
     setResult(null);
+    setEvidenceReviews({});
     setUploadStage("encoding");
     setUploadProgress(0);
     setEncodedCount(0);
@@ -2049,6 +2052,9 @@ function GapCheck({ lang, t, dedicated = false }) {
   };
 
   if (result) {
+    const evidenceItems = Object.values(result.calculations?.evidenceChecks || {}).flatMap((summary) => (summary.results || []).map((check, index) => ({ check, index })));
+    const uncertainEvidence = evidenceItems.filter(({ check }) => isUncertainEvidenceStatus(check.status));
+    const manualEvidenceSummary = summarizeManualEvidenceReviews(evidenceItems, evidenceReviews);
     return (
       <div>
         <h2 className="text-xl font-bold mb-3" style={{ color: COLORS.green }}>
@@ -2109,6 +2115,39 @@ function GapCheck({ lang, t, dedicated = false }) {
                 return <div key={key} className="rounded-lg border p-2"><div className="font-semibold">{title}</div><div className="mt-1">{lang === "ur" ? "کل" : "Total"}: {check.total} · {lang === "ur" ? "مطابق" : "matched"}: {check.matched}</div><div>{lang === "ur" ? "فرق" : "mismatch"}: {check.mismatches} · {lang === "ur" ? "ثبوت نہیں" : "evidence missing"}: {check.evidenceNotProvided}</div></div>;
               })}
             </div>
+          </div>
+        )}
+
+        {uncertainEvidence.length > 0 && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: COLORS.gold, background: "#FFFDF3" }}>
+            <div className="flex items-start justify-between gap-3 flex-wrap">
+              <div>
+                <div className="font-bold text-sm" style={{ color: "#7A6210" }}>{lang === "ur" ? "غیر یقینی ثبوت کا دستی جائزہ" : "Review uncertain evidence"}</div>
+                <p className="text-xs mt-1 opacity-75">{lang === "ur" ? "ہر آئٹم کو صرف اپنے ریکارڈ دیکھنے کے بعد نشان زد کریں۔ یہ انتخاب صرف اسی براؤزر سیشن میں رہتا ہے اور حساب نہیں بدلتا۔" : "Choose a review label only after checking your records. These choices stay in this browser session and do not change calculations."}</p>
+              </div>
+              <button type="button" className="text-xs underline" onClick={() => setEvidenceReviews({})}>{lang === "ur" ? "سب انتخاب ختم کریں" : "Reset all choices"}</button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mt-3 mb-3">
+              <div className="rounded-lg border p-2"><div className="opacity-65">{lang === "ur" ? "زیر جائزہ" : "Pending"}</div><div className="font-bold">{manualEvidenceSummary.pending}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-65">{lang === "ur" ? "تصدیق شدہ" : "Confirmed"}</div><div className="font-bold">{manualEvidenceSummary.confirmed}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-65">{lang === "ur" ? "لاگو نہیں" : "Not applicable"}</div><div className="font-bold">{manualEvidenceSummary.notApplicable}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-65">{lang === "ur" ? "فالو اَپ" : "Follow-up"}</div><div className="font-bold">{manualEvidenceSummary.needsFollowUp}</div></div>
+            </div>
+            <div className="space-y-2">
+              {uncertainEvidence.map(({ check, index }) => {
+                const key = evidenceReviewKey(check, index);
+                const selected = evidenceReviews[key];
+                const choose = (value) => setEvidenceReviews((current) => ({ ...current, [key]: value }));
+                return <div key={key} className="rounded-lg border p-3 bg-white">
+                  <div className="flex items-center justify-between gap-2 flex-wrap"><div className="font-semibold text-sm">{check.label}</div><span className="text-xs opacity-70">{check.category} · {check.status}</span></div>
+                  <div className="text-xs mt-1 opacity-75">{check.detail}</div>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {[['confirmed', lang === "ur" ? "ریکارڈ سے تصدیق" : "Confirmed from record"], ['not_applicable', lang === "ur" ? "لاگو نہیں" : "Not applicable"], ['needs_follow_up', lang === "ur" ? "مزید فالو اَپ" : "Needs follow-up"]].map(([value, label]) => <button key={value} type="button" onClick={() => choose(value)} className="rounded-full border px-2 py-1 text-xs" style={{ background: selected === value ? COLORS.green : "#FFF", color: selected === value ? "#FFF" : COLORS.ink, borderColor: selected === value ? COLORS.green : "#D7DDE6" }}>{label}</button>)}
+                  </div>
+                </div>;
+              })}
+            </div>
+            <p className="text-xs mt-3 opacity-65">{lang === "ur" ? "یہ دستی لیبل ٹیکس مشورہ، فائلنگ فیصلہ، یا اصل ثبوت کی تصدیق نہیں ہے۔" : "Manual labels are organizational notes, not tax advice, a filing decision, or proof that a document is authentic."}</p>
           </div>
         )}
 
