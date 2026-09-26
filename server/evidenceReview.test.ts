@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildAssetEvidenceChecks } from "../shared/evidenceAwareChecks";
-import { evidenceReviewKey, isUncertainEvidenceStatus, summarizeManualEvidenceReviews } from "../shared/evidenceReview";
+import { evidenceReviewKey, getUnresolvedEvidenceItems, isUncertainEvidenceStatus, summarizeManualEvidenceReviews } from "../shared/evidenceReview";
 
 describe("local evidence review controls", () => {
   const checks = buildAssetEvidenceChecks([
@@ -22,5 +22,12 @@ describe("local evidence review controls", () => {
 
   it("supports a reset by treating an empty review map as pending", () => {
     expect(summarizeManualEvidenceReviews(checks, {})).toMatchObject({ uncertain: 2, pending: 2, notApplicable: 0 });
+  });
+
+  it("returns only pending and follow-up items for the unresolved summary", () => {
+    const first = evidenceReviewKey(checks[0].check, checks[0].index);
+    const second = evidenceReviewKey(checks[1].check, checks[1].index);
+    expect(getUnresolvedEvidenceItems(checks, { [first]: "confirmed", [second]: "needs_follow_up" }).map(({ check }) => check.label)).toEqual(["Investment B"]);
+    expect(getUnresolvedEvidenceItems(checks, { [first]: "not_applicable", [second]: "confirmed" })).toHaveLength(0);
   });
 });

@@ -40,5 +40,8 @@ describe("dedicated Analyze Your Tax Return page", () => {
     expect(app).toContain("Download PDF summary");
     expect(app).toContain("evidenceReviewNotes");
     expect(app).toContain("evidenceReviewItems");
+    expect(app).toContain("Unresolved items");
+    expect(app).toContain("All uncertain items have a completed manual decision");
+    expect(app).toContain("aria-live=\"polite\"");
   });
 });

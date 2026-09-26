@@ -24,3 +24,14 @@ export function summarizeManualEvidenceReviews(
     pending: uncertain.filter(({ check, index }) => !reviews[evidenceReviewKey(check, index)]).length,
   };
 }
+
+export function getUnresolvedEvidenceItems(
+  checks: Array<{ check: EvidenceCheck; index: number }>,
+  reviews: EvidenceReviewMap,
+) {
+  return checks.filter(({ check, index }) => {
+    if (!isUncertainEvidenceStatus(check.status)) return false;
+    const review = reviews[evidenceReviewKey(check, index)];
+    return !review || review === "needs_follow_up";
+  });
+}

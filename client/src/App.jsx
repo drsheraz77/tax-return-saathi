@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { evidenceReviewKey, isUncertainEvidenceStatus, summarizeManualEvidenceReviews } from "@shared/evidenceReview";
+import { evidenceReviewKey, getUnresolvedEvidenceItems, isUncertainEvidenceStatus, summarizeManualEvidenceReviews } from "@shared/evidenceReview";
 import { generateBilingualWorksheetPdf } from "./worksheetPdf";
 
 // ─────────────────────────────────────────────────────────────
@@ -2058,6 +2058,7 @@ function GapCheck({ lang, t, dedicated = false }) {
     const evidenceItems = Object.values(result.calculations?.evidenceChecks || {}).flatMap((summary) => (summary.results || []).map((check, index) => ({ check, index })));
     const uncertainEvidence = evidenceItems.filter(({ check }) => isUncertainEvidenceStatus(check.status));
     const manualEvidenceSummary = summarizeManualEvidenceReviews(evidenceItems, evidenceReviews);
+    const unresolvedEvidence = getUnresolvedEvidenceItems(evidenceItems, evidenceReviews);
     const downloadEvidenceReviewPdf = async () => {
       const reviewItems = uncertainEvidence.map(({ check, index }) => {
         const key = evidenceReviewKey(check, index);
@@ -2160,6 +2161,11 @@ function GapCheck({ lang, t, dedicated = false }) {
               <div className="rounded-lg border p-2"><div className="opacity-65">{lang === "ur" ? "تصدیق شدہ" : "Confirmed"}</div><div className="font-bold">{manualEvidenceSummary.confirmed}</div></div>
               <div className="rounded-lg border p-2"><div className="opacity-65">{lang === "ur" ? "لاگو نہیں" : "Not applicable"}</div><div className="font-bold">{manualEvidenceSummary.notApplicable}</div></div>
               <div className="rounded-lg border p-2"><div className="opacity-65">{lang === "ur" ? "فالو اَپ" : "Follow-up"}</div><div className="font-bold">{manualEvidenceSummary.needsFollowUp}</div></div>
+            </div>
+            <div className="rounded-lg border p-3 mb-3" style={{ borderColor: unresolvedEvidence.length ? "#E0B4A8" : "#B9C9BF", background: unresolvedEvidence.length ? "#FFF7F4" : "#F0F5F1" }} aria-live="polite">
+              <div className="font-bold text-sm" style={{ color: unresolvedEvidence.length ? COLORS.red : COLORS.green2 }}>{lang === "ur" ? "ابھی توجہ طلب آئٹمز" : "Unresolved items"} ({unresolvedEvidence.length})</div>
+              <p className="text-xs mt-1 opacity-75">{unresolvedEvidence.length ? (lang === "ur" ? "یہ آئٹمز زیر جائزہ ہیں یا فالو اَپ کے لیے نشان زد ہیں۔ اصل ریکارڈ دیکھ کر فیصلہ مکمل کریں۔" : "These items are still pending or marked for follow-up. Check the original record and complete the decision.") : (lang === "ur" ? "تمام غیر یقینی آئٹمز پر دستی فیصلہ مکمل ہو گیا ہے۔" : "All uncertain items have a completed manual decision.")}</p>
+              {unresolvedEvidence.length > 0 && <ul className="mt-2 space-y-1 text-xs">{unresolvedEvidence.map(({ check, index }) => { const key = evidenceReviewKey(check, index); const review = evidenceReviews[key]; return <li key={key} className="flex items-start justify-between gap-2"><span>• {check.label}{evidenceReviewNotes[key] ? ` — ${evidenceReviewNotes[key]}` : ""}</span><span className="rounded-full px-2 py-0.5 flex-shrink-0" style={{ background: review === "needs_follow_up" ? "#F7D9D0" : "#FBF6E3", color: review === "needs_follow_up" ? COLORS.red : "#7A6210" }}>{review === "needs_follow_up" ? (lang === "ur" ? "فالو اَپ" : "Follow-up") : (lang === "ur" ? "زیر جائزہ" : "Pending")}</span></li>; })}</ul>}
             </div>
             <div className="space-y-2">
               {uncertainEvidence.map(({ check, index }) => {
