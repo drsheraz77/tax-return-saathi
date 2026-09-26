@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { buildWorksheetCsv } from "../client/src/DocumentPreparationPage.jsx";
-import { categoryTotals, countWorksheetEntries, filterWorksheetByDateRange, worksheetSummaryText } from "../client/src/worksheetPdf.js";
+import { categoryTotals, countWorksheetEntries, evidenceReviewSummaryText, filterWorksheetByDateRange, worksheetSummaryText } from "../client/src/worksheetPdf.js";
 
 const app = fs.readFileSync(path.join(process.cwd(), "client/src/App.jsx"), "utf8");
 const main = fs.readFileSync(path.join(process.cwd(), "client/src/main.jsx"), "utf8");
@@ -80,5 +80,14 @@ describe("document-assisted return preparation page", () => {
     expect(countWorksheetEntries(filtered)).toBe(2);
     expect(countWorksheetEntries(result)).toBe(3);
     expect(worksheetSummaryText(filtered, { dateRange: { from: "2026-01-01", to: "2026-12-31" } })).toContain("Selected date range / منتخب تاریخ کی حد: 2026-01-01 to 2026-12-31");
+  });
+
+  it("includes selected evidence labels and optional notes in the bilingual review summary", () => {
+    const summary = evidenceReviewSummaryText([{ label: "Bank account", reviewLabel: "Needs follow-up", note: "Re-check statement closing balance" }]);
+    expect(summary).toContain("Bank account");
+    expect(summary).toContain("Needs follow-up");
+    expect(summary).toContain("Re-check statement closing balance");
+    expect(pdf).toContain("evidenceReviewItems");
+    expect(pdf).toContain("Manual evidence review");
   });
 });

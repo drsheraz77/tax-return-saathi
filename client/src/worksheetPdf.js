@@ -242,6 +242,46 @@ function drawPage(result, pageRows, pageNumber, totalPages, options) {
   return canvas;
 }
 
+function drawEvidenceReviewPage(reviewItems) {
+  const canvas = document.createElement("canvas");
+  canvas.width = PAGE.width;
+  canvas.height = PAGE.height;
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = COLORS.paper;
+  ctx.fillRect(0, 0, PAGE.width, PAGE.height);
+  ctx.fillStyle = COLORS.green;
+  ctx.fillRect(0, 0, PAGE.width, 210);
+  drawText(ctx, "TAX RETURN SAATHI", PAGE.margin, 78, { font: "bold 30px Arial", color: "#FFFFFF" });
+  drawText(ctx, "ٹیکس ریٹرن ساتھی", PAGE.width - PAGE.margin, 88, { font: urduFont(38, true), color: "#FFFFFF", align: "right", direction: "rtl" });
+  drawText(ctx, "Manual evidence review · دستی ثبوتی جائزہ", PAGE.margin, 142, { font: "22px Arial", color: "#E9E2C7" });
+
+  let y = 275;
+  drawText(ctx, "Evidence review notes", PAGE.margin, y, { font: "bold 34px Arial", color: COLORS.green });
+  drawText(ctx, "ثبوتی جائزے کے نوٹس", PAGE.width - PAGE.margin, y + 2, { font: urduFont(32, true), color: COLORS.green, align: "right", direction: "rtl" });
+  y += 55;
+  drawText(ctx, "User-selected labels and optional notes. These are not tax advice or filing decisions.", PAGE.margin, y, { font: "20px Arial", color: COLORS.muted });
+  y += 58;
+
+  reviewItems.forEach((item, index) => {
+    const labelLines = wrap(ctx, `${index + 1}. ${item.label}`, 690).slice(0, 2);
+    const noteLines = wrap(ctx, `Note: ${item.note || "—"}`, 690).slice(0, 3);
+    const blockHeight = 112 + (labelLines.length - 1) * 24 + (noteLines.length - 1) * 24;
+    if (y + blockHeight > PAGE.height - 130) return;
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(PAGE.margin, y, PAGE.width - 2 * PAGE.margin, blockHeight - 12);
+    labelLines.forEach((line, lineIndex) => drawText(ctx, line, PAGE.margin + 20, y + 28 + lineIndex * 24, { font: "bold 20px Arial", color: COLORS.ink }));
+    drawText(ctx, `Category: ${item.category} · Machine status: ${item.machineStatus} · Review: ${item.reviewLabel || "Pending"}`, PAGE.margin + 20, y + 28 + labelLines.length * 24, { font: "16px Arial", color: COLORS.green2 });
+    noteLines.forEach((line, lineIndex) => drawText(ctx, line, PAGE.margin + 20, y + 58 + labelLines.length * 24 + lineIndex * 24, { font: "17px Arial", color: COLORS.muted }));
+    y += blockHeight;
+  });
+
+  ctx.strokeStyle = COLORS.gold;
+  ctx.lineWidth = 2;
+  ctx.strokeRect(PAGE.margin, PAGE.height - 90, PAGE.width - 2 * PAGE.margin, 1);
+  drawText(ctx, "Keep this summary local and verify every item against the original record.", PAGE.margin, PAGE.height - 48, { font: "16px Arial", color: COLORS.muted });
+  return canvas;
+}
+
 export async function generateBilingualWorksheetPdf(result, options = {}) {
   const settings = { includeTotals: true, includeCharts: true, ...options };
   await ensureUrduFonts();
@@ -255,7 +295,23 @@ export async function generateBilingualWorksheetPdf(result, options = {}) {
     const page = pdf.addPage([595, 842]);
     page.drawImage(image, { x: 0, y: 0, width: 595, height: 842 });
   }
+  if (settings.evidenceReviewItems?.length) {
+    const canvas = drawEvidenceReviewPage(settings.evidenceReviewItems);
+    const image = await pdf.embedPng(canvas.toDataURL("image/png"));
+    const page = pdf.addPage([595, 842]);
+    page.drawImage(image, { x: 0, y: 0, width: 595, height: 842 });
+  }
   return pdf.save();
+}
+
+export function evidenceReviewSummaryText(items = []) {
+  return [
+    "TAX RETURN SAATHI / ٹیکس ریٹرن ساتھی",
+    "Manual evidence review / دستی ثبوتی جائزہ",
+    ...items.map((item, index) => `${index + 1}. ${item.label} — ${item.reviewLabel || "Pending"} — ${item.note || "—"}`),
+    "",
+    "These are user-organized review notes, not tax advice or filing decisions.",
+  ].join("\n");
 }
 
 export function worksheetSummaryText(result, options = {}) {

@@ -36,5 +36,9 @@ describe("dedicated Analyze Your Tax Return page", () => {
     expect(app).toContain("Needs follow-up");
     expect(app).toContain("Reset all choices");
     expect(app).toContain("These choices stay in this browser session");
+    expect(app).toContain("Optional note");
+    expect(app).toContain("Download PDF summary");
+    expect(app).toContain("evidenceReviewNotes");
+    expect(app).toContain("evidenceReviewItems");
   });
 });

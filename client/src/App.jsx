@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { evidenceReviewKey, isUncertainEvidenceStatus, summarizeManualEvidenceReviews } from "@shared/evidenceReview";
+import { generateBilingualWorksheetPdf } from "./worksheetPdf";
 
 // ─────────────────────────────────────────────────────────────
 // FBR Tax Return Assistant — English / اردو
@@ -1938,6 +1939,7 @@ function GapCheck({ lang, t, dedicated = false }) {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [encodedCount, setEncodedCount] = useState(0);
   const [evidenceReviews, setEvidenceReviews] = useState({});
+  const [evidenceReviewNotes, setEvidenceReviewNotes] = useState({});
 
   const toggle = (state, setState, id) =>
     setState({ ...state, [id]: !state[id] });
@@ -1997,6 +1999,7 @@ function GapCheck({ lang, t, dedicated = false }) {
     setBusy(true);
     setResult(null);
     setEvidenceReviews({});
+    setEvidenceReviewNotes({});
     setUploadStage("encoding");
     setUploadProgress(0);
     setEncodedCount(0);
@@ -2055,6 +2058,28 @@ function GapCheck({ lang, t, dedicated = false }) {
     const evidenceItems = Object.values(result.calculations?.evidenceChecks || {}).flatMap((summary) => (summary.results || []).map((check, index) => ({ check, index })));
     const uncertainEvidence = evidenceItems.filter(({ check }) => isUncertainEvidenceStatus(check.status));
     const manualEvidenceSummary = summarizeManualEvidenceReviews(evidenceItems, evidenceReviews);
+    const downloadEvidenceReviewPdf = async () => {
+      const reviewItems = uncertainEvidence.map(({ check, index }) => {
+        const key = evidenceReviewKey(check, index);
+        const review = evidenceReviews[key];
+        return {
+          label: check.label,
+          category: check.category,
+          machineStatus: check.status,
+          reviewLabel: review === "confirmed" ? "Confirmed from record" : review === "not_applicable" ? "Not applicable" : review === "needs_follow_up" ? "Needs follow-up" : "Pending",
+          note: evidenceReviewNotes[key] || "",
+        };
+      });
+      const bytes = await generateBilingualWorksheetPdf({ worksheet: { taxYear: "Tax Year 2026", returnType: "Filled return review" }, remainingItems: [], observations: [] }, { includeTotals: false, includeCharts: false, evidenceReviewItems: reviewItems });
+      const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "tax-return-saathi-evidence-review.pdf";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    };
     return (
       <div>
         <h2 className="text-xl font-bold mb-3" style={{ color: COLORS.green }}>
@@ -2125,7 +2150,10 @@ function GapCheck({ lang, t, dedicated = false }) {
                 <div className="font-bold text-sm" style={{ color: "#7A6210" }}>{lang === "ur" ? "غیر یقینی ثبوت کا دستی جائزہ" : "Review uncertain evidence"}</div>
                 <p className="text-xs mt-1 opacity-75">{lang === "ur" ? "ہر آئٹم کو صرف اپنے ریکارڈ دیکھنے کے بعد نشان زد کریں۔ یہ انتخاب صرف اسی براؤزر سیشن میں رہتا ہے اور حساب نہیں بدلتا۔" : "Choose a review label only after checking your records. These choices stay in this browser session and do not change calculations."}</p>
               </div>
-              <button type="button" className="text-xs underline" onClick={() => setEvidenceReviews({})}>{lang === "ur" ? "سب انتخاب ختم کریں" : "Reset all choices"}</button>
+              <div className="flex items-center gap-3 text-xs">
+                <button type="button" className="underline" onClick={downloadEvidenceReviewPdf}>{lang === "ur" ? "PDF خلاصہ ڈاؤن لوڈ کریں" : "Download PDF summary"}</button>
+                <button type="button" className="underline" onClick={() => { setEvidenceReviews({}); setEvidenceReviewNotes({}); }}>{lang === "ur" ? "سب انتخاب ختم کریں" : "Reset all choices"}</button>
+              </div>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mt-3 mb-3">
               <div className="rounded-lg border p-2"><div className="opacity-65">{lang === "ur" ? "زیر جائزہ" : "Pending"}</div><div className="font-bold">{manualEvidenceSummary.pending}</div></div>
@@ -2144,6 +2172,10 @@ function GapCheck({ lang, t, dedicated = false }) {
                   <div className="flex flex-wrap gap-2 mt-2">
                     {[['confirmed', lang === "ur" ? "ریکارڈ سے تصدیق" : "Confirmed from record"], ['not_applicable', lang === "ur" ? "لاگو نہیں" : "Not applicable"], ['needs_follow_up', lang === "ur" ? "مزید فالو اَپ" : "Needs follow-up"]].map(([value, label]) => <button key={value} type="button" onClick={() => choose(value)} className="rounded-full border px-2 py-1 text-xs" style={{ background: selected === value ? COLORS.green : "#FFF", color: selected === value ? "#FFF" : COLORS.ink, borderColor: selected === value ? COLORS.green : "#D7DDE6" }}>{label}</button>)}
                   </div>
+                  <label className="block text-xs mt-3">
+                    <span className="opacity-70">{lang === "ur" ? "اختیاری نوٹ" : "Optional note"}</span>
+                    <textarea value={evidenceReviewNotes[key] || ""} onChange={(event) => setEvidenceReviewNotes((current) => ({ ...current, [key]: event.target.value.slice(0, 300) }))} maxLength={300} rows={2} placeholder={lang === "ur" ? "مثلاً: بینک اسٹیٹمنٹ سے دوبارہ چیک کرنا ہے" : "For example: re-check against the bank statement"} className="w-full mt-1 rounded-lg border p-2 text-xs" />
+                  </label>
                 </div>;
               })}
             </div>
