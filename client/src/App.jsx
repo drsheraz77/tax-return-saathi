@@ -2080,6 +2080,14 @@ function GapCheck({ lang, t, dedicated = false }) {
           </div>
         )}
 
+        {result.calculations?.wealth?.taxPayment && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#D7DDE6", background: "#F7F9FC" }}>
+            <div className="font-bold text-sm mb-1" style={{ color: COLORS.green2 }}>{lang === "ur" ? "ٹیکس ادائیگی کی الگ جانچ" : "Separate tax-payment check"}</div>
+            <div className="text-sm" dir="ltr">Rs. {new Intl.NumberFormat(lang === "ur" ? "ur-PK" : "en-PK", { maximumFractionDigits: 2 }).format(result.calculations.wealth.taxPayment.taxPaid || 0)}</div>
+            <p className="text-xs mt-2 opacity-75">{lang === "ur" ? "ٹیکس ادائیگی کو ویلتھ اسٹیٹمنٹ کے حساب میں دوبارہ منفی نہیں کیا گیا۔ اصل ادائیگی اور متعلقہ ثبوت کی الگ تصدیق کریں۔" : result.calculations.wealth.taxPayment.detail}</p>
+          </div>
+        )}
+
         {result.calculations?.banks?.some((bank) => bank.status === "needs_review") && (
           <div className="rounded-xl border p-4 mb-4" style={{ borderColor: COLORS.gold, background: "#FBF6E3" }}>
             <div className="font-bold text-sm mb-2" style={{ color: "#7A6210" }}>{lang === "ur" ? "بینک بیلنس کا کراس چیک" : "Bank balance cross-check"}</div>

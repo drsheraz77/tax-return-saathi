@@ -94,7 +94,8 @@ describe("structured tax analysis pipeline", () => {
     } as Request, response);
 
     expect(recorded.status).toBe(200);
-    expect((recorded.body as { calculations: { wealth: { expectedClosingWealth: number }, funds: { totalAvailable: number } } }).calculations.wealth.expectedClosingWealth).toBe(5_000_000);
+    expect((recorded.body as { calculations: { wealth: { expectedClosingWealth: number; taxPayment: { status: string } }, funds: { totalAvailable: number } } }).calculations.wealth.expectedClosingWealth).toBe(5_000_000);
+    expect((recorded.body as { calculations: { wealth: { taxPayment: { status: string } } } }).calculations.wealth.taxPayment.status).toBe("not_provided");
     expect((recorded.body as { calculations: { funds: { totalAvailable: number } } }).calculations.funds.totalAvailable).toBe(19_000_000);
     expect((recorded.body as { calculations: { deterministicFindings: Array<{ code: string }> } }).calculations.deterministicFindings).toContainEqual(expect.objectContaining({ code: "WEALTH_RECONCILED" }));
     expect(mockedInvokeLLM).toHaveBeenCalledTimes(2);

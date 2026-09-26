@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculateWealthReconciliation, compareBankBalances, parseTabularTransactions, traceFunds } from "./taxReconciliation";
+import { calculateTaxPaymentReconciliation, calculateWealthReconciliation, compareBankBalances, parseTabularTransactions, traceFunds } from "./taxReconciliation";
 
 describe("deterministic tax reconciliation", () => {
   it("shows the exact wealth difference instead of asking the model to do arithmetic", () => {
@@ -33,6 +33,30 @@ describe("deterministic tax reconciliation", () => {
     expect(result.expectedClosingWealth).toBe(42_000_000);
     expect(result.unexplainedDifference).toBe(-2_000_000);
     expect(result.status).toBe("needs_review");
+  });
+
+  it("does not create a false tax-sized wealth mismatch when tax is already represented in submitted applications", () => {
+    const result = calculateWealthReconciliation({
+      openingWealth: 11_000_000,
+      assetSaleProceeds: 8_000_000,
+      taxPaid: 3_520_000,
+      assetPurchases: 14_000_000,
+      declaredClosingWealth: 5_000_000,
+    });
+
+    expect(result.expectedClosingWealth).toBe(5_000_000);
+    expect(result.unexplainedDifference).toBe(0);
+    expect(result.status).toBe("reconciled");
+    expect(result.taxPayment).toMatchObject({ taxPaid: 3_520_000, status: "separate_check" });
+  });
+
+  it("keeps tax-payment checking separate from Wealth Statement arithmetic", () => {
+    expect(calculateTaxPaymentReconciliation({ taxPaid: 125_000 })).toEqual({
+      taxPaid: 125_000,
+      status: "separate_check",
+      detail: "Tax paid is reported as a separate check and is not subtracted again from the submitted Wealth Statement arithmetic.",
+    });
+    expect(calculateTaxPaymentReconciliation({})).toMatchObject({ taxPaid: 0, status: "not_provided" });
   });
 
   it("cross-checks bank closing balances without exposing account identifiers", () => {

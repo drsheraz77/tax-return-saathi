@@ -34,6 +34,12 @@ export type FundsTraceInputs = {
   otherApplications?: number | null;
 };
 
+export type TaxPaymentReconciliation = {
+  taxPaid: number;
+  status: "not_provided" | "separate_check";
+  detail: string;
+};
+
 const MONEY_TOLERANCE = 1;
 
 export function money(value: unknown): number {
@@ -43,7 +49,7 @@ export function money(value: unknown): number {
 
 const sum = (values: unknown[]) => money(values.reduce((total: number, value: unknown) => total + money(value), 0));
 
-export function calculateWealthReconciliation(input: WealthInputs) {
+export function calculateSubmittedWealthStatement(input: WealthInputs) {
   const sources = {
     openingWealth: money(input.openingWealth),
     income: money(input.income),
@@ -55,7 +61,6 @@ export function calculateWealthReconciliation(input: WealthInputs) {
   };
   const applications = {
     personalExpenditure: money(input.personalExpenditure),
-    taxPaid: money(input.taxPaid),
     assetPurchases: money(input.assetPurchases),
     investments: money(input.investments),
     loanRepayment: money(input.loanRepayment),
@@ -77,6 +82,25 @@ export function calculateWealthReconciliation(input: WealthInputs) {
     declaredClosingWealth,
     unexplainedDifference,
     tolerance: MONEY_TOLERANCE,
+  } as const;
+}
+
+export function calculateTaxPaymentReconciliation(input: Pick<WealthInputs, "taxPaid">): TaxPaymentReconciliation {
+  const taxPaid = money(input.taxPaid);
+  return {
+    taxPaid,
+    status: taxPaid > 0 ? "separate_check" : "not_provided",
+    detail: taxPaid > 0
+      ? "Tax paid is reported as a separate check and is not subtracted again from the submitted Wealth Statement arithmetic."
+      : "No tax-paid amount was established for the separate tax-payment check.",
+  };
+}
+
+/** Compatibility entry point used by the existing review pipeline and local tool. */
+export function calculateWealthReconciliation(input: WealthInputs) {
+  return {
+    ...calculateSubmittedWealthStatement(input),
+    taxPayment: calculateTaxPaymentReconciliation(input),
   } as const;
 }
 
