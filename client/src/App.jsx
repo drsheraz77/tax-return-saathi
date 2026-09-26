@@ -2088,6 +2088,17 @@ function GapCheck({ lang, t, dedicated = false }) {
           </div>
         )}
 
+        {result.calculations?.evidenceSummary && (
+          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: "#D7DDE6", background: "#F7F9FC" }}>
+            <div className="font-bold text-sm mb-1" style={{ color: COLORS.green2 }}>{lang === "ur" ? "ثبوت کی حالت" : "Evidence state"}</div>
+            <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+              <div className="rounded-lg border p-2"><div className="opacity-65">{lang === "ur" ? "معلوم" : "Known"}</div><div className="font-bold">{result.calculations.evidenceSummary.knownFields.length}</div></div>
+              <div className="rounded-lg border p-2"><div className="opacity-65">{lang === "ur" ? "نامعلوم/مزید تصدیق" : "Unknown / verify"}</div><div className="font-bold">{result.calculations.evidenceSummary.unknownFields.length}</div></div>
+            </div>
+            <p className="text-xs opacity-75">{lang === "ur" ? "خالی یا غیر قائم رقم کو معلوم صفر نہیں سمجھا گیا۔ موجودہ عددی حساب الگ سے legacy input کے ساتھ جاری رہتا ہے۔" : result.calculations.evidenceSummary.boundary}</p>
+          </div>
+        )}
+
         {result.calculations?.banks?.some((bank) => bank.status === "needs_review") && (
           <div className="rounded-xl border p-4 mb-4" style={{ borderColor: COLORS.gold, background: "#FBF6E3" }}>
             <div className="font-bold text-sm mb-2" style={{ color: "#7A6210" }}>{lang === "ur" ? "بینک بیلنس کا کراس چیک" : "Bank balance cross-check"}</div>
