@@ -341,3 +341,9 @@
 - [x] Add distinct workflow cards and unmistakable navigation labels.
 - [x] Run focused/full tests, typecheck, production build, diff check, and desktop/mobile responsive verification.
 - [x] Save a reversible checkpoint for this clarity release.
+
+
+## Guided Evidence Resolution Workspace
+- [x] Add a browser-local guided resolution summary for pending and follow-up evidence items.
+- [x] Show actionable status labels and optional notes without changing tax calculations or server storage.
+- [x] Add regression coverage, full validation, and responsive preview checks.
