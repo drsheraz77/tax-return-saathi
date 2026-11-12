@@ -347,3 +347,9 @@
 - [x] Add a browser-local guided resolution summary for pending and follow-up evidence items.
 - [x] Show actionable status labels and optional notes without changing tax calculations or server storage.
 - [x] Add regression coverage, full validation, and responsive preview checks.
+
+## Evidence workspace navigation, PDF status, and finding feedback
+- [x] Add jump-to-item links from unresolved summary rows to evidence cards.
+- [x] Show the unresolved total on the branded PDF cover page.
+- [x] Add browser-local per-finding feedback choices and a safe anonymous-form handoff.
+- [x] Run focused/full tests, typecheck, production build, diff check, and responsive preview validation.

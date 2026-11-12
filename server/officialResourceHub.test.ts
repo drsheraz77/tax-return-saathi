@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import fs from "node:fs";
+import path from "node:path";
 import {
   AI_ANSWER_EVALUATION_STEPS,
   CALCULATION_EXPLANATION_MAP,
@@ -29,7 +31,15 @@ import {
   validateResourceTools,
 } from "../client/src/officialResourceHub.js";
 
+const resourceHubPage = fs.readFileSync(path.join(process.cwd(), "client/src/OfficialResourceHub.jsx"), "utf8");
+
 describe("official resource hub", () => {
+  it("accepts only safe category and generic prefill data from finding feedback", () => {
+    expect(resourceHubPage).toContain("allowedCategories");
+    expect(resourceHubPage).toContain("detail.prefillMessage.slice(0, 1000)");
+    expect(resourceHubPage).toContain('setFeedbackAcknowledged(false)');
+  });
+
   it("contains complete bilingual resources on approved official hosts", () => {
     expect(validateOfficialResourceHub()).toBe(true);
     expect(OFFICIAL_RESOURCE_HUB.sections.map((section) => section.id)).toEqual(["company", "business-forms", "freelancers", "large-business-industry", "investments", "filing"]);

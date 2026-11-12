@@ -193,6 +193,7 @@ function drawPage(result, pageRows, pageNumber, totalPages, options) {
     ctx.fillRect(PAGE.margin, y, PAGE.width - 2 * PAGE.margin, 90);
     drawText(ctx, `Return type: ${result?.worksheet?.returnType || "—"}`, PAGE.margin + 24, y + 37, { font: "22px Arial", color: COLORS.ink });
     drawText(ctx, "ریٹرن کی قسم", PAGE.width - PAGE.margin - 24, y + 42, { font: urduFont(22), color: COLORS.ink, align: "right", direction: "rtl" });
+    if (Number.isFinite(options.unresolvedCount)) drawText(ctx, `Unresolved evidence items / غیر حل شدہ ثبوت: ${options.unresolvedCount}`, PAGE.margin + 24, y + 70, { font: "17px Arial", color: options.unresolvedCount ? COLORS.red : COLORS.green2 });
     y += 135;
     if (options.includeTotals) y = drawTotals(ctx, result, y);
     if (options.includeCharts) y = drawChart(ctx, result, y);

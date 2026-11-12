@@ -77,8 +77,14 @@ export default function OfficialResourceHub() {
   });
 
   useEffect(() => {
-    function openPilotFeedback() {
+    function openPilotFeedback(event) {
+      const detail = event?.detail || {};
+      const allowedCategories = ["general", "usability", "content", "technical"];
       setIsOpen(true);
+      setFeedbackCategory(allowedCategories.includes(detail.category) ? detail.category : "general");
+      setFeedbackMessage(typeof detail.prefillMessage === "string" ? detail.prefillMessage.slice(0, 1000) : "");
+      setFeedbackAcknowledged(false);
+      setFeedbackNotice("");
       window.requestAnimationFrame(() => document.getElementById("pilot-feedback-form")?.focus());
     }
     function openResourceHub() {

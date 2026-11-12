@@ -43,5 +43,11 @@ describe("dedicated Analyze Your Tax Return page", () => {
     expect(app).toContain("Unresolved items");
     expect(app).toContain("All uncertain items have a completed manual decision");
     expect(app).toContain("aria-live=\"polite\"");
+    expect(app).toContain("Review item");
+    expect(app).toContain("evidence-finding-");
+    expect(app).toContain("Feedback on this extracted finding");
+    expect(app).toContain("Send specific feedback");
+    expect(app).toContain("evidenceFindingFeedback");
+    expect(app).toContain("unresolvedCount: unresolvedEvidence.length");
   });
 });

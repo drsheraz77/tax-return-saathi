@@ -1940,6 +1940,7 @@ function GapCheck({ lang, t, dedicated = false }) {
   const [encodedCount, setEncodedCount] = useState(0);
   const [evidenceReviews, setEvidenceReviews] = useState({});
   const [evidenceReviewNotes, setEvidenceReviewNotes] = useState({});
+  const [evidenceFindingFeedback, setEvidenceFindingFeedback] = useState({});
 
   const toggle = (state, setState, id) =>
     setState({ ...state, [id]: !state[id] });
@@ -2000,6 +2001,7 @@ function GapCheck({ lang, t, dedicated = false }) {
     setResult(null);
     setEvidenceReviews({});
     setEvidenceReviewNotes({});
+    setEvidenceFindingFeedback({});
     setUploadStage("encoding");
     setUploadProgress(0);
     setEncodedCount(0);
@@ -2059,6 +2061,7 @@ function GapCheck({ lang, t, dedicated = false }) {
     const uncertainEvidence = evidenceItems.filter(({ check }) => isUncertainEvidenceStatus(check.status));
     const manualEvidenceSummary = summarizeManualEvidenceReviews(evidenceItems, evidenceReviews);
     const unresolvedEvidence = getUnresolvedEvidenceItems(evidenceItems, evidenceReviews);
+    const evidenceItemId = (index) => `evidence-finding-${index}`;
     const downloadEvidenceReviewPdf = async () => {
       const reviewItems = uncertainEvidence.map(({ check, index }) => {
         const key = evidenceReviewKey(check, index);
@@ -2071,7 +2074,7 @@ function GapCheck({ lang, t, dedicated = false }) {
           note: evidenceReviewNotes[key] || "",
         };
       });
-      const bytes = await generateBilingualWorksheetPdf({ worksheet: { taxYear: "Tax Year 2026", returnType: "Filled return review" }, remainingItems: [], observations: [] }, { includeTotals: false, includeCharts: false, evidenceReviewItems: reviewItems });
+      const bytes = await generateBilingualWorksheetPdf({ worksheet: { taxYear: "Tax Year 2026", returnType: "Filled return review" }, remainingItems: [], observations: [] }, { includeTotals: false, includeCharts: false, unresolvedCount: unresolvedEvidence.length, evidenceReviewItems: reviewItems });
       const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
       const link = document.createElement("a");
       link.href = url;
@@ -2153,7 +2156,7 @@ function GapCheck({ lang, t, dedicated = false }) {
               </div>
               <div className="flex items-center gap-3 text-xs">
                 <button type="button" className="underline" onClick={downloadEvidenceReviewPdf}>{lang === "ur" ? "PDF خلاصہ ڈاؤن لوڈ کریں" : "Download PDF summary"}</button>
-                <button type="button" className="underline" onClick={() => { setEvidenceReviews({}); setEvidenceReviewNotes({}); }}>{lang === "ur" ? "سب انتخاب ختم کریں" : "Reset all choices"}</button>
+                <button type="button" className="underline" onClick={() => { setEvidenceReviews({}); setEvidenceReviewNotes({}); setEvidenceFindingFeedback({}); }}>{lang === "ur" ? "سب انتخاب ختم کریں" : "Reset all choices"}</button>
               </div>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mt-3 mb-3">
@@ -2165,14 +2168,17 @@ function GapCheck({ lang, t, dedicated = false }) {
             <div className="rounded-lg border p-3 mb-3" style={{ borderColor: unresolvedEvidence.length ? "#E0B4A8" : "#B9C9BF", background: unresolvedEvidence.length ? "#FFF7F4" : "#F0F5F1" }} aria-live="polite">
               <div className="font-bold text-sm" style={{ color: unresolvedEvidence.length ? COLORS.red : COLORS.green2 }}>{lang === "ur" ? "ابھی توجہ طلب آئٹمز" : "Unresolved items"} ({unresolvedEvidence.length})</div>
               <p className="text-xs mt-1 opacity-75">{unresolvedEvidence.length ? (lang === "ur" ? "یہ آئٹمز زیر جائزہ ہیں یا فالو اَپ کے لیے نشان زد ہیں۔ اصل ریکارڈ دیکھ کر فیصلہ مکمل کریں۔" : "These items are still pending or marked for follow-up. Check the original record and complete the decision.") : (lang === "ur" ? "تمام غیر یقینی آئٹمز پر دستی فیصلہ مکمل ہو گیا ہے۔" : "All uncertain items have a completed manual decision.")}</p>
-              {unresolvedEvidence.length > 0 && <ul className="mt-2 space-y-1 text-xs">{unresolvedEvidence.map(({ check, index }) => { const key = evidenceReviewKey(check, index); const review = evidenceReviews[key]; return <li key={key} className="flex items-start justify-between gap-2"><span>• {check.label}{evidenceReviewNotes[key] ? ` — ${evidenceReviewNotes[key]}` : ""}</span><span className="rounded-full px-2 py-0.5 flex-shrink-0" style={{ background: review === "needs_follow_up" ? "#F7D9D0" : "#FBF6E3", color: review === "needs_follow_up" ? COLORS.red : "#7A6210" }}>{review === "needs_follow_up" ? (lang === "ur" ? "فالو اَپ" : "Follow-up") : (lang === "ur" ? "زیر جائزہ" : "Pending")}</span></li>; })}</ul>}
+              {unresolvedEvidence.length > 0 && <ul className="mt-2 space-y-1 text-xs">{unresolvedEvidence.map(({ check, index }) => { const key = evidenceReviewKey(check, index); const review = evidenceReviews[key]; return <li key={key} className="flex items-start justify-between gap-2"><span>• {check.label}{evidenceReviewNotes[key] ? ` — ${evidenceReviewNotes[key]}` : ""}</span><span className="flex items-center gap-2 flex-shrink-0"><a className="underline font-semibold" href={`#${evidenceItemId(index)}`}>{lang === "ur" ? "آئٹم دیکھیں" : "Review item"}</a><span className="rounded-full px-2 py-0.5" style={{ background: review === "needs_follow_up" ? "#F7D9D0" : "#FBF6E3", color: review === "needs_follow_up" ? COLORS.red : "#7A6210" }}>{review === "needs_follow_up" ? (lang === "ur" ? "فالو اَپ" : "Follow-up") : (lang === "ur" ? "زیر جائزہ" : "Pending")}</span></span></li>; })}</ul>}
             </div>
             <div className="space-y-2">
               {uncertainEvidence.map(({ check, index }) => {
                 const key = evidenceReviewKey(check, index);
                 const selected = evidenceReviews[key];
+                const feedback = evidenceFindingFeedback[key];
                 const choose = (value) => setEvidenceReviews((current) => ({ ...current, [key]: value }));
-                return <div key={key} className="rounded-lg border p-3 bg-white">
+                const chooseFeedback = (value) => setEvidenceFindingFeedback((current) => ({ ...current, [key]: value }));
+                const openFindingFeedback = () => window.dispatchEvent(new CustomEvent("tax-return-saathi:open-pilot-feedback", { detail: { category: "content", prefillMessage: `Specific ${check.category} finding feedback — ${feedback || "Please choose Correct, Unclear, or Incorrect first."}. Please do not include personal, tax, financial, credential, or document details.` } }));
+                return <div id={evidenceItemId(index)} key={key} className="rounded-lg border p-3 bg-white scroll-mt-4">
                   <div className="flex items-center justify-between gap-2 flex-wrap"><div className="font-semibold text-sm">{check.label}</div><span className="text-xs opacity-70">{check.category} · {check.status}</span></div>
                   <div className="text-xs mt-1 opacity-75">{check.detail}</div>
                   <div className="flex flex-wrap gap-2 mt-2">
@@ -2182,6 +2188,14 @@ function GapCheck({ lang, t, dedicated = false }) {
                     <span className="opacity-70">{lang === "ur" ? "اختیاری نوٹ" : "Optional note"}</span>
                     <textarea value={evidenceReviewNotes[key] || ""} onChange={(event) => setEvidenceReviewNotes((current) => ({ ...current, [key]: event.target.value.slice(0, 300) }))} maxLength={300} rows={2} placeholder={lang === "ur" ? "مثلاً: بینک اسٹیٹمنٹ سے دوبارہ چیک کرنا ہے" : "For example: re-check against the bank statement"} className="w-full mt-1 rounded-lg border p-2 text-xs" />
                   </label>
+                  <div className="mt-3 border-t pt-3" role="group" aria-label={`Feedback for ${check.category} evidence finding`}>
+                    <div className="text-xs font-semibold">{lang === "ur" ? "اس دریافت شدہ آئٹم پر رائے" : "Feedback on this extracted finding"}</div>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {[['correct', lang === "ur" ? "درست" : "Correct"], ['unclear', lang === "ur" ? "غیر واضح" : "Unclear"], ['incorrect', lang === "ur" ? "غلط" : "Incorrect"]].map(([value, label]) => <button key={value} type="button" onClick={() => chooseFeedback(value)} className="rounded-full border px-2 py-1 text-xs" style={{ background: feedback === value ? COLORS.green2 : "#FFF", color: feedback === value ? "#FFF" : COLORS.ink, borderColor: feedback === value ? COLORS.green2 : "#D7DDE6" }}>{label}</button>)}
+                      <button type="button" className="rounded-full border px-2 py-1 text-xs underline" onClick={openFindingFeedback}>{lang === "ur" ? "رائے بھیجیں" : "Send specific feedback"}</button>
+                    </div>
+                    {feedback && <p className="text-xs mt-2 opacity-70" role="status">{lang === "ur" ? "انتخاب اسی براؤزر میں عارضی طور پر محفوظ ہے۔" : `Selected locally: ${feedback}. Use Send specific feedback to open the anonymous form.`}</p>}
+                  </div>
                 </div>;
               })}
             </div>

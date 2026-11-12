@@ -51,6 +51,7 @@ describe("document-assisted return preparation page", () => {
     expect(pdf).toContain("Optional summary totals");
     expect(pdf).toContain("Category overview");
     expect(pdf).toContain("ٹیکس ریٹرن ساتھی");
+    expect(pdf).toContain("Unresolved evidence items");
     expect(page).not.toContain("FileSystemHandle");
   });
 
@@ -89,5 +90,6 @@ describe("document-assisted return preparation page", () => {
     expect(summary).toContain("Re-check statement closing balance");
     expect(pdf).toContain("evidenceReviewItems");
     expect(pdf).toContain("Manual evidence review");
+    expect(pdf).toContain("unresolvedCount");
   });
 });
