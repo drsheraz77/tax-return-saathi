@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { invokeLLM, type FileContent, type ImageContent, type TextContent } from "./_core/llm";
+import { modelForAnalysisMode } from "./analysisModel";
 
-const MODEL = "gemini-3.1-pro-preview";
 const MAX_PREPARATION_TOKENS = 4096;
 
 const PREPARATION_SCHEMA = {
@@ -174,13 +174,14 @@ export async function documentPreparationPipeline(req: Request, res: Response) {
     const body = isRecord(req.body) ? req.body : {};
     const blocks = Array.isArray(body.documents) ? body.documents as BrowserBlock[] : [];
     const language = body.language === "ur" ? "Urdu" : "English";
+    const analysisModel = modelForAnalysisMode(body.analysisMode);
     if (blocks.length === 0 || blocks.length > 6) return res.status(400).json({ error: "Preparation documents are required" });
     if (blocks.some((block) => !isRecord(block) || !["text", "image", "document"].includes(String(block.type)))) {
       return res.status(400).json({ error: "Unsupported preparation document block" });
     }
 
     const extraction = await invokeLLM({
-      model: MODEL,
+      model: analysisModel,
       max_tokens: MAX_PREPARATION_TOKENS,
       messages: [
         { role: "system", content: PREPARATION_INSTRUCTIONS },

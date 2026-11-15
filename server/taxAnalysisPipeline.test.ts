@@ -106,9 +106,24 @@ describe("structured tax analysis pipeline", () => {
     expect((recorded.body as { calculations: { funds: { totalAvailable: number } } }).calculations.funds.totalAvailable).toBe(19_000_000);
     expect((recorded.body as { calculations: { deterministicFindings: Array<{ code: string }> } }).calculations.deterministicFindings).toContainEqual(expect.objectContaining({ code: "WEALTH_RECONCILED" }));
     expect(mockedInvokeLLM).toHaveBeenCalledTimes(2);
+    expect(mockedInvokeLLM.mock.calls[0][0].model).toBe("gemini-3.1-pro-preview");
+    expect(mockedInvokeLLM.mock.calls[1][0].model).toBe("gemini-3.1-pro-preview");
     const secondCall = mockedInvokeLLM.mock.calls[1][0];
     expect(JSON.stringify(secondCall.messages)).not.toContain("ignore previous instructions");
     expect(secondCall.response_format).toMatchObject({ type: "json_schema", json_schema: { name: "return_review", strict: true } });
+  });
+
+  it("routes an explicit Fast Analysis choice to the approved Flash model", async () => {
+    mockedInvokeLLM
+      .mockResolvedValueOnce({ id: "extract-fast", created: 1, model: "gemini-3-flash-preview", choices: [{ index: 0, message: { role: "assistant", content: JSON.stringify(extraction) }, finish_reason: "stop" }] })
+      .mockResolvedValueOnce({ id: "review-fast", created: 1, model: "gemini-3-flash-preview", choices: [{ index: 0, message: { role: "assistant", content: JSON.stringify(review) }, finish_reason: "stop" }] });
+    const { recorded, response } = responseRecorder();
+
+    await returnReviewPipeline({ method: "POST", body: { language: "en", analysisMode: "fast", documents: [{ type: "text", text: "Synthetic redacted document." }] } } as Request, response);
+
+    expect(recorded.status).toBe(200);
+    expect(mockedInvokeLLM.mock.calls[0][0].model).toBe("gemini-3-flash-preview");
+    expect(mockedInvokeLLM.mock.calls[1][0].model).toBe("gemini-3-flash-preview");
   });
 
   it("keeps the safety and evidence protocols server-owned", () => {

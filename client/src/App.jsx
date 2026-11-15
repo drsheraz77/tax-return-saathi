@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { evidenceReviewKey, getUnresolvedEvidenceItems, isUncertainEvidenceStatus, summarizeManualEvidenceReviews } from "@shared/evidenceReview";
 import { generateBilingualWorksheetPdf } from "./worksheetPdf";
+import { useAnalysisModePreference } from "./analysisModelPreference.js";
 
 // ─────────────────────────────────────────────────────────────
 // FBR Tax Return Assistant — English / اردو
@@ -1927,6 +1928,7 @@ function Mistakes({ t }) {
 
 // ── Return gap check (upload + screening + AI analysis) ─────
 function GapCheck({ lang, t, dedicated = false }) {
+  const [analysisMode] = useAnalysisModePreference();
   const [income, setIncome] = useState({});
   const [assets, setAssets] = useState({});
   const [firstTime, setFirstTime] = useState(null);
@@ -2041,7 +2043,7 @@ function GapCheck({ lang, t, dedicated = false }) {
       const res = await fetch("/api/return-review", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ language: lang, documents: blocks }),
+        body: JSON.stringify({ language: lang, analysisMode, documents: blocks }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error("return review request failed");

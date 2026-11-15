@@ -359,3 +359,8 @@
 - [x] Route filled-return and document-preparation analysis to the approved upgraded model.
 - [x] Keep chatbot routing unchanged unless separately approved.
 - [x] Run focused/full tests, typecheck, production build, and preview validation.
+
+## User-selectable analysis model
+- [x] Add browser-local Fast Analysis (Gemini Flash) and Deep Analysis (Gemini Pro) preference controls.
+- [x] Route both document-analysis workflows through a server-side model whitelist while preserving the Flash chatbot.
+- [x] Add regression coverage, full validation, and responsive browser checks.

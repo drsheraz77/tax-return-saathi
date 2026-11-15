@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { startLogin } from "./const";
 import { trpc } from "./lib/trpc";
 import { buildProfilePreparationDashboard, FIRST_TIME_PREPARATION_ROUTE } from "./profilePreparationDashboard";
+import { useAnalysisModePreference } from "./analysisModelPreference.js";
 
 const PATHS = [
   ["salaried", "Salaried preparation", "تنخواہ دار تیاری"],
@@ -58,6 +59,7 @@ export default function TaxpayerPreparationProfile() {
   const [consent, setConsent] = useState(false);
   const [form, setForm] = useState(EMPTY_PROFILE);
   const [notice, setNotice] = useState("");
+  const [analysisMode, setAnalysisMode] = useAnalysisModePreference();
   const { data: accountUser, isLoading: isAccountLoading } = trpc.auth.me.useQuery();
   const profileQuery = trpc.taxpayerProfile.get.useQuery(undefined, { enabled: Boolean(accountUser), retry: false });
   const utils = trpc.useUtils();
@@ -113,6 +115,7 @@ export default function TaxpayerPreparationProfile() {
         .taxpayer-profile__body { padding:15px 16px 17px; }.taxpayer-profile__notice, .taxpayer-profile__boundary, .taxpayer-profile__summary { margin:0 0 12px; border-left:3px solid #caa518; padding:9px 0 9px 10px; background:#faf5df; color:#4c503c; font-size:12px; line-height:1.45; }
         .taxpayer-profile__notice { border-left-color:#0B3D2E; background:#edf5ee; }.taxpayer-profile__group { margin:14px 0 0; border:0; padding:0; }.taxpayer-profile__legend { margin:0 0 6px; color:#0B3D2E; font-size:14px; font-weight:700; }.taxpayer-profile__hint { margin:0 0 8px; color:#5b5b46; font-size:12px; line-height:1.4; }
         .taxpayer-profile__choices { display:grid; gap:6px; }.taxpayer-profile__choice { display:flex; align-items:flex-start; gap:8px; border:1px solid #e0d6aa; border-radius:9px; background:#fffefb; padding:8px; color:#173b31; font-size:12px; line-height:1.3; }.taxpayer-profile__choice:focus-within { outline:3px solid rgba(202,165,24,.3); outline-offset:2px; }.taxpayer-profile__choice input { margin-top:2px; accent-color:#0B3D2E; }
+        .taxpayer-profile__model { margin:12px 0; border:1px solid #d6bd67; border-radius:10px; background:#fffefb; padding:10px; }.taxpayer-profile__model-title { margin:0 0 5px; color:#0B3D2E; font-size:14px; font-weight:700; }.taxpayer-profile__model-copy { margin:0 0 9px; color:#5b5b46; font-size:11px; line-height:1.4; }.taxpayer-profile__model-options { display:grid; gap:6px; }.taxpayer-profile__model-option { display:flex; align-items:flex-start; gap:8px; border:1px solid #e0d6aa; border-radius:8px; padding:8px; cursor:pointer; }.taxpayer-profile__model-option input { margin-top:2px; accent-color:#0B3D2E; }.taxpayer-profile__model-option strong { display:block; font-size:12px; }.taxpayer-profile__model-option small { display:block; margin-top:2px; color:#5b5b46; font-size:10px; line-height:1.35; }
         .taxpayer-profile__actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }.taxpayer-profile__button { border:1px solid #0B3D2E; border-radius:8px; background:#0B3D2E; color:#fffdf2; cursor:pointer; padding:9px 11px; font:700 12px/1.2 inherit; }.taxpayer-profile__button--secondary { background:#fffdf7; color:#0B3D2E; }.taxpayer-profile__button--danger { border-color:#8b2e26; color:#8b2e26; }.taxpayer-profile__button:disabled { cursor:not-allowed; opacity:.5; }
         @media (max-width:520px) { .taxpayer-profile { right:12px; bottom:74px; }.taxpayer-profile__panel { max-height:calc(100vh - 158px); } }
       `}</style>
@@ -123,6 +126,14 @@ export default function TaxpayerPreparationProfile() {
         <header className="taxpayer-profile__header"><div><p className="taxpayer-profile__eyebrow">Optional account preference · not an FBR profile</p><h2 className="taxpayer-profile__title">My preparation preferences <span className="taxpayer-profile__urdu" lang="ur" dir="rtl">میری تیاری کی ترجیحات</span></h2></div><button className="taxpayer-profile__close" type="button" onClick={() => setIsOpen(false)} aria-label="Close preparation preferences">×</button></header>
         <div className="taxpayer-profile__body">
           <p className="taxpayer-profile__boundary"><strong>Privacy boundary:</strong> this optional profile stores only five controlled preparation preferences. It does not ask for CNIC, NTN, amounts, bank details, documents, passwords, OTPs, IRIS access, filing status, notices, or outcomes. It is not FBR and cannot determine your tax, deadline, filing, or result.<br /><span lang="ur" dir="rtl">یہ اختیاری پروفائل صرف پانچ محدود تیاری کی ترجیحات رکھتا ہے؛ یہ شناختی نمبر، رقم، دستاویز، پاس ورڈ یا فائلنگ کا نتیجہ نہیں لیتا۔</span></p>
+          <section className="taxpayer-profile__model" aria-labelledby="analysis-model-title">
+            <h3 id="analysis-model-title" className="taxpayer-profile__model-title">Analysis speed <span lang="ur" dir="rtl">تجزیے کی رفتار</span></h3>
+            <p className="taxpayer-profile__model-copy">Choose locally for the next document analysis. Fast uses Gemini Flash; Deep uses Gemini Pro. This setting is not saved to your account and does not change chatbot speed.</p>
+            <div className="taxpayer-profile__model-options" role="radiogroup" aria-label="Analysis speed">
+              <label className="taxpayer-profile__model-option"><input type="radio" name="analysis-mode" value="fast" checked={analysisMode === "fast"} onChange={() => setAnalysisMode("fast")} /><span><strong>Fast Analysis <span lang="ur" dir="rtl">تیز تجزیہ</span></strong><small>Gemini Flash · quicker and lighter for routine checks</small></span></label>
+              <label className="taxpayer-profile__model-option"><input type="radio" name="analysis-mode" value="deep" checked={analysisMode === "deep"} onChange={() => setAnalysisMode("deep")} /><span><strong>Deep Analysis <span lang="ur" dir="rtl">گہرا تجزیہ</span></strong><small>Gemini Pro · more detailed reasoning for complex documents</small></span></label>
+            </div>
+          </section>
           {!accountUser ? <><p className="taxpayer-profile__summary">Sign in is required only if you choose to create these optional account preferences. You can use all educational tools without a profile.</p><PreparationRouteCards route={FIRST_TIME_PREPARATION_ROUTE} firstTime /><div className="taxpayer-profile__actions"><button className="taxpayer-profile__button" type="button" onClick={startLogin} disabled={isAccountLoading}>Sign in to create preferences</button></div></> : <>
             {notice && <p className="taxpayer-profile__notice" role="status">{notice}</p>}
             {profileQuery.isLoading ? <p className="taxpayer-profile__summary">Checking whether you have optional preparation preferences…</p> : !isEditing ? <>

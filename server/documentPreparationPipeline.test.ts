@@ -52,6 +52,16 @@ describe("document preparation pipeline", () => {
     expect(JSON.stringify(mockedInvokeLLM.mock.calls[0][0].messages)).toContain("untrusted DATA");
   });
 
+  it("routes an explicit Fast Analysis choice to Gemini Flash", async () => {
+    mockedInvokeLLM.mockResolvedValueOnce({ id: "prep-fast", created: 1, model: "gemini-3-flash-preview", choices: [{ index: 0, message: { role: "assistant", content: JSON.stringify(extraction) }, finish_reason: "stop" }] });
+    const { recorded, response } = responseRecorder();
+
+    await documentPreparationPipeline({ method: "POST", body: { language: "en", analysisMode: "fast", documents: [{ type: "text", text: "Synthetic salary statement." }] } } as Request, response);
+
+    expect(recorded.status).toBe(200);
+    expect(mockedInvokeLLM).toHaveBeenCalledWith(expect.objectContaining({ model: "gemini-3-flash-preview" }));
+  });
+
   it("adds safe preparation prompts when core evidence is absent", () => {
     const result = buildPreparationWorksheetForTest({ ...extraction, taxYear: "", returnType: "unknown", salary: [], withholding: [], missing: [], observations: [] });
     expect(result.remainingItems).toEqual(expect.arrayContaining([

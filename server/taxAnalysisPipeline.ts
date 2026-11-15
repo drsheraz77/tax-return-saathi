@@ -15,8 +15,8 @@ import { traceLiabilityBankMovements, summarizeLiabilityBankMovements } from "..
 import { reconcileLiabilityBalances, summarizeLiabilityBalances } from "../shared/liabilityBalanceReconciliation";
 import { buildLegacyEvidenceSummary } from "../shared/evidenceState";
 import { buildAssetEvidenceChecks, buildBankEvidenceChecks, buildLiabilityEvidenceChecks, summarizeEvidenceChecks } from "../shared/evidenceAwareChecks";
+import { modelForAnalysisMode } from "./analysisModel";
 
-const MODEL = "gemini-3.1-pro-preview";
 const CHAT_MODEL = "gemini-3-flash-preview";
 const MAX_REVIEW_TOKENS = 4096;
 const MAX_CHAT_TOKENS = 1200;
@@ -286,13 +286,14 @@ export async function returnReviewPipeline(req: Request, res: Response) {
     const body = isRecord(req.body) ? req.body : {};
     const blocks = Array.isArray(body.documents) ? body.documents as BrowserBlock[] : [];
     const language = body.language === "ur" ? "Urdu" : "English";
+    const analysisModel = modelForAnalysisMode(body.analysisMode);
     if (blocks.length === 0 || blocks.length > 4) return res.status(400).json({ error: "Documents are required" });
     if (blocks.some((block) => !isRecord(block) || !["text", "image", "document"].includes(String(block.type)))) {
       return res.status(400).json({ error: "Unsupported document block" });
     }
 
     const extraction = await invokeLLM({
-      model: MODEL,
+      model: analysisModel,
       max_tokens: MAX_REVIEW_TOKENS,
       messages: [
         { role: "system", content: EXTRACTION_INSTRUCTIONS },
@@ -363,7 +364,7 @@ export async function returnReviewPipeline(req: Request, res: Response) {
     const calculationPack = { wealth, banks, funds, properties: extracted.facts.properties, deterministicFindings, transactionAnalysis, fundsFlow, assetContinuity, ty2026Rules, fieldReconciliation, assetReconciliation, assetFundingTrace, assetLiabilities, liabilityContinuity, liabilityBankTrace, liabilityBalance, evidenceSummary, evidenceChecks, extractionStatus: extracted.status, observations: extracted.observations, missing: extracted.missing };
 
     const reasoning = await invokeLLM({
-      model: MODEL,
+      model: analysisModel,
       max_tokens: MAX_REVIEW_TOKENS,
       messages: [
         { role: "system", content: REVIEW_INSTRUCTIONS },

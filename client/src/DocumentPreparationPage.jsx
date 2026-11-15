@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { countWorksheetEntries, filterWorksheetByDateRange, generateBilingualWorksheetPdf, worksheetSummaryText } from "./worksheetPdf.js";
+import { useAnalysisModePreference } from "./analysisModelPreference.js";
 
 const COLORS = {
   green: "#0B3D2E",
@@ -183,6 +184,7 @@ function Section({ title, rows, amountKey, copy, lang }) {
 }
 
 export default function DocumentPreparationPage() {
+  const [analysisMode] = useAnalysisModePreference();
   const [lang, setLang] = useState("en");
   const [files, setFiles] = useState([]);
   const [confirmed, setConfirmed] = useState(false);
@@ -305,7 +307,7 @@ export default function DocumentPreparationPage() {
       const response = await fetch("/api/document-preparation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ language: lang, documents }),
+        body: JSON.stringify({ language: lang, analysisMode, documents }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "preparation failed");
