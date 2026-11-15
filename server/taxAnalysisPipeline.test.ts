@@ -81,8 +81,8 @@ afterEach(() => vi.clearAllMocks());
 describe("structured tax analysis pipeline", () => {
   it("extracts once, calculates on the server, then reasons over structured facts", async () => {
     mockedInvokeLLM
-      .mockResolvedValueOnce({ id: "extract", created: 1, model: "gemini-3-flash-preview", choices: [{ index: 0, message: { role: "assistant", content: JSON.stringify(extraction) }, finish_reason: "stop" }] })
-      .mockResolvedValueOnce({ id: "review", created: 1, model: "gemini-3-flash-preview", choices: [{ index: 0, message: { role: "assistant", content: JSON.stringify(review) }, finish_reason: "stop" }] });
+      .mockResolvedValueOnce({ id: "extract", created: 1, model: "gemini-3.1-pro-preview", choices: [{ index: 0, message: { role: "assistant", content: JSON.stringify(extraction) }, finish_reason: "stop" }] })
+      .mockResolvedValueOnce({ id: "review", created: 1, model: "gemini-3.1-pro-preview", choices: [{ index: 0, message: { role: "assistant", content: JSON.stringify(review) }, finish_reason: "stop" }] });
     const { recorded, response } = responseRecorder();
 
     await returnReviewPipeline({

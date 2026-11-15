@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { invokeLLM, type FileContent, type ImageContent, type TextContent } from "./_core/llm";
 
-const MODEL = "gemini-3-flash-preview";
+const MODEL = "gemini-3.1-pro-preview";
 const MAX_PREPARATION_TOKENS = 4096;
 
 const PREPARATION_SCHEMA = {

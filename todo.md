@@ -353,3 +353,9 @@
 - [x] Show the unresolved total on the branded PDF cover page.
 - [x] Add browser-local per-finding feedback choices and a safe anonymous-form handoff.
 - [x] Run focused/full tests, typecheck, production build, diff check, and responsive preview validation.
+
+## Analysis model upgrade
+- [x] Pilot the upgraded model with synthetic structured-output extraction.
+- [x] Route filled-return and document-preparation analysis to the approved upgraded model.
+- [x] Keep chatbot routing unchanged unless separately approved.
+- [x] Run focused/full tests, typecheck, production build, and preview validation.

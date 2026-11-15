@@ -16,7 +16,8 @@ import { reconcileLiabilityBalances, summarizeLiabilityBalances } from "../share
 import { buildLegacyEvidenceSummary } from "../shared/evidenceState";
 import { buildAssetEvidenceChecks, buildBankEvidenceChecks, buildLiabilityEvidenceChecks, summarizeEvidenceChecks } from "../shared/evidenceAwareChecks";
 
-const MODEL = "gemini-3-flash-preview";
+const MODEL = "gemini-3.1-pro-preview";
+const CHAT_MODEL = "gemini-3-flash-preview";
 const MAX_REVIEW_TOKENS = 4096;
 const MAX_CHAT_TOKENS = 1200;
 
@@ -392,7 +393,7 @@ export async function taxChatPipeline(req: Request, res: Response) {
     }
     const language = body.language === "ur" ? "Urdu" : "English";
     const completion = await invokeLLM({
-      model: MODEL,
+      model: CHAT_MODEL,
       max_tokens: MAX_CHAT_TOKENS,
       messages: [
         { role: "system", content: `${CHAT_INSTRUCTIONS}\nCurrent interface language: ${language}.` },
