@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { evidenceReviewKey, getUnresolvedEvidenceItems, isUncertainEvidenceStatus, summarizeManualEvidenceReviews } from "@shared/evidenceReview";
 import { generateBilingualWorksheetPdf } from "./worksheetPdf";
 import { useAnalysisModePreference } from "./analysisModelPreference.js";
+import AnalysisDashboard from "./AnalysisDashboard.jsx";
+import "./dashboard.css";
 
 // ─────────────────────────────────────────────────────────────
 // FBR Tax Return Assistant — English / اردو
@@ -2096,6 +2098,15 @@ function GapCheck({ lang, t, dedicated = false }) {
             {result.status === "reconciled" ? (lang === "ur" ? "حساب مل گیا" : "Reconciled") : result.status === "major_issues" ? (lang === "ur" ? "اہم مسائل" : "Major issues") : (lang === "ur" ? "مزید جانچ ضروری" : "Needs review")}
           </div>
         )}
+        <AnalysisDashboard
+          result={result}
+          lang={lang}
+          unresolvedCount={unresolvedEvidence.length}
+          evidenceSummary={result.calculations?.evidenceSummary}
+          evidenceChecks={result.calculations?.evidenceChecks}
+          fieldReconciliation={result.calculations?.fieldReconciliation}
+          deterministicFindings={result.calculations?.deterministicFindings || []}
+        />
         <div
           className="rounded-xl p-4 mb-4 text-sm leading-relaxed"
           style={{ background: COLORS.green, color: "#F6F4EC" }}
@@ -2150,7 +2161,7 @@ function GapCheck({ lang, t, dedicated = false }) {
         )}
 
         {uncertainEvidence.length > 0 && (
-          <div className="rounded-xl border p-4 mb-4" style={{ borderColor: COLORS.gold, background: "#FFFDF3" }}>
+          <div id="evidence-review-panel" className="rounded-xl border p-4 mb-4" style={{ borderColor: COLORS.gold, background: "#FFFDF3" }}>
             <div className="flex items-start justify-between gap-3 flex-wrap">
               <div>
                 <div className="font-bold text-sm" style={{ color: "#7A6210" }}>{lang === "ur" ? "غیر یقینی ثبوت کا دستی جائزہ" : "Review uncertain evidence"}</div>
@@ -3220,7 +3231,7 @@ export default function TaxReturnSaathi({ initialTab = "check", dedicatedAnalysi
   return (
     <div
       dir={t.dir}
-      className="min-h-screen"
+      className="min-h-screen tax-saathi-app dashboard-shell"
       style={{ background: COLORS.paper, color: COLORS.ink, ...urduFont }}
     >
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
@@ -3231,8 +3242,8 @@ export default function TaxReturnSaathi({ initialTab = "check", dedicatedAnalysi
         }`}</style>
 
       {/* Header */}
-      <header style={{ background: COLORS.green }} className="px-4 py-5">
-        <div className="max-w-3xl mx-auto flex items-center justify-between gap-3">
+      <header style={{ background: COLORS.green }} className="px-4 py-5 dashboard-header">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
           <div>
             <h1
               className="text-2xl font-bold"
@@ -3282,7 +3293,7 @@ export default function TaxReturnSaathi({ initialTab = "check", dedicatedAnalysi
 
       {/* Tabs */}
       {!showPrivacy && (
-      <nav className="max-w-3xl mx-auto px-4 mt-5 flex gap-2 flex-wrap">
+      <nav className="max-w-7xl mx-auto px-4 mt-5 flex gap-2 flex-wrap dashboard-nav">
         {dedicatedAnalysis && <a href="/" className="rounded-full px-4 py-2 text-sm font-semibold border" style={{ background: "transparent", color: COLORS.green, borderColor: "#B9C9BF", textDecoration: "none" }}>← {lang === "ur" ? "مرکزی صفحہ" : "Home"}</a>}
         {Object.entries(t.tabs).map(([k, label]) => {
           const isHero = k === "check";
@@ -3320,7 +3331,7 @@ export default function TaxReturnSaathi({ initialTab = "check", dedicatedAnalysi
       {showPrivacy ? (
         <Privacy t={t} lang={lang} onBack={() => setShowPrivacy(false)} />
       ) : (
-      <main className="max-w-3xl mx-auto px-4 py-6">
+      <main className="max-w-7xl mx-auto px-4 py-6 dashboard-main">
         {dedicatedAnalysis && <section className="rounded-2xl border p-5 mb-5" style={{ borderColor: COLORS.gold, background: "#FBF6E3" }}>
           <p className="text-xs font-bold mb-1" style={{ color: "#7A6210" }}>{lang === "ur" ? "خصوصی فیچر · بھرا ہوا ریٹرن" : "Special feature · Filled-return analysis"}</p>
           <h2 className="text-2xl font-bold mb-1" style={{ color: COLORS.green }}>{lang === "ur" ? "اپنا بھرا ہوا ٹیکس ریٹرن جانچیں" : "Analyze Your Filled Tax Return"}</h2>
@@ -3339,7 +3350,7 @@ export default function TaxReturnSaathi({ initialTab = "check", dedicatedAnalysi
       </main>
       )}
 
-      <footer className="max-w-3xl mx-auto px-4 pb-8 text-center text-xs opacity-50">
+      <footer className="max-w-7xl mx-auto px-4 pb-8 text-center text-xs opacity-50 dashboard-footer">
         <p>iris.fbr.gov.pk · FBR Helpline 051-111-772-772</p>
         <p className="mt-1">
           <a href="/privacy" className="underline" style={{ color: "inherit" }}>
